@@ -1,17 +1,16 @@
 <template>
-  <Creator/>
+  <Creator />
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import Creator from './components/Creator.vue';
+import Creator from "./components/Creator.vue";
 
-export default defineComponent({
-  name: 'App',
+export default {
+  name: "App",
   components: {
     Creator
   }
-});
+};
 </script>
 
 <style>

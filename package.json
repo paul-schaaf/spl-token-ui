@@ -8,10 +8,17 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@solana/spl-token": "0.0.11",
+    "@solana/web3.js": "^0.81.0",
+    "bip32": "^2.0.6",
+    "bip39": "^3.0.2",
+    "buffer-layout": "^1.2.0",
     "core-js": "^3.6.5",
+    "tweetnacl": "^1.0.3",
     "vue": "^3.0.0"
   },
   "devDependencies": {
+    "@types/node": "^14.11.10",
     "@typescript-eslint/eslint-plugin": "^2.33.0",
     "@typescript-eslint/parser": "^2.33.0",
     "@vue/cli-plugin-babel": "~4.5.0",
@@ -22,6 +29,8 @@
     "@vue/eslint-config-typescript": "^5.0.2",
     "babel-eslint": "^10.1.0",
     "eslint": "^6.7.2",
+    "eslint-config-prettier": "^6.13.0",
+    "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-vue": "^7.0.0-0",
     "typescript": "~3.9.3"
   },
@@ -33,6 +42,7 @@
     "extends": [
       "plugin:vue/vue3-essential",
       "eslint:recommended",
+      "plugin:prettier/recommended",
       "@vue/typescript"
     ],
     "parserOptions": {
