@@ -1,12 +1,16 @@
 <template>
   <input v-model="mnemonic" type="text" />
-  <input type="submit" @click="updateBalance" :disabled="state !== 'STANDBY'" />
+  <input
+    type="submit"
+    @click="updateBalance"
+    :disabled="balanceState === 'LOADING'"
+  />
   <div>Balance: {{ balance ?? "--" }}</div>
   <input
     type="submit"
     value="Create new token"
     @click="onCreateNewToken"
-    :disabled="state !== 'STANDBY'"
+    :disabled="createNewTokenState === 'LOADING'"
   />
   <div>Mint account: {{ mintAccount ?? "--" }}</div>
 </template>
@@ -16,27 +20,28 @@ import { Ref, ref } from "vue";
 import { getBalance, createAccount } from "../solana/account";
 import { createNewToken } from "../solana/token";
 
-type State = "STANDBY" | "CREATING_TOKEN" | "GETTING_BALANCE";
+type LoadingState = "STANDBY" | "LOADING";
 
 export default {
   setup() {
     const mnemonic = ref("");
     const balance: Ref<number | null> = ref(null);
     const mintAccount: any = ref(null);
-    const state: Ref<State> = ref("STANDBY");
+    const balanceState: Ref<LoadingState> = ref("STANDBY");
+    const createNewTokenState: Ref<LoadingState> = ref("STANDBY");
 
     const updateBalance = async () => {
-      state.value = "GETTING_BALANCE";
+      balanceState.value = "LOADING";
       balance.value = await getBalance(mnemonic.value);
-      state.value = "STANDBY";
+      balanceState.value = "STANDBY";
     };
 
     const onCreateNewToken = async () => {
-      state.value = "CREATING_TOKEN";
+      createNewTokenState.value = "LOADING";
       mintAccount.value = await createNewToken(
         await createAccount(mnemonic.value)
       );
-      state.value = "STANDBY";
+      createNewTokenState.value = "STANDBY";
     };
 
     return {
@@ -45,7 +50,8 @@ export default {
       updateBalance,
       onCreateNewToken,
       mintAccount,
-      state
+      balanceState,
+      createNewTokenState
     };
   }
 };
