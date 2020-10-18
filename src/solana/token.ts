@@ -21,6 +21,6 @@ export const createNewToken = async (
     decimals,
     TOKEN_PROGRAM_ID
   );
-  // @ts-expect-error
+  // @ts-ignore
   return token.publicKey.toString();
 };
