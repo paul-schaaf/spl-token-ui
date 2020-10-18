@@ -1,36 +1,22 @@
 <template>
   <nav class="navbar is-black" role="navigation" aria-label="main navigation">
-    <div class="navbar-brand">
-      <a
-        role="button"
-        class="navbar-burger burger"
-        aria-label="menu"
-        aria-expanded="false"
-        data-target="navbarBasicExample"
-      >
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-      </a>
-    </div>
-
     <div class="container">
       <div class="navbar-menu">
         <div class="navbar-start">
           <a class="navbar-item">
-            <strong>SPL MINTER</strong>
+            <strong>SPL TOKEN UI</strong>
           </a>
           <div class="navbar-item has-dropdown is-hoverable">
             <a class="navbar-link">
-              Mints
+              Tokens
             </a>
 
             <div class="navbar-dropdown">
               <a class="navbar-item">
-                Create new Mint
+                Create new Token
               </a>
               <a class="navbar-item">
-                Edit Existing Mint
+                Edit Existing Token
               </a>
             </div>
           </div>
@@ -64,22 +50,58 @@
             </div>
           </div>
         </div>
+        <div class="navbar-end">
+          <div class="navbar-item has-dropdown is-hoverable">
+            <a class="navbar-link">
+              {{ chosenCluster }}
+            </a>
+
+            <div class="navbar-dropdown">
+              <a
+                v-for="network in NETWORKS"
+                :key="network"
+                :class="{
+                  'has-background-light': network === chosenCluster,
+                  'has-text-black': network === chosenCluster
+                }"
+                class="navbar-item"
+                @click="changeCluster(network)"
+                >{{ network }}</a
+              >
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </nav>
-  <!-- <Creator /> -->
+  <TokenCreator />
 </template>
 
 <script lang="ts">
+import TokenCreator from "./components/TokenCreator.vue";
+import { NETWORKS } from "./solana/connection";
+import { changeCluster, chosenCluster } from "./solana/connection";
+
 export default {
-  name: "App"
+  name: "App",
+  components: {
+    TokenCreator
+  },
+  setup() {
+    changeCluster(chosenCluster.value);
+
+    return { NETWORKS, chosenCluster, changeCluster };
+  }
 };
 </script>
 
-<style>
+<style lang="scss">
 body,
 html {
-  background: rgb(238, 238, 238);
+  background: rgb(240, 240, 240);
   height: 100%;
 }
+$navbar-breakpoint: 0px;
+@import "~bulma";
+@import url("https://fonts.googleapis.com/css2?family=Racing+Sans+One&display=swap");
 </style>

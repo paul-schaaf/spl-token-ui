@@ -1,14 +1,7 @@
-import {
-  Account,
-  clusterApiUrl,
-  Connection,
-  LAMPORTS_PER_SOL
-} from "@solana/web3.js";
+import { Account } from "@solana/web3.js";
 import * as bip39 from "bip39";
 import * as bip32 from "bip32";
 import nacl from "tweetnacl";
-
-const connection = new Connection(clusterApiUrl("testnet"), "single");
 
 async function mnemonicToSeed(mnemonic: string): Promise<Buffer> {
   if (!bip39.validateMnemonic(mnemonic)) {
@@ -33,13 +26,4 @@ function getAccountFromSeed(
 export const createAccount = async (mnemonic: string): Promise<Account> => {
   const seed = await mnemonicToSeed(mnemonic);
   return getAccountFromSeed(seed, 0, 0);
-};
-
-export const getBalance = async (mnemonic: string) => {
-  return (
-    (await connection.getBalance(
-      (await createAccount(mnemonic)).publicKey,
-      "single"
-    )) / LAMPORTS_PER_SOL
-  );
 };
