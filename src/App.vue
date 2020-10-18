@@ -51,6 +51,15 @@
           </div>
         </div>
         <div class="navbar-end">
+          <div class="navbar-item">
+            <a
+              id="source-code"
+              href="https://github.com/paul-schaaf/spl-token-creator"
+              target="_blank"
+              rel="noopener noreferrer"
+              >source code</a
+            >
+          </div>
           <div class="navbar-item has-dropdown is-hoverable">
             <a class="navbar-link">
               {{ chosenCluster }}
@@ -104,4 +113,9 @@ html {
 $navbar-breakpoint: 0px;
 @import "~bulma";
 @import url("https://fonts.googleapis.com/css2?family=Racing+Sans+One&display=swap");
+
+#source-code {
+  color: white;
+  text-decoration: none;
+}
 </style>
