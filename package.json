@@ -10,6 +10,7 @@
   "dependencies": {
     "@solana/spl-token": "0.0.11",
     "@solana/web3.js": "^0.81.0",
+    "@types/bn.js": "^4.11.6",
     "bip32": "^2.0.6",
     "bip39": "^3.0.2",
     "core-js": "^3.6.5",
