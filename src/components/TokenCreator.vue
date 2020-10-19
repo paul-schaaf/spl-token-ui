@@ -67,7 +67,7 @@
           />
         </div>
       </div>
-      <div style="display: flex" class="control is-justify-content-center">
+      <div style="display: flex" class="control is-justify-content-center mt-5">
         <button
           :class="{ 'is-loading': creatingToken }"
           class="button is-black"
