@@ -12,12 +12,16 @@
             </a>
 
             <div class="navbar-dropdown">
-              <a class="navbar-item">
-                Create new Token
-              </a>
-              <a class="navbar-item">
-                Edit Existing Token
-              </a>
+              <router-link :to="{ name: 'token-creator' }">
+                <a class="navbar-item">
+                  Create new token
+                </a>
+              </router-link>
+              <router-link :to="{ name: 'token-editor' }">
+                <a class="navbar-item">
+                  Edit existing token
+                </a>
+              </router-link>
             </div>
           </div>
           <div class="navbar-item has-dropdown is-hoverable">
@@ -83,8 +87,7 @@
       </div>
     </div>
   </nav>
-  <TokenCreator />
-  <TokenEditor />
+  <router-view></router-view>
 </template>
 
 <script lang="ts">
