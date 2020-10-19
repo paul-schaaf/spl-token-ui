@@ -64,7 +64,7 @@
           />
           <p class="help">
             Your secret phrase is NOT saved NOR sent anywhere. It's only used to
-            sign authority change request.
+            sign the authority change request.
           </p>
         </div>
       </div>

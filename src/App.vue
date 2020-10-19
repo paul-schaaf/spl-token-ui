@@ -26,10 +26,10 @@
           </div>
           <div class="navbar-item has-dropdown is-hoverable">
             <a class="navbar-link">
-              Accounts
+              Accounts (coming soon)
             </a>
 
-            <div class="navbar-dropdown">
+            <!-- <div class="navbar-dropdown">
               <a class="navbar-item">
                 Initialize Account
               </a>
@@ -51,7 +51,7 @@
               <a class="navbar-item">
                 Transfer
               </a>
-            </div>
+            </div> -->
           </div>
         </div>
         <div class="navbar-end">
@@ -91,17 +91,11 @@
 </template>
 
 <script lang="ts">
-import TokenCreator from "./components/TokenCreator.vue";
-import TokenEditor from "./components/TokenEditor.vue";
 import { NETWORKS } from "./solana/connection";
 import { changeCluster, chosenCluster } from "./solana/connection";
 
 export default {
   name: "App",
-  components: {
-    TokenCreator,
-    TokenEditor
-  },
   setup() {
     changeCluster(chosenCluster.value);
 
