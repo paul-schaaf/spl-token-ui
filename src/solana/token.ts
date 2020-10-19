@@ -1,5 +1,5 @@
 import { PublicKey } from "@solana/web3.js";
-import { Token } from "@solana/spl-token";
+import { AuthorityType, Token } from "@solana/spl-token";
 import { getConnection } from "../solana/connection";
 import { createAccount } from "./account";
 
@@ -23,4 +23,29 @@ export const createNewToken = async (
   );
   // @ts-ignore
   return token.publicKey.toString();
+};
+
+export const editToken = async (
+  feePayer: string,
+  tokenAddress: string,
+  newAuthority: string,
+  currentAuthority: string,
+  authorityType: AuthorityType
+) => {
+  const tokenPublicKey = new PublicKey(tokenAddress);
+
+  const token = new Token(
+    getConnection(),
+    tokenPublicKey,
+    TOKEN_PROGRAM_ID,
+    await createAccount(feePayer)
+  );
+
+  await token.setAuthority(
+    tokenPublicKey,
+    new PublicKey(newAuthority),
+    authorityType,
+    await createAccount(currentAuthority),
+    []
+  );
 };
