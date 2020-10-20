@@ -49,3 +49,18 @@ export const editToken = async (
     []
   );
 };
+
+export const createTokenAccount = async (
+  feePayer: string,
+  tokenAddress: string,
+  owner: string
+) => {
+  const token = new Token(
+    getConnection(),
+    new PublicKey(tokenAddress),
+    TOKEN_PROGRAM_ID,
+    await createAccount(feePayer)
+  );
+
+  return (await token.createAccount(new PublicKey(owner))).toString();
+};

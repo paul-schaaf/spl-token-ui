@@ -38,14 +38,15 @@
           </div>
           <div class="navbar-item has-dropdown is-hoverable">
             <a class="navbar-link">
-              Accounts (coming soon)
+              Accounts
             </a>
 
-            <!-- <div class="navbar-dropdown">
-              <a class="navbar-item">
-                Initialize Account
-              </a>
-
+            <div class="navbar-dropdown">
+              <router-link :to="{ name: 'account-creator' }">
+                <a class="navbar-item">
+                  Create Account
+                </a>
+              </router-link>
               <a class="navbar-item">
                 Freeze Account
               </a>
@@ -63,7 +64,7 @@
               <a class="navbar-item">
                 Transfer
               </a>
-            </div> -->
+            </div>
           </div>
         </div>
         <div class="navbar-end">
