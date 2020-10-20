@@ -64,3 +64,25 @@ export const createTokenAccount = async (
 
   return (await token.createAccount(new PublicKey(owner))).toString();
 };
+
+export const mintToken = async (
+  feePayer: string,
+  tokenAddress: string,
+  mintAuthority: string,
+  destinationAccount: string,
+  amount: number
+) => {
+  const token = new Token(
+    getConnection(),
+    new PublicKey(tokenAddress),
+    TOKEN_PROGRAM_ID,
+    await createAccount(feePayer)
+  );
+
+  return await token.mintTo(
+    new PublicKey(destinationAccount),
+    await createAccount(mintAuthority),
+    [],
+    amount
+  );
+};

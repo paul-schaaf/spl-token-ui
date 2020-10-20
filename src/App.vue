@@ -43,26 +43,39 @@
 
             <div class="navbar-dropdown">
               <router-link :to="{ name: 'account-creator' }">
-                <a class="navbar-item">
+                <a
+                  :class="{
+                    'has-background-light': 'account-creator' === $route.name,
+                    'has-text-black': 'account-creator' === $route.name
+                  }"
+                  class="navbar-item"
+                >
                   Create Account
                 </a>
               </router-link>
               <a class="navbar-item">
-                Freeze Account
+                Freeze Account (coming soon)
               </a>
               <a class="navbar-item">
-                Thaw Account
+                Thaw Account (coming soon)
               </a>
               <hr class="navbar-divider" />
-
+              <router-link :to="{ name: 'token-minter' }">
+                <a
+                  :class="{
+                    'has-background-light': 'token-minter' === $route.name,
+                    'has-text-black': 'token-minter' === $route.name
+                  }"
+                  class="navbar-item"
+                >
+                  Mint to Account
+                </a>
+              </router-link>
               <a class="navbar-item">
-                Mint to Account
+                Burn from Account (coming soon)
               </a>
               <a class="navbar-item">
-                Burn from Account
-              </a>
-              <a class="navbar-item">
-                Transfer
+                Transfer (coming soon)
               </a>
             </div>
           </div>
