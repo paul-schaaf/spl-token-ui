@@ -58,7 +58,7 @@
           <div class="navbar-item">
             <a
               id="source-code"
-              href="https://github.com/paul-schaaf/spl-token-creator"
+              href="https://github.com/paul-schaaf/spl-token-ui"
               target="_blank"
               rel="noopener noreferrer"
               >source code</a
