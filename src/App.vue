@@ -13,12 +13,24 @@
 
             <div class="navbar-dropdown">
               <router-link :to="{ name: 'token-creator' }">
-                <a class="navbar-item">
+                <a
+                  :class="{
+                    'has-background-light': 'token-creator' === $route.name,
+                    'has-text-black': 'token-creator' === $route.name
+                  }"
+                  class="navbar-item"
+                >
                   Create new token
                 </a>
               </router-link>
               <router-link :to="{ name: 'token-editor' }">
-                <a class="navbar-item">
+                <a
+                  :class="{
+                    'has-background-light': 'token-editor' === $route.name,
+                    'has-text-black': 'token-editor' === $route.name
+                  }"
+                  class="navbar-item"
+                >
                   Edit existing token
                 </a>
               </router-link>
