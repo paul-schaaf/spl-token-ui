@@ -1,24 +1,16 @@
-# spl-token-creator
+<h1 align="center">spl-token-ui</h1>
 
-## Project setup
-```
-npm install
-```
+<div align="center">
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+[![Netlify Status](https://api.netlify.com/api/v1/badges/fb20761b-1abb-491e-a299-9a34c2319f85/deploy-status)](https://app.netlify.com/sites/spl-token-ui/deploys)
 
-### Compiles and minifies for production
-```
-npm run build
-```
+</div>
 
-### Lints and fixes files
-```
-npm run lint
-```
+<div align="center"><strong>A UI for the creation and management of SPL tokens</strong></div>
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## Features
+### Managing Tokens
+- Creating new tokens
+- Editing a token's mint and freeze authority
+### Managing Token Accounts
+- COMING SOON
