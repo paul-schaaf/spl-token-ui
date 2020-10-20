@@ -13,4 +13,6 @@
 - Creating new tokens
 - Editing a token's mint and freeze authority
 ### Managing Token Accounts
-- COMING SOON
+- Creating token accounts
+- Minting tokens to token accounts
+- MORE COMING SOON
