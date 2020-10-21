@@ -134,8 +134,16 @@ export default {
 body,
 html {
   background: rgb(240, 240, 240);
+}
+
+html {
   height: 100%;
 }
+
+body {
+  min-height: 100%;
+}
+
 $navbar-breakpoint: 0px;
 @import "~bulma";
 @import url("https://fonts.googleapis.com/css2?family=Racing+Sans+One&display=swap");
