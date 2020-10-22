@@ -1,7 +1,7 @@
 import TokenCreator from "./components/tokens/TokenCreator.vue";
 import TokenEditor from "./components/tokens/TokenEditor.vue";
 import AccountCreator from "./components/accounts/AccountCreator.vue";
-import TokenMinter from "./components/accounts/TokenMinter.vue";
+import AccountEditor from "./components/accounts/AccountEditor.vue";
 import { createRouter, createWebHashHistory } from "vue-router";
 
 const routes = [
@@ -13,9 +13,9 @@ const routes = [
     component: AccountCreator
   },
   {
-    path: "/token-minter",
-    name: "token-minter",
-    component: TokenMinter
+    path: "/account-editor",
+    name: "account-editor",
+    component: AccountEditor
   }
 ];
 

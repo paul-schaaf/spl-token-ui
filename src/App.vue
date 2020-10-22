@@ -60,11 +60,11 @@
                 Thaw Account (coming soon)
               </a>
               <hr class="navbar-divider" />
-              <router-link :to="{ name: 'token-minter' }">
+              <router-link :to="{ name: 'account-editor' }">
                 <a
                   :class="{
-                    'has-background-light': 'token-minter' === $route.name,
-                    'has-text-black': 'token-minter' === $route.name
+                    'has-background-light': 'account-editor' === $route.name,
+                    'has-text-black': 'account-editor' === $route.name
                   }"
                   class="navbar-item"
                 >
