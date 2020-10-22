@@ -15,4 +15,7 @@
 ### Managing Token Accounts
 - Creating token accounts
 - Minting tokens to token accounts
+- Transferring tokens
+- Freezing token accounts
+- Thawing token accounts
 - MORE COMING SOON
