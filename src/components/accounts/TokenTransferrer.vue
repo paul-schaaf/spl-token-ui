@@ -1,20 +1,5 @@
 <template>
   <div class="field">
-    <label class="label">Mint authority*</label>
-    <div class="control">
-      <input
-        v-model="mintAuthority"
-        class="input is-black"
-        type="text"
-        placeholder="Secret Seed Phase"
-      />
-    </div>
-    <p class="help">
-      Your secret phrase is NOT saved NOR sent anywhere. It's only used to sign
-      the token minting request.
-    </p>
-  </div>
-  <div class="field">
     <label class="label">Token address*</label>
     <div class="control">
       <input
@@ -22,6 +7,32 @@
         class="input is-black"
         type="text"
         placeholder="Token address e.g. 9rJcHifFVNmZed1KgAaRMmpRbnkaBgn5wZZcK1A6CDiC"
+      />
+    </div>
+  </div>
+  <div class="field">
+    <label class="label">Owner account*</label>
+    <div class="control">
+      <input
+        v-model="ownerAccount"
+        class="input is-black"
+        type="text"
+        placeholder="Secret Seed Phase"
+      />
+    </div>
+    <p class="help">
+      Your secret phrase is NOT saved NOR sent anywhere. It's only used to sign
+      the token transfer request.
+    </p>
+  </div>
+  <div class="field">
+    <label class="label">Source account*</label>
+    <div class="control">
+      <input
+        v-model="sourceAccount"
+        class="input is-black"
+        type="text"
+        placeholder="Public Key String e.g. GsbwXfJraMomNxBcjYLcG3mxkBUiyWXAB32fGbSMQRdW"
       />
     </div>
   </div>
@@ -43,33 +54,33 @@
         v-model="tokenAmount"
         class="input is-black"
         type="number"
-        placeholder="Token mint to mint e.g. 20000"
+        placeholder="Tokens to send"
       />
     </div>
     <p class="help">
-      Please be aware that a token is minted using its smallest denomination
-      e.g. if you have a token with 2 decimals and you type in 200 you will mint
-      2 tokens.
+      Please be aware that a token is transferred using its smallest
+      denomination e.g. if you have a token with 2 decimals and you type in 200
+      you will transfer 2 tokens.
     </p>
   </div>
   <div style="display: flex" class="control is-justify-content-center mt-5">
     <button
-      :class="{ 'is-loading': mintingToAccount }"
+      :class="{ 'is-loading': transferring }"
       class="button is-black"
-      @click="mintToAccount"
+      @click="onTransferTokens"
     >
-      Mint to account
+      Transfer tokens
     </button>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, toRefs } from "vue";
-import { mintToken } from "@/solana/token";
+import { transferTokens } from "@/solana/token";
 import accountComponents from "./accountComponents";
 
 export default defineComponent({
-  name: accountComponents["Mint"],
+  name: accountComponents.Transfer,
   props: {
     payerSeedPhrase: {
       type: String,
@@ -79,20 +90,22 @@ export default defineComponent({
   setup(props, { emit }) {
     const { payerSeedPhrase } = toRefs(props);
     const tokenAddress = ref("");
-    const mintAuthority = ref("");
+    const ownerAccount = ref("");
     const destinationAccount = ref("");
-    const mintingToAccount = ref(false);
+    const sourceAccount = ref("");
+    const transferring = ref(false);
     const tokenAmount = ref(0);
 
-    const mintToAccount = async () => {
-      mintingToAccount.value = true;
+    const onTransferTokens = async () => {
+      transferring.value = true;
       emit("update:accountAddress", "");
       try {
-        await mintToken(
+        await transferTokens(
           payerSeedPhrase.value,
           tokenAddress.value,
-          mintAuthority.value,
+          sourceAccount.value,
           destinationAccount.value,
+          ownerAccount.value,
           tokenAmount.value
         );
         emit("update:accountAddress", destinationAccount.value);
@@ -100,16 +113,17 @@ export default defineComponent({
         alert(err);
       }
 
-      mintingToAccount.value = false;
+      transferring.value = false;
     };
 
     return {
       tokenAddress,
       destinationAccount,
-      mintingToAccount,
-      mintToAccount,
-      mintAuthority,
-      tokenAmount
+      sourceAccount,
+      transferring,
+      onTransferTokens,
+      tokenAmount,
+      ownerAccount
     };
   }
 });

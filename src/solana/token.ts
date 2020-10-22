@@ -128,3 +128,28 @@ export const thawAccount = async (
     []
   );
 };
+
+export const transferTokens = async (
+  feePayer: string,
+  tokenAddress: string,
+  sourceAccount: string,
+  destAccount: string,
+  owner: string,
+  amount: number
+) => {
+  const token = new Token(
+    getConnection(),
+    new PublicKey(tokenAddress),
+    TOKEN_PROGRAM_ID,
+    await createAccount(feePayer)
+  );
+
+  // @ts-ignore
+  await token.transfer(
+    new PublicKey(sourceAccount),
+    new PublicKey(destAccount),
+    await createAccount(owner),
+    [],
+    amount
+  );
+};

@@ -60,16 +60,19 @@
 <script lang="ts">
 import { computed, ref } from "vue";
 import { chosenCluster } from "@/solana/connection";
+import accountComponents from "./accountComponents";
+
 import TokenMinter from "./TokenMinter.vue";
 import AccountFreezer from "./AccountFreezer.vue";
 import AccountThawer from "./AccountThawer.vue";
-import accountComponents from "./accountComponents";
+import TokenTransferrer from "./TokenTransferrer.vue";
 
 export default {
   components: {
     TokenMinter,
     AccountFreezer,
-    AccountThawer
+    AccountThawer,
+    TokenTransferrer
   },
   setup() {
     const payerSeedPhrase = ref("");
