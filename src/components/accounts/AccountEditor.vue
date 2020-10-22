@@ -1,6 +1,6 @@
 <template>
   <div style="display: flex" class="container is-justify-content-center">
-    <div style="width: 650px" class="mt-6">
+    <div style="width: 650px; margin-bottom: 40px" class="mt-6">
       <div
         style="font-family: 'Racing Sans One', cursive; font-size:70px"
         class="has-text-black has-text-centered	"
@@ -31,8 +31,8 @@
         </p>
       </div>
       <TokenMinter
-        :payerSeedPhrase="payerSeedPhrase"
         v-model:accountAddress="accountAddress"
+        :payerSeedPhrase="payerSeedPhrase"
       />
     </div>
   </div>

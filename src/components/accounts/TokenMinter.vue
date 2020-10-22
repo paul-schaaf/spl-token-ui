@@ -52,10 +52,7 @@
       2 tokens.
     </p>
   </div>
-  <div
-    style="display: flex; margin-bottom: 40px"
-    class="control is-justify-content-center mt-5"
-  >
+  <div style="display: flex" class="control is-justify-content-center mt-5">
     <button
       :class="{ 'is-loading': mintingToAccount }"
       class="button is-black"
