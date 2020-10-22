@@ -7,12 +7,11 @@
       >
         ACCOUNT EDITOR
       </div>
-
       <article class="message is-black">
-        <div v-if="creditedAccountAddress" class="message-body">
+        <div v-if="accountAddress" class="message-body">
           Success! Take a look at your account:
           <a :href="accountLink" target="_blank" rel="noopener noreferrer">{{
-            creditedAccountAddress
+            accountAddress
           }}</a>
         </div>
       </article>
@@ -31,14 +30,16 @@
           pay the token minting fee.
         </p>
       </div>
-      <TokenMinter :payerSeedPhrase="payerSeedPhrase" />
+      <TokenMinter
+        :payerSeedPhrase="payerSeedPhrase"
+        v-model:accountAddress="accountAddress"
+      />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { ref } from "vue";
-import { mintToken } from "@/solana/token";
+import { computed, ref } from "vue";
 import { chosenCluster } from "@/solana/connection";
 import TokenMinter from "./TokenMinter.vue";
 
@@ -48,45 +49,16 @@ export default {
   },
   setup() {
     const payerSeedPhrase = ref("");
-    const tokenAddress = ref("");
-    const mintAuthority = ref("");
-    const destinationAccount = ref("");
-    const mintingToAccount = ref(false);
-    const accountLink = ref("");
-    const creditedAccountAddress = ref("");
-    const tokenAmount = ref(0);
+    const accountAddress = ref("");
 
-    const mintToAccount = async () => {
-      accountLink.value = "";
-      mintingToAccount.value = true;
-      creditedAccountAddress.value = "";
-      try {
-        await mintToken(
-          payerSeedPhrase.value,
-          tokenAddress.value,
-          mintAuthority.value,
-          destinationAccount.value,
-          tokenAmount.value
-        );
-        creditedAccountAddress.value = destinationAccount.value;
-        accountLink.value = `https://explorer.solana.com/address/${creditedAccountAddress.value}?cluster=${chosenCluster.value}`;
-      } catch (err) {
-        alert(err);
-      }
-
-      mintingToAccount.value = false;
-    };
-
+    const accountLink = computed(
+      () =>
+        `https://explorer.solana.com/address/${accountAddress.value}?cluster=${chosenCluster.value}`
+    );
     return {
       payerSeedPhrase,
-      tokenAddress,
-      destinationAccount,
-      mintingToAccount,
-      mintToAccount,
-      creditedAccountAddress,
       accountLink,
-      mintAuthority,
-      tokenAmount
+      accountAddress
     };
   }
 };

@@ -69,7 +69,6 @@
 <script lang="ts">
 import { defineComponent, ref, toRefs } from "vue";
 import { mintToken } from "@/solana/token";
-import { chosenCluster } from "@/solana/connection";
 
 export default defineComponent({
   props: {
@@ -78,20 +77,17 @@ export default defineComponent({
       required: true
     }
   },
-  setup(props) {
+  setup(props, { emit }) {
     const { payerSeedPhrase } = toRefs(props);
     const tokenAddress = ref("");
     const mintAuthority = ref("");
     const destinationAccount = ref("");
     const mintingToAccount = ref(false);
-    const accountLink = ref("");
-    const creditedAccountAddress = ref("");
     const tokenAmount = ref(0);
 
     const mintToAccount = async () => {
-      accountLink.value = "";
       mintingToAccount.value = true;
-      creditedAccountAddress.value = "";
+      emit("update:accountAddress", "");
       try {
         await mintToken(
           payerSeedPhrase.value,
@@ -100,8 +96,7 @@ export default defineComponent({
           destinationAccount.value,
           tokenAmount.value
         );
-        creditedAccountAddress.value = destinationAccount.value;
-        accountLink.value = `https://explorer.solana.com/address/${creditedAccountAddress.value}?cluster=${chosenCluster.value}`;
+        emit("update:accountAddress", destinationAccount.value);
       } catch (err) {
         alert(err);
       }
@@ -114,8 +109,6 @@ export default defineComponent({
       destinationAccount,
       mintingToAccount,
       mintToAccount,
-      creditedAccountAddress,
-      accountLink,
       mintAuthority,
       tokenAmount
     };
