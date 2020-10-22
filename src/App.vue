@@ -53,13 +53,6 @@
                   Create Account
                 </a>
               </router-link>
-              <a class="navbar-item">
-                Freeze Account (coming soon)
-              </a>
-              <a class="navbar-item">
-                Thaw Account (coming soon)
-              </a>
-              <hr class="navbar-divider" />
               <router-link :to="{ name: 'account-editor' }">
                 <a
                   :class="{
@@ -68,15 +61,9 @@
                   }"
                   class="navbar-item"
                 >
-                  Mint to Account
+                  Edit Account
                 </a>
               </router-link>
-              <a class="navbar-item">
-                Burn from Account (coming soon)
-              </a>
-              <a class="navbar-item">
-                Transfer (coming soon)
-              </a>
             </div>
           </div>
         </div>
