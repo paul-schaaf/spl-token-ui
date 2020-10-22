@@ -107,3 +107,24 @@ export const freezeAccount = async (
     []
   );
 };
+
+export const thawAccount = async (
+  feePayer: string,
+  tokenAddress: string,
+  accountToThaw: string,
+  freezeAuthority: string
+) => {
+  const token = new Token(
+    getConnection(),
+    new PublicKey(tokenAddress),
+    TOKEN_PROGRAM_ID,
+    await createAccount(feePayer)
+  );
+
+  // @ts-ignore
+  await token.thawAccount(
+    new PublicKey(accountToThaw),
+    await createAccount(freezeAuthority),
+    []
+  );
+};

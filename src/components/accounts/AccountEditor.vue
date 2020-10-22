@@ -46,11 +46,13 @@
           {{ action }}
         </button>
       </div>
-      <component
-        :payerSeedPhrase="payerSeedPhrase"
-        :is="currentAccountComponent"
-        @update:accountAddress="accountAddress = $event"
-      />
+      <keep-alive>
+        <component
+          :payerSeedPhrase="payerSeedPhrase"
+          :is="currentAccountComponent"
+          @update:accountAddress="accountAddress = $event"
+        />
+      </keep-alive>
     </div>
   </div>
 </template>
@@ -60,12 +62,14 @@ import { computed, ref } from "vue";
 import { chosenCluster } from "@/solana/connection";
 import TokenMinter from "./TokenMinter.vue";
 import AccountFreezer from "./AccountFreezer.vue";
+import AccountThawer from "./AccountThawer.vue";
 import accountComponents from "./accountComponents";
 
 export default {
   components: {
     TokenMinter,
-    AccountFreezer
+    AccountFreezer,
+    AccountThawer
   },
   setup() {
     const payerSeedPhrase = ref("");
