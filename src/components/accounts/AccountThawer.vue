@@ -11,7 +11,7 @@
     </div>
     <p class="help">
       Your secret phrase is NOT saved NOR sent anywhere. It's only used to sign
-      the account freezing request.
+      the account thawing request.
     </p>
   </div>
   <div class="field">
