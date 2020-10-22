@@ -5,6 +5,6 @@ export default {
   Thaw: "account-thawer",
   Close: "acount-closer",
   Burn: "token-burner",
-  ChangeOwner: "owner-changer",
-  ChangeCloser: "closer-changer"
+  SetOwner: "owner-setter",
+  SetCloser: "closer-setter"
 };
