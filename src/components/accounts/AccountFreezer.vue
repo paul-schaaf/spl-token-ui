@@ -1,9 +1,9 @@
 <template>
   <div class="field">
-    <label class="label">Mint authority*</label>
+    <label class="label">Freeze authority*</label>
     <div class="control">
       <input
-        v-model="mintAuthority"
+        v-model="freezeAuthority"
         class="input is-black"
         type="text"
         placeholder="Secret Seed Phase"
@@ -11,7 +11,7 @@
     </div>
     <p class="help">
       Your secret phrase is NOT saved NOR sent anywhere. It's only used to sign
-      the token minting request.
+      the account freezing request.
     </p>
   </div>
   <div class="field">
@@ -26,50 +26,34 @@
     </div>
   </div>
   <div class="field">
-    <label class="label">Destination account*</label>
+    <label class="label">Account to freeze*</label>
     <div class="control">
       <input
-        v-model="destinationAccount"
+        v-model="accountToFreeze"
         class="input is-black"
         type="text"
         placeholder="Public Key String e.g. GsbwXfJraMomNxBcjYLcG3mxkBUiyWXAB32fGbSMQRdW"
       />
     </div>
   </div>
-  <div class="field">
-    <label class="label">Amount*</label>
-    <div class="control">
-      <input
-        v-model="tokenAmount"
-        class="input is-black"
-        type="number"
-        placeholder="Token mint to mint e.g. 20000"
-      />
-    </div>
-    <p class="help">
-      Please be aware that a token is minted using its smallest denomination
-      e.g. if you have a token with 2 decimals and you type in 200 you will mint
-      2 tokens.
-    </p>
-  </div>
   <div style="display: flex" class="control is-justify-content-center mt-5">
     <button
-      :class="{ 'is-loading': mintingToAccount }"
+      :class="{ 'is-loading': freezingAccount }"
       class="button is-black"
-      @click="mintToAccount"
+      @click="onFreezeAccount"
     >
-      Mint to account
+      Freeze Acount
     </button>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, toRefs } from "vue";
-import { mintToken } from "@/solana/token";
 import accountComponents from "./accountComponents";
+import { freezeAccount } from "@/solana/token";
 
 export default defineComponent({
-  name: accountComponents["Mint"],
+  name: accountComponents["Freeze"],
   props: {
     payerSeedPhrase: {
       type: String,
@@ -78,39 +62,35 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const { payerSeedPhrase } = toRefs(props);
+    const freezingAccount = ref(false);
+    const accountToFreeze = ref("");
     const tokenAddress = ref("");
-    const mintAuthority = ref("");
-    const destinationAccount = ref("");
-    const mintingToAccount = ref(false);
-    const tokenAmount = ref(0);
+    const freezeAuthority = ref("");
 
-    const mintToAccount = async () => {
-      mintingToAccount.value = true;
+    const onFreezeAccount = async () => {
+      freezingAccount.value = true;
       emit("update:accountAddress", "");
       try {
-        await mintToken(
+        await freezeAccount(
           payerSeedPhrase.value,
           tokenAddress.value,
-          mintAuthority.value,
-          destinationAccount.value,
-          tokenAmount.value
+          accountToFreeze.value,
+          freezeAuthority.value
         );
-        console.log(destinationAccount.value);
-        emit("update:accountAddress", destinationAccount.value);
+        emit("update:accountAddress", accountToFreeze.value);
       } catch (err) {
         alert(err);
       }
 
-      mintingToAccount.value = false;
+      freezingAccount.value = false;
     };
 
     return {
+      freezingAccount,
+      accountToFreeze,
       tokenAddress,
-      destinationAccount,
-      mintingToAccount,
-      mintToAccount,
-      mintAuthority,
-      tokenAmount
+      onFreezeAccount,
+      freezeAuthority
     };
   }
 });

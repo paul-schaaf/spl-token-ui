@@ -86,3 +86,24 @@ export const mintToken = async (
     amount
   );
 };
+
+export const freezeAccount = async (
+  feePayer: string,
+  tokenAddress: string,
+  accountToFreeze: string,
+  freezeAuthority: string
+) => {
+  const token = new Token(
+    getConnection(),
+    new PublicKey(tokenAddress),
+    TOKEN_PROGRAM_ID,
+    await createAccount(feePayer)
+  );
+
+  // @ts-ignore
+  await token.freezeAccount(
+    new PublicKey(accountToFreeze),
+    await createAccount(freezeAuthority),
+    []
+  );
+};

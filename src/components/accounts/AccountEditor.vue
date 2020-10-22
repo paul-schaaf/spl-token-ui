@@ -47,9 +47,9 @@
         </button>
       </div>
       <component
-        v-model:accountAddress="accountAddress"
         :payerSeedPhrase="payerSeedPhrase"
         :is="currentAccountComponent"
+        @update:accountAddress="accountAddress = $event"
       />
     </div>
   </div>
@@ -59,11 +59,13 @@
 import { computed, ref } from "vue";
 import { chosenCluster } from "@/solana/connection";
 import TokenMinter from "./TokenMinter.vue";
+import AccountFreezer from "./AccountFreezer.vue";
 import accountComponents from "./accountComponents";
 
 export default {
   components: {
-    TokenMinter
+    TokenMinter,
+    AccountFreezer
   },
   setup() {
     const payerSeedPhrase = ref("");
