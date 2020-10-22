@@ -1,6 +1,6 @@
 <template>
   <div style="display: flex" class="container is-justify-content-center">
-    <div style="width: 650px; margin-bottom: 40px" class="mt-6">
+    <div style="width: 650px; margin-bottom: 40px;" class="mt-6">
       <div
         style="font-family: 'Racing Sans One', cursive; font-size:70px"
         class="has-text-black has-text-centered	"
@@ -17,7 +17,7 @@
       </article>
       <div class="field">
         <label class="label">Fee payer*</label>
-        <div style="display: flex" class="control">
+        <div class="control">
           <input
             v-model="payerSeedPhrase"
             class="input is-black"
@@ -30,9 +30,26 @@
           pay the token minting fee.
         </p>
       </div>
-      <TokenMinter
+      <div
+        class="buttons is-justify-content-center"
+        style="display: flex; margin-top: 35px"
+      >
+        <button
+          v-for="action in Object.keys(accountComponents)"
+          :key="action"
+          :class="{
+            'is-black': currentAccountComponent === accountComponents[action]
+          }"
+          class="button"
+          @click="currentAccountComponent = accountComponents[action]"
+        >
+          {{ action }}
+        </button>
+      </div>
+      <component
         v-model:accountAddress="accountAddress"
         :payerSeedPhrase="payerSeedPhrase"
+        :is="currentAccountComponent"
       />
     </div>
   </div>
@@ -42,6 +59,7 @@
 import { computed, ref } from "vue";
 import { chosenCluster } from "@/solana/connection";
 import TokenMinter from "./TokenMinter.vue";
+import accountComponents from "./accountComponents";
 
 export default {
   components: {
@@ -55,10 +73,15 @@ export default {
       () =>
         `https://explorer.solana.com/address/${accountAddress.value}?cluster=${chosenCluster.value}`
     );
+
+    const currentAccountComponent = ref(accountComponents["Mint"]);
+
     return {
       payerSeedPhrase,
       accountLink,
-      accountAddress
+      accountAddress,
+      currentAccountComponent,
+      accountComponents
     };
   }
 };

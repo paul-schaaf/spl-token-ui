@@ -1,7 +1,7 @@
 <template>
   <div class="field">
     <label class="label">Mint authority*</label>
-    <div style="display: flex" class="control">
+    <div class="control">
       <input
         v-model="mintAuthority"
         class="input is-black"
@@ -38,7 +38,7 @@
   </div>
   <div class="field">
     <label class="label">Amount*</label>
-    <div style="display: flex" class="control">
+    <div class="control">
       <input
         v-model="tokenAmount"
         class="input is-black"
@@ -66,8 +66,10 @@
 <script lang="ts">
 import { defineComponent, ref, toRefs } from "vue";
 import { mintToken } from "@/solana/token";
+import accountComponents from "./accountComponents";
 
 export default defineComponent({
+  name: accountComponents["TOKEN-MINTER"],
   props: {
     payerSeedPhrase: {
       type: String,

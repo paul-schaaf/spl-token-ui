@@ -18,7 +18,7 @@
       </article>
       <div class="field">
         <label class="label">Fee payer*</label>
-        <div style="display: flex" class="control">
+        <div class="control">
           <input
             v-model="payerSeedPhrase"
             class="input is-black"
