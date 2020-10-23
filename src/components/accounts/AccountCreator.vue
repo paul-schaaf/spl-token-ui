@@ -28,7 +28,7 @@
         </div>
         <p class="help">
           Your secret phrase is NOT saved NOR sent anywhere. It's only used to
-          pay the token minting fee.
+          pay the account creation and rent fee.
         </p>
       </div>
       <div class="field">
