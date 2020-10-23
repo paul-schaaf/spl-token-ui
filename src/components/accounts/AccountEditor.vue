@@ -78,13 +78,15 @@ import TokenMinter from "./TokenMinter.vue";
 import AccountFreezer from "./AccountFreezer.vue";
 import AccountThawer from "./AccountThawer.vue";
 import TokenTransferrer from "./TokenTransferrer.vue";
+import OwnerSetter from "./OwnerSetter.vue";
 
 export default {
   components: {
     TokenMinter,
     AccountFreezer,
     AccountThawer,
-    TokenTransferrer
+    TokenTransferrer,
+    OwnerSetter
   },
   setup() {
     const payerSeedPhrase = ref("");
