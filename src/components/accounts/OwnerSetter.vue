@@ -53,7 +53,7 @@ import accountComponents from "./accountComponents";
 import { setTokenAccountOwner } from "@/solana/token";
 
 export default defineComponent({
-  name: accountComponents.Thaw,
+  name: accountComponents.SetOwner,
   props: {
     payerSeedPhrase: {
       type: String,

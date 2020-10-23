@@ -42,7 +42,7 @@ import accountComponents from "./accountComponents";
 import { freezeAccount } from "@/solana/token";
 
 export default defineComponent({
-  name: accountComponents["Freeze"],
+  name: accountComponents.Freeze,
   props: {
     payerSeedPhrase: {
       type: String,

@@ -58,7 +58,7 @@ import { mintToken } from "@/solana/token";
 import accountComponents from "./accountComponents";
 
 export default defineComponent({
-  name: accountComponents["Mint"],
+  name: accountComponents.Mint,
   props: {
     payerSeedPhrase: {
       type: String,
