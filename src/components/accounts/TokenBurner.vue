@@ -1,6 +1,6 @@
 <template>
   <div class="field">
-    <label class="label">Owner account*</label>
+    <label class="label">Account owner*</label>
     <div class="control">
       <input
         v-model="ownerAccount"

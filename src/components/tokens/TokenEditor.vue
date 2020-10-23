@@ -32,13 +32,13 @@
         </p>
       </div>
       <div class="field">
-        <label class="label">Token address*</label>
+        <label class="label">Token mint address*</label>
         <div class="control">
           <input
             v-model="tokenAddress"
             class="input is-black"
             type="text"
-            placeholder="Public Key String e.g. GsbwXfJraMomNxBcjYLcG3mxkBUiyWXAB32fGbSMQRdW"
+            placeholder="Token address e.g. GsbwXfJraMomNxBcjYLcG3mxkBUiyWXAB32fGbSMQRdW"
           />
         </div>
       </div>
@@ -71,8 +71,7 @@
 
       <div class="field">
         <label class="label"
-          >New
-          {{ editingFreezeAuthority ? "freeze" : "mint" }} authority*</label
+          >New {{ editingFreezeAuthority ? "freeze" : "mint" }} authority</label
         >
         <div class="control">
           <input

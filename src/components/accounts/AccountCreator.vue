@@ -32,7 +32,7 @@
         </p>
       </div>
       <div class="field">
-        <label class="label">Token address*</label>
+        <label class="label">Token mint address*</label>
         <div class="control">
           <input
             v-model="tokenAddress"
