@@ -4,7 +4,7 @@ export default {
   Freeze: "account-freezer",
   Thaw: "account-thawer",
   SetOwner: "owner-setter",
+  SetCloser: "closer-setter",
   Burn: "token-burner",
   Close: "account-closer"
-  /* SetCloser: "closer-setter" */
 };

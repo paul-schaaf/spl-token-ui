@@ -11,10 +11,10 @@
     </div>
   </div>
   <div class="field">
-    <label class="label"> Owner or close authority*</label>
+    <label class="label">Current close authority or owner*</label>
     <div class="control">
       <input
-        v-model="owner"
+        v-model="currentCloser"
         class="input is-black"
         type="text"
         placeholder="Seed seed phrase"
@@ -22,32 +22,32 @@
     </div>
     <p class="help">
       Your secret phrase is NOT saved NOR sent anywhere. It's only used to sign
-      the owner change request fee. If there is no "close authority", the owner
-      can close the account, otherwise only the "close authority" may do so.
+      the closer change request fee. The owner can only set the close authority
+      if there is no close authority or it's the owner themselves.
     </p>
   </div>
   <div class="field">
-    <label class="label">Destination account*</label>
+    <label class="label">New close authority*</label>
     <div class="control">
       <input
-        v-model="destinationAccount"
+        v-model="newCloser"
         class="input is-black"
         type="text"
         placeholder="Public Key String e.g. GsbwXfJraMomNxBcjYLcG3mxkBUiyWXAB32fGbSMQRdW"
       />
     </div>
     <p class="help">
-      This is the account that your rent reserve for the closed account gets
-      sent to.
+      You can leave this field empty to remove the closer authority from the
+      account
     </p>
   </div>
   <div style="display: flex" class="control is-justify-content-center mt-5">
     <button
-      :class="{ 'is-loading': closingAccount }"
+      :class="{ 'is-loading': settingCloser }"
       class="button is-black"
-      @click="onCloseAccount"
+      @click="onSetCloser"
     >
-      Close account
+      Set closer
     </button>
   </div>
 </template>
@@ -55,10 +55,10 @@
 <script lang="ts">
 import { defineComponent, ref, toRefs } from "vue";
 import accountComponents from "./accountComponents";
-import { closeAccount } from "@/solana/token";
+import { setTokenAccountCloser } from "@/solana/token";
 
 export default defineComponent({
-  name: accountComponents.Close,
+  name: accountComponents.SetCloser,
   props: {
     payerSeedPhrase: {
       type: String,
@@ -71,36 +71,36 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const { payerSeedPhrase, tokenAddress } = toRefs(props);
-    const closingAccount = ref(false);
+    const settingCloser = ref(false);
     const accountAddress = ref("");
-    const owner = ref("");
-    const destinationAccount = ref("");
+    const currentCloser = ref("");
+    const newCloser = ref("");
 
-    const onCloseAccount = async () => {
-      closingAccount.value = true;
+    const onSetCloser = async () => {
+      settingCloser.value = true;
       emit("update:accountAddress", "");
       try {
-        await closeAccount(
+        await setTokenAccountCloser(
           payerSeedPhrase.value,
           tokenAddress.value,
           accountAddress.value,
-          destinationAccount.value,
-          owner.value
+          currentCloser.value,
+          newCloser.value
         );
         emit("update:accountAddress", accountAddress.value);
       } catch (err) {
         alert(err);
       }
 
-      closingAccount.value = false;
+      settingCloser.value = false;
     };
 
     return {
-      closingAccount,
+      settingCloser,
       accountAddress,
-      onCloseAccount,
-      owner,
-      destinationAccount
+      onSetCloser,
+      currentCloser,
+      newCloser
     };
   }
 });

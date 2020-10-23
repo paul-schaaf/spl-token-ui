@@ -168,7 +168,6 @@ export const setTokenAccountOwner = async (
     await createAccount(feePayer)
   );
 
-  // @ts-ignore
   await token.setAuthority(
     new PublicKey(tokenAccount),
     new PublicKey(newAuthority),
@@ -218,6 +217,29 @@ export const closeAccount = async (
     new PublicKey(tokenAccount),
     new PublicKey(destinationAccount),
     await createAccount(owner),
+    []
+  );
+};
+
+export const setTokenAccountCloser = async (
+  feePayer: string,
+  tokenAddress: string,
+  tokenAccount: string,
+  currentAuthority: string,
+  newAuthority: string
+) => {
+  const token = new Token(
+    getConnection(),
+    new PublicKey(tokenAddress),
+    TOKEN_PROGRAM_ID,
+    await createAccount(feePayer)
+  );
+
+  await token.setAuthority(
+    new PublicKey(tokenAccount),
+    newAuthority ? new PublicKey(newAuthority) : null,
+    "CloseAccount",
+    await createAccount(currentAuthority),
     []
   );
 };

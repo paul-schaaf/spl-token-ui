@@ -81,6 +81,7 @@ import TokenTransferrer from "./TokenTransferrer.vue";
 import OwnerSetter from "./OwnerSetter.vue";
 import TokenBurner from "./TokenBurner.vue";
 import AccountCloser from "./AccountCloser.vue";
+import CloserSetter from "./CloserSetter.vue";
 
 export default {
   components: {
@@ -90,7 +91,8 @@ export default {
     TokenTransferrer,
     OwnerSetter,
     TokenBurner,
-    AccountCloser
+    AccountCloser,
+    CloserSetter
   },
   setup() {
     const payerSeedPhrase = ref("");
