@@ -22,8 +22,8 @@
     </div>
     <p class="help">
       Your secret phrase is NOT saved NOR sent anywhere. It's only used to sign
-      the owner change request fee. Even if there is no "close authority", the
-      owner can still close the account.
+      the owner change request fee. If there is no "close authority", the owner
+      can close the account, otherwise only the "close authority" may do so.
     </p>
   </div>
   <div class="field">
