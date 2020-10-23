@@ -31,7 +31,7 @@
       class="button is-black"
       @click="onFreezeAccount"
     >
-      Freeze Acount
+      Freeze account
     </button>
   </div>
 </template>

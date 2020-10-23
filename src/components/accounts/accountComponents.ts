@@ -7,7 +7,7 @@ export default {
 
   /*
 
-  Close: "acount-closer"
+  Close: "account-closer"
   Burn: "token-burner",
   SetCloser: "closer-setter" */
 };

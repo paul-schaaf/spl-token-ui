@@ -31,7 +31,7 @@
       class="button is-black"
       @click="onThawAccount"
     >
-      Thaw Acount
+      Thaw account
     </button>
   </div>
 </template>
