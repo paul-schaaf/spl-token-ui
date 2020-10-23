@@ -82,6 +82,9 @@
             placeholder="Public Key String e.g. GsbwXfJraMomNxBcjYLcG3mxkBUiyWXAB32fGbSMQRdW"
           />
         </div>
+        <p class="help">
+          You can leave this field empty to remove the authority from the token.
+        </p>
       </div>
       <div style="display: flex" class="control is-justify-content-center mt-5">
         <button

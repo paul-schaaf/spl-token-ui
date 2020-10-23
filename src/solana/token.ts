@@ -43,7 +43,7 @@ export const editToken = async (
 
   await token.setAuthority(
     tokenPublicKey,
-    new PublicKey(newAuthority),
+    newAuthority ? new PublicKey(newAuthority) : null,
     authorityType,
     await createAccount(currentAuthority),
     []
