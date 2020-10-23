@@ -199,3 +199,25 @@ export const burnTokens = async (
     amount
   );
 };
+
+export const closeAccount = async (
+  feePayer: string,
+  tokenAddress: string,
+  tokenAccount: string,
+  destinationAccount: string,
+  owner: string
+) => {
+  const token = new Token(
+    getConnection(),
+    new PublicKey(tokenAddress),
+    TOKEN_PROGRAM_ID,
+    await createAccount(feePayer)
+  );
+
+  await token.closeAccount(
+    new PublicKey(tokenAccount),
+    new PublicKey(destinationAccount),
+    await createAccount(owner),
+    []
+  );
+};
