@@ -54,7 +54,7 @@
           class="button"
           @click="currentAccountComponent = accountComponents[action]"
         >
-          {{ action }}
+          {{ splitAtUppercase(action) }}
         </button>
       </div>
       <keep-alive>
@@ -83,6 +83,8 @@ import TokenBurner from "./TokenBurner.vue";
 import AccountCloser from "./AccountCloser.vue";
 import CloserSetter from "./CloserSetter.vue";
 
+import { splitAtUppercase } from "@/util/stringFormatting";
+
 export default {
   components: {
     TokenMinter,
@@ -104,7 +106,7 @@ export default {
         `https://explorer.solana.com/address/${accountAddress.value}?cluster=${chosenCluster.value}`
     );
 
-    const currentAccountComponent = ref(accountComponents["Mint"]);
+    const currentAccountComponent = ref(accountComponents.Mint);
 
     return {
       payerSeedPhrase,
@@ -112,7 +114,8 @@ export default {
       accountAddress,
       currentAccountComponent,
       accountComponents,
-      tokenAddress
+      tokenAddress,
+      splitAtUppercase
     };
   }
 };
