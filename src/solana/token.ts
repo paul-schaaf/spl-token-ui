@@ -177,3 +177,25 @@ export const setTokenAccountOwner = async (
     []
   );
 };
+
+export const burnTokens = async (
+  feePayer: string,
+  tokenAddress: string,
+  tokenAccount: string,
+  owner: string,
+  amount: number
+) => {
+  const token = new Token(
+    getConnection(),
+    new PublicKey(tokenAddress),
+    TOKEN_PROGRAM_ID,
+    await createAccount(feePayer)
+  );
+
+  await token.burn(
+    new PublicKey(tokenAccount),
+    await createAccount(owner),
+    [],
+    amount
+  );
+};

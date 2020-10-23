@@ -3,8 +3,8 @@ export default {
   Transfer: "token-transferrer",
   Freeze: "account-freezer",
   Thaw: "account-thawer",
-  SetOwner: "owner-setter"
-
+  SetOwner: "owner-setter",
+  Burn: "token-burner"
   /*
 
   Close: "account-closer"

@@ -79,6 +79,7 @@ import AccountFreezer from "./AccountFreezer.vue";
 import AccountThawer from "./AccountThawer.vue";
 import TokenTransferrer from "./TokenTransferrer.vue";
 import OwnerSetter from "./OwnerSetter.vue";
+import TokenBurner from "./TokenBurner.vue";
 
 export default {
   components: {
@@ -86,7 +87,8 @@ export default {
     AccountFreezer,
     AccountThawer,
     TokenTransferrer,
-    OwnerSetter
+    OwnerSetter,
+    TokenBurner
   },
   setup() {
     const payerSeedPhrase = ref("");
