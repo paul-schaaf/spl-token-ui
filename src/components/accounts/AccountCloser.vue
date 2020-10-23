@@ -11,7 +11,7 @@
     </div>
   </div>
   <div class="field">
-    <label class="label"> Owner*</label>
+    <label class="label"> Owner or Closer*</label>
     <div class="control">
       <input
         v-model="owner"
@@ -22,7 +22,8 @@
     </div>
     <p class="help">
       Your secret phrase is NOT saved NOR sent anywhere. It's only used to sign
-      the owner change request fee.
+      the owner change request fee. Even if there is no "close authority", the
+      owner can still close the account.
     </p>
   </div>
   <div class="field">
