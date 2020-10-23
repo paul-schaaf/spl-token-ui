@@ -153,3 +153,27 @@ export const transferTokens = async (
     amount
   );
 };
+
+export const setTokenAccountOwner = async (
+  feePayer: string,
+  tokenAddress: string,
+  tokenAccount: string,
+  currentAuthority: string,
+  newAuthority: string
+) => {
+  const token = new Token(
+    getConnection(),
+    new PublicKey(tokenAddress),
+    TOKEN_PROGRAM_ID,
+    await createAccount(feePayer)
+  );
+
+  // @ts-ignore
+  await token.setAuthority(
+    new PublicKey(tokenAccount),
+    new PublicKey(newAuthority),
+    "AccountOwner",
+    await createAccount(currentAuthority),
+    []
+  );
+};

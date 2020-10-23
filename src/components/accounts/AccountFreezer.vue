@@ -15,17 +15,6 @@
     </p>
   </div>
   <div class="field">
-    <label class="label">Token address*</label>
-    <div class="control">
-      <input
-        v-model="tokenAddress"
-        class="input is-black"
-        type="text"
-        placeholder="Token address e.g. 9rJcHifFVNmZed1KgAaRMmpRbnkaBgn5wZZcK1A6CDiC"
-      />
-    </div>
-  </div>
-  <div class="field">
     <label class="label">Account to freeze*</label>
     <div class="control">
       <input
@@ -58,13 +47,16 @@ export default defineComponent({
     payerSeedPhrase: {
       type: String,
       required: true
+    },
+    tokenAddress: {
+      type: String,
+      required: true
     }
   },
   setup(props, { emit }) {
-    const { payerSeedPhrase } = toRefs(props);
+    const { payerSeedPhrase, tokenAddress } = toRefs(props);
     const freezingAccount = ref(false);
     const accountToFreeze = ref("");
-    const tokenAddress = ref("");
     const freezeAuthority = ref("");
 
     const onFreezeAccount = async () => {
@@ -88,7 +80,6 @@ export default defineComponent({
     return {
       freezingAccount,
       accountToFreeze,
-      tokenAddress,
       onFreezeAccount,
       freezeAuthority
     };

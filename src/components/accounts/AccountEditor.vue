@@ -30,6 +30,17 @@
           pay the token minting fee.
         </p>
       </div>
+      <div class="field">
+        <label class="label">Token address*</label>
+        <div class="control">
+          <input
+            v-model="tokenAddress"
+            class="input is-black"
+            type="text"
+            placeholder="Token address e.g. 9rJcHifFVNmZed1KgAaRMmpRbnkaBgn5wZZcK1A6CDiC"
+          />
+        </div>
+      </div>
       <div
         class="buttons is-justify-content-center"
         style="display: flex; margin-top: 35px"
@@ -48,8 +59,9 @@
       </div>
       <keep-alive>
         <component
-          :payerSeedPhrase="payerSeedPhrase"
           :is="currentAccountComponent"
+          :payerSeedPhrase="payerSeedPhrase"
+          :tokenAddress="tokenAddress"
           @update:accountAddress="accountAddress = $event"
         />
       </keep-alive>
@@ -76,6 +88,7 @@ export default {
   },
   setup() {
     const payerSeedPhrase = ref("");
+    const tokenAddress = ref("");
     const accountAddress = ref("");
 
     const accountLink = computed(
@@ -90,7 +103,8 @@ export default {
       accountLink,
       accountAddress,
       currentAccountComponent,
-      accountComponents
+      accountComponents,
+      tokenAddress
     };
   }
 };

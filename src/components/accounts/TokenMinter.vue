@@ -15,17 +15,6 @@
     </p>
   </div>
   <div class="field">
-    <label class="label">Token address*</label>
-    <div class="control">
-      <input
-        v-model="tokenAddress"
-        class="input is-black"
-        type="text"
-        placeholder="Token address e.g. 9rJcHifFVNmZed1KgAaRMmpRbnkaBgn5wZZcK1A6CDiC"
-      />
-    </div>
-  </div>
-  <div class="field">
     <label class="label">Destination account*</label>
     <div class="control">
       <input
@@ -74,11 +63,14 @@ export default defineComponent({
     payerSeedPhrase: {
       type: String,
       required: true
+    },
+    tokenAddress: {
+      type: String,
+      required: true
     }
   },
   setup(props, { emit }) {
-    const { payerSeedPhrase } = toRefs(props);
-    const tokenAddress = ref("");
+    const { payerSeedPhrase, tokenAddress } = toRefs(props);
     const mintAuthority = ref("");
     const destinationAccount = ref("");
     const mintingToAccount = ref(false);
@@ -104,7 +96,6 @@ export default defineComponent({
     };
 
     return {
-      tokenAddress,
       destinationAccount,
       mintingToAccount,
       mintToAccount,
