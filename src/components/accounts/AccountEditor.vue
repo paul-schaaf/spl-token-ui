@@ -22,7 +22,7 @@
             v-model="payerSeedPhrase"
             class="input is-black"
             type="text"
-            placeholder="Secret Seed Phase"
+            placeholder="Secret Seed Phrase"
           />
         </div>
         <p class="help">

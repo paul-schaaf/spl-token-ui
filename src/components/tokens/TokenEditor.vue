@@ -23,7 +23,7 @@
             v-model="payerSeedPhrase"
             class="input is-black"
             type="text"
-            placeholder="Secret Seed Phase"
+            placeholder="Secret Seed Phrase"
           />
         </div>
         <p class="help">
@@ -60,7 +60,7 @@
             v-model="currentAuthority"
             class="input is-black"
             type="text"
-            placeholder="Secret Seed Phase"
+            placeholder="Secret Seed Phrase"
           />
           <p class="help">
             Your secret phrase is NOT saved NOR sent anywhere. It's only used to

@@ -18,4 +18,10 @@
 - Transferring tokens
 - Freezing token accounts
 - Thawing token accounts
-- MORE COMING SOON
+- Burning tokens
+- Closing accounts
+- Setting account owners
+- Setting acount close authorities
+
+
+MORE COMING (HOPEFULLY) SOON
