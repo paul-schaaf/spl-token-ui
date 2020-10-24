@@ -6,12 +6,17 @@
     TOKEN EDITOR
   </div>
 
-  <article class="message is-black">
-    <div v-if="editedTokenAddress" class="message-body">
+  <article v-if="editedTokenAddress" class="message is-black">
+    <div class="message-body">
       Success! Take a look at your edited token:
       <a :href="tokenLink" target="_blank" rel="noopener noreferrer">{{
         editedTokenAddress
       }}</a>
+    </div>
+  </article>
+  <article v-else-if="errorMessage" class="message is-danger">
+    <div class="message-body">
+      {{ errorMessage }}
     </div>
   </article>
   <div class="field">
@@ -114,6 +119,7 @@ export default {
     const editedTokenAddress = ref("");
     const tokenLink = ref("");
     const editingToken = ref(false);
+    const errorMessage = ref("");
 
     const onEditToken = async () => {
       tokenLink.value = "";
@@ -133,7 +139,7 @@ export default {
         editedTokenAddress.value = tokenAddress.value;
         tokenLink.value = `https://explorer.solana.com/address/${tokenAddress.value}?cluster=${chosenCluster.value}`;
       } catch (err) {
-        alert(err);
+        errorMessage.value = err.message;
       }
 
       editingToken.value = false;
@@ -148,7 +154,8 @@ export default {
       editedTokenAddress,
       onEditToken,
       editingToken,
-      tokenLink
+      tokenLink,
+      errorMessage
     };
   }
 };

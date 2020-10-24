@@ -89,9 +89,9 @@ export default defineComponent({
         );
         emit("update:accountAddress", accountAddress.value);
       } catch (err) {
-        alert(err);
+        burningTokens.value = false;
+        throw err;
       }
-
       burningTokens.value = false;
     };
 

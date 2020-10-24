@@ -102,9 +102,9 @@ export default defineComponent({
         );
         emit("update:accountAddress", destinationAccount.value);
       } catch (err) {
-        alert(err);
+        transferring.value = false;
+        throw err;
       }
-
       transferring.value = false;
     };
 

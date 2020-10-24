@@ -5,12 +5,17 @@
   >
     ACCOUNT EDITOR
   </div>
-  <article class="message is-black">
-    <div v-if="accountAddress" class="message-body">
+  <article v-if="accountAddress" class="message is-black">
+    <div class="message-body">
       Success! Take a look at your account:
       <a :href="accountLink" target="_blank" rel="noopener noreferrer">{{
         accountAddress
       }}</a>
+    </div>
+  </article>
+  <article v-else-if="errorMessage" class="message is-danger">
+    <div class="message-body">
+      {{ errorMessage }}
     </div>
   </article>
   <div class="field">
@@ -60,13 +65,13 @@
       :is="currentAccountComponent"
       :payerSeedPhrase="payerSeedPhrase"
       :tokenAddress="tokenAddress"
-      @update:accountAddress="accountAddress = $event"
+      @update:accountAddress="onUpdateAccountAddress"
     />
   </keep-alive>
 </template>
 
 <script lang="ts">
-import { computed, ref } from "vue";
+import { computed, defineComponent, onErrorCaptured, ref } from "vue";
 import { chosenCluster } from "@/solana/connection";
 import accountComponents from "./accountComponents";
 
@@ -81,7 +86,7 @@ import CloserSetter from "./CloserSetter.vue";
 
 import { splitAtUppercase } from "@/util/stringFormatting";
 
-export default {
+export default defineComponent({
   components: {
     TokenMinter,
     AccountFreezer,
@@ -104,6 +109,17 @@ export default {
 
     const currentAccountComponent = ref(accountComponents.Mint);
 
+    const errorMessage = ref("");
+    onErrorCaptured(err => {
+      errorMessage.value = (err as Error).message;
+      return false;
+    });
+
+    const onUpdateAccountAddress = (address: string) => {
+      accountAddress.value = address;
+      errorMessage.value = "";
+    };
+
     return {
       payerSeedPhrase,
       accountLink,
@@ -111,8 +127,10 @@ export default {
       currentAccountComponent,
       accountComponents,
       tokenAddress,
-      splitAtUppercase
+      splitAtUppercase,
+      errorMessage,
+      onUpdateAccountAddress
     };
   }
-};
+});
 </script>

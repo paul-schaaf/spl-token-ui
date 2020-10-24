@@ -6,12 +6,17 @@
     TOKEN CREATOR
   </div>
 
-  <article class="message is-black">
-    <div v-if="createdTokenAddress" class="message-body">
+  <article v-if="createdTokenAddress" class="message is-black">
+    <div class="message-body">
       Success! Take a look at your created token:
       <a :href="tokenLink" target="_blank" rel="noopener noreferrer">{{
         createdTokenAddress
       }}</a>
+    </div>
+  </article>
+  <article v-else-if="errorMessage" class="message is-danger">
+    <div class="message-body">
+      {{ errorMessage }}
     </div>
   </article>
   <div class="field">
@@ -80,6 +85,7 @@
 import { ref } from "vue";
 import { createNewToken } from "@/solana/token";
 import { chosenCluster } from "@/solana/connection";
+import { error } from "console";
 
 export default {
   setup() {
@@ -90,11 +96,13 @@ export default {
     const createdTokenAddress = ref("");
     const creatingToken = ref(false);
     const tokenLink = ref("");
+    const errorMessage = ref("");
 
     const createToken = async () => {
       tokenLink.value = "";
       createdTokenAddress.value = "";
       creatingToken.value = true;
+      errorMessage.value = "";
       try {
         createdTokenAddress.value = await createNewToken(
           payerSeedPhrase.value,
@@ -104,7 +112,7 @@ export default {
         );
         tokenLink.value = `https://explorer.solana.com/address/${createdTokenAddress.value}?cluster=${chosenCluster.value}`;
       } catch (err) {
-        alert(err);
+        errorMessage.value = err.message;
       }
 
       creatingToken.value = false;
@@ -118,7 +126,8 @@ export default {
       createdTokenAddress,
       createToken,
       creatingToken,
-      tokenLink
+      tokenLink,
+      errorMessage
     };
   }
 };

@@ -71,9 +71,9 @@ export default defineComponent({
         );
         emit("update:accountAddress", accountToFreeze.value);
       } catch (err) {
-        alert(err);
+        freezingAccount.value = false;
+        throw err;
       }
-
       freezingAccount.value = false;
     };
 

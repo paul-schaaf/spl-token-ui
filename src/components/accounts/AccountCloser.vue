@@ -89,9 +89,9 @@ export default defineComponent({
         );
         emit("update:accountAddress", accountAddress.value);
       } catch (err) {
-        alert(err);
+        closingAccount.value = false;
+        throw err;
       }
-
       closingAccount.value = false;
     };
 

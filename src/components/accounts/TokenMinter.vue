@@ -89,9 +89,9 @@ export default defineComponent({
         );
         emit("update:accountAddress", destinationAccount.value);
       } catch (err) {
-        alert(err);
+        mintingToAccount.value = false;
+        throw err;
       }
-
       mintingToAccount.value = false;
     };
 

@@ -71,9 +71,9 @@ export default defineComponent({
         );
         emit("update:accountAddress", accountToThaw.value);
       } catch (err) {
-        alert(err);
+        thawingAccount.value = false;
+        throw err;
       }
-
       thawingAccount.value = false;
     };
 

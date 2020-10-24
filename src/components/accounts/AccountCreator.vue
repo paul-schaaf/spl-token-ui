@@ -6,12 +6,17 @@
     ACCOUNT CREATOR
   </div>
 
-  <article class="message is-black">
-    <div v-if="createdAccountAddress" class="message-body">
+  <article v-if="createdAccountAddress" class="message is-black">
+    <div class="message-body">
       Success! Take a look at your created account:
       <a :href="accountLink" target="_blank" rel="noopener noreferrer">{{
         createdAccountAddress
       }}</a>
+    </div>
+  </article>
+  <article v-else-if="errorMessage" class="message is-danger">
+    <div class="message-body">
+      {{ errorMessage }}
     </div>
   </article>
   <div class="field">
@@ -75,6 +80,7 @@ export default {
     const creatingAccount = ref(false);
     const accountLink = ref("");
     const createdAccountAddress = ref("");
+    const errorMessage = ref("");
 
     const createAccount = async () => {
       accountLink.value = "";
@@ -88,7 +94,7 @@ export default {
         );
         accountLink.value = `https://explorer.solana.com/address/${createdAccountAddress.value}?cluster=${chosenCluster.value}`;
       } catch (err) {
-        alert(err);
+        errorMessage.value = err.message;
       }
 
       creatingAccount.value = false;
@@ -101,7 +107,8 @@ export default {
       creatingAccount,
       createAccount,
       createdAccountAddress,
-      accountLink
+      accountLink,
+      errorMessage
     };
   }
 };
