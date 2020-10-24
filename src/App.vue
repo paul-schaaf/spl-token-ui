@@ -121,6 +121,7 @@ export default {
 body,
 html {
   background: rgb(240, 240, 240);
+  // this removes the empty scrollbar on pages that cannot be scrolled
   overflow-y: auto !important;
 }
 
