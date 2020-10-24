@@ -1,100 +1,96 @@
 <template>
-  <div style="display: flex" class="container is-justify-content-center">
-    <div style="width: 650px" class="mt-6">
-      <div
-        style="font-family: 'Racing Sans One', cursive; font-size:70px"
-        class="has-text-black has-text-centered	"
-      >
-        TOKEN EDITOR
-      </div>
+  <div
+    style="font-family: 'Racing Sans One', cursive; font-size:70px"
+    class="has-text-black has-text-centered	"
+  >
+    TOKEN EDITOR
+  </div>
 
-      <article class="message is-black">
-        <div v-if="editedTokenAddress" class="message-body">
-          Success! Take a look at your edited token:
-          <a :href="tokenLink" target="_blank" rel="noopener noreferrer">{{
-            editedTokenAddress
-          }}</a>
-        </div>
-      </article>
-      <div class="field">
-        <label class="label">Fee payer*</label>
-        <div class="control">
-          <input
-            v-model="payerSeedPhrase"
-            class="input is-black"
-            type="text"
-            placeholder="Secret Seed Phrase"
-          />
-        </div>
-        <p class="help">
-          Your secret phrase is NOT saved NOR sent anywhere. It's only used to
-          pay the token minting fee.
-        </p>
-      </div>
-      <div class="field">
-        <label class="label">Token mint address*</label>
-        <div class="control">
-          <input
-            v-model="tokenAddress"
-            class="input is-black"
-            type="text"
-            placeholder="Token address e.g. GsbwXfJraMomNxBcjYLcG3mxkBUiyWXAB32fGbSMQRdW"
-          />
-        </div>
-      </div>
-      <div
-        style="display: flex; margin-top: 35px"
-        class="is-justify-content-center"
-      >
-        <p><strong> Edit mint authority</strong></p>
-        <Toggle v-model:checked="editingFreezeAuthority" class="ml-2" />
-        <p class="ml-2"><strong> Edit freeze authority</strong></p>
-      </div>
-      <div class="field mt-5">
-        <label class="label"
-          >Current
-          {{ editingFreezeAuthority ? "freeze" : "mint" }} authority*</label
-        >
-        <div class="control">
-          <input
-            v-model="currentAuthority"
-            class="input is-black"
-            type="text"
-            placeholder="Secret Seed Phrase"
-          />
-          <p class="help">
-            Your secret phrase is NOT saved NOR sent anywhere. It's only used to
-            sign the authority change request.
-          </p>
-        </div>
-      </div>
-
-      <div class="field">
-        <label class="label"
-          >New {{ editingFreezeAuthority ? "freeze" : "mint" }} authority</label
-        >
-        <div class="control">
-          <input
-            v-model="newAuthority"
-            class="input is-black"
-            type="text"
-            placeholder="Public Key String e.g. GsbwXfJraMomNxBcjYLcG3mxkBUiyWXAB32fGbSMQRdW"
-          />
-        </div>
-        <p class="help">
-          You can leave this field empty to remove the authority from the token.
-        </p>
-      </div>
-      <div style="display: flex" class="control is-justify-content-center mt-5">
-        <button
-          :class="{ 'is-loading': editingToken }"
-          class="button is-black"
-          @click="onEditToken"
-        >
-          Edit token
-        </button>
-      </div>
+  <article class="message is-black">
+    <div v-if="editedTokenAddress" class="message-body">
+      Success! Take a look at your edited token:
+      <a :href="tokenLink" target="_blank" rel="noopener noreferrer">{{
+        editedTokenAddress
+      }}</a>
     </div>
+  </article>
+  <div class="field">
+    <label class="label">Fee payer*</label>
+    <div class="control">
+      <input
+        v-model="payerSeedPhrase"
+        class="input is-black"
+        type="text"
+        placeholder="Secret Seed Phrase"
+      />
+    </div>
+    <p class="help">
+      Your secret phrase is NOT saved NOR sent anywhere. It's only used to pay
+      the token minting fee.
+    </p>
+  </div>
+  <div class="field">
+    <label class="label">Token mint address*</label>
+    <div class="control">
+      <input
+        v-model="tokenAddress"
+        class="input is-black"
+        type="text"
+        placeholder="Token address e.g. GsbwXfJraMomNxBcjYLcG3mxkBUiyWXAB32fGbSMQRdW"
+      />
+    </div>
+  </div>
+  <div
+    style="display: flex; margin-top: 35px"
+    class="is-justify-content-center"
+  >
+    <p><strong> Edit mint authority</strong></p>
+    <Toggle v-model:checked="editingFreezeAuthority" class="ml-2" />
+    <p class="ml-2"><strong> Edit freeze authority</strong></p>
+  </div>
+  <div class="field mt-5">
+    <label class="label"
+      >Current
+      {{ editingFreezeAuthority ? "freeze" : "mint" }} authority*</label
+    >
+    <div class="control">
+      <input
+        v-model="currentAuthority"
+        class="input is-black"
+        type="text"
+        placeholder="Secret Seed Phrase"
+      />
+      <p class="help">
+        Your secret phrase is NOT saved NOR sent anywhere. It's only used to
+        sign the authority change request.
+      </p>
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="label"
+      >New {{ editingFreezeAuthority ? "freeze" : "mint" }} authority</label
+    >
+    <div class="control">
+      <input
+        v-model="newAuthority"
+        class="input is-black"
+        type="text"
+        placeholder="Public Key String e.g. GsbwXfJraMomNxBcjYLcG3mxkBUiyWXAB32fGbSMQRdW"
+      />
+    </div>
+    <p class="help">
+      You can leave this field empty to remove the authority from the token.
+    </p>
+  </div>
+  <div style="display: flex" class="control is-justify-content-center mt-5">
+    <button
+      :class="{ 'is-loading': editingToken }"
+      class="button is-black"
+      @click="onEditToken"
+    >
+      Edit token
+    </button>
   </div>
 </template>
 

@@ -105,8 +105,13 @@
         </div>
       </div>
     </nav>
-    <router-view></router-view
-  ></template>
+    <div style="display: flex" class="is-justify-content-center">
+      <div style="width: 650px; margin-bottom: 40px" class="mt-6">
+        <router-view></router-view>
+      </div>
+    </div>
+  </template>
+
   <p v-else>
     This app does not work on phones. Please switch to a device with a larger
     screen.
