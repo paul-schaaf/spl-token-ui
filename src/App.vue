@@ -82,7 +82,7 @@
               {{ chosenCluster }}
             </a>
 
-            <div class="navbar-dropdown">
+            <div class="navbar-dropdown is-right">
               <a
                 v-for="network in NETWORKS"
                 :key="network"
@@ -121,6 +121,7 @@ export default {
 body,
 html {
   background: rgb(240, 240, 240);
+  overflow-y: auto !important;
 }
 
 html {
