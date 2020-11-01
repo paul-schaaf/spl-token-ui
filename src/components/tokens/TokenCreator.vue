@@ -85,7 +85,6 @@
 import { ref } from "vue";
 import { createNewToken } from "@/solana/token";
 import { chosenCluster } from "@/solana/connection";
-import { error } from "console";
 
 export default {
   setup() {

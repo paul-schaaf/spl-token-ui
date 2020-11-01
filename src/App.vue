@@ -89,15 +89,15 @@
 
               <div class="navbar-dropdown is-right">
                 <a
-                  v-for="network in NETWORKS"
-                  :key="network"
+                  v-for="cluster in CLUSTERS"
+                  :key="cluster"
                   :class="{
-                    'has-background-light': network === chosenCluster,
-                    'has-text-black': network === chosenCluster
+                    'has-background-light': cluster === chosenCluster,
+                    'has-text-black': cluster === chosenCluster
                   }"
                   class="navbar-item"
-                  @click="changeCluster(network)"
-                  >{{ network }}</a
+                  @click="changeCluster(cluster)"
+                  >{{ cluster }}</a
                 >
               </div>
             </div>
@@ -119,7 +119,7 @@
 </template>
 
 <script lang="ts">
-import { NETWORKS } from "./solana/connection";
+import { CLUSTERS } from "./solana/connection";
 import { changeCluster, chosenCluster } from "./solana/connection";
 
 export default {
@@ -128,7 +128,7 @@ export default {
     changeCluster(chosenCluster.value);
 
     return {
-      NETWORKS,
+      CLUSTERS,
       chosenCluster,
       changeCluster,
       isOnMobile: window.outerWidth < 600
