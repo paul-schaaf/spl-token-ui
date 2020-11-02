@@ -21,7 +21,6 @@ export const createNewToken = async (
     decimals,
     TOKEN_PROGRAM_ID
   );
-  // @ts-ignore
   return token.publicKey.toString();
 };
 
@@ -100,7 +99,7 @@ export const freezeAccount = async (
     await createAccount(feePayer)
   );
 
-  // @ts-ignore
+
   await token.freezeAccount(
     new PublicKey(accountToFreeze),
     await createAccount(freezeAuthority),
@@ -121,7 +120,7 @@ export const thawAccount = async (
     await createAccount(feePayer)
   );
 
-  // @ts-ignore
+
   await token.thawAccount(
     new PublicKey(accountToThaw),
     await createAccount(freezeAuthority),
@@ -144,7 +143,6 @@ export const transferTokens = async (
     await createAccount(feePayer)
   );
 
-  // @ts-ignore
   await token.transfer(
     new PublicKey(sourceAccount),
     new PublicKey(destAccount),

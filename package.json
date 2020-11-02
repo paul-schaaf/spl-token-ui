@@ -8,7 +8,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "@solana/spl-token": "0.0.11",
+    "@solana/spl-token": "0.0.13",
     "@solana/web3.js": "^0.81.0",
     "@types/bn.js": "^4.11.6",
     "bip32": "^2.0.6",
