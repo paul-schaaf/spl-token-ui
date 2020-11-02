@@ -23,15 +23,15 @@
     <label class="label">Fee payer*</label>
     <div class="control">
       <input
-        v-model="payerSeedPhrase"
+        v-model="payerSecret"
         class="input is-black"
         type="text"
-        placeholder="Secret Seed Phrase"
+        placeholder="Secret (seed phrase or comma-separated array of 64 numbers)"
       />
     </div>
     <p class="help">
-      Your secret phrase is NOT saved NOR sent anywhere. It's only used to pay
-      the account creation and rent fee.
+      Your secret is NOT saved NOR sent anywhere. It's only used to pay the
+      account creation and rent fee.
     </p>
   </div>
   <div class="field">
@@ -74,7 +74,7 @@ import { chosenCluster } from "@/solana/connection";
 
 export default {
   setup() {
-    const payerSeedPhrase = ref("");
+    const payerSecret = ref("");
     const tokenAddress = ref("");
     const accountOwner = ref("");
     const creatingAccount = ref(false);
@@ -88,7 +88,7 @@ export default {
       createdAccountAddress.value = "";
       try {
         createdAccountAddress.value = await createTokenAccount(
-          payerSeedPhrase.value,
+          payerSecret.value,
           tokenAddress.value,
           accountOwner.value
         );
@@ -101,7 +101,7 @@ export default {
     };
 
     return {
-      payerSeedPhrase,
+      payerSecret,
       tokenAddress,
       accountOwner,
       creatingAccount,

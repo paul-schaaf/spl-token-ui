@@ -17,12 +17,12 @@
         v-model="currentOwner"
         class="input is-black"
         type="text"
-        placeholder="Seed seed phrase"
+        placeholder="Secret (seed phrase or comma-separated array of 64 numbers)"
       />
     </div>
     <p class="help">
-      Your secret phrase is NOT saved NOR sent anywhere. It's only used to sign
-      the owner change request fee.
+      Your secret is NOT saved NOR sent anywhere. It's only used to sign the
+      owner change request fee.
     </p>
   </div>
   <div class="field">
@@ -55,7 +55,7 @@ import { setTokenAccountOwner } from "@/solana/token";
 export default defineComponent({
   name: accountComponents.SetOwner,
   props: {
-    payerSeedPhrase: {
+    payerSecret: {
       type: String,
       required: true
     },
@@ -65,7 +65,7 @@ export default defineComponent({
     }
   },
   setup(props, { emit }) {
-    const { payerSeedPhrase, tokenAddress } = toRefs(props);
+    const { payerSecret, tokenAddress } = toRefs(props);
     const settingOwner = ref(false);
     const accountAddress = ref("");
     const currentOwner = ref("");
@@ -76,7 +76,7 @@ export default defineComponent({
       emit("update:accountAddress", "");
       try {
         await setTokenAccountOwner(
-          payerSeedPhrase.value,
+          payerSecret.value,
           tokenAddress.value,
           accountAddress.value,
           currentOwner.value,

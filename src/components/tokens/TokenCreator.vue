@@ -23,15 +23,15 @@
     <label class="label">Fee payer*</label>
     <div class="control">
       <input
-        v-model="payerSeedPhrase"
+        v-model="payerSecret"
         class="input is-black"
         type="text"
-        placeholder="Secret Seed Phrase"
+        placeholder="Secret (seed phrase or comma-separated array of 64 numbers)"
       />
     </div>
     <p class="help">
-      Your secret phrase is NOT saved NOR sent anywhere. It's only used to pay
-      the token minting fee.
+      Your secret is NOT saved NOR sent anywhere. It's only used to pay the
+      token minting fee.
     </p>
   </div>
   <div class="field">
@@ -88,7 +88,7 @@ import { chosenCluster } from "@/solana/connection";
 
 export default {
   setup() {
-    const payerSeedPhrase = ref("");
+    const payerSecret = ref("");
     const mintAuthority = ref("");
     const freezeAuthority = ref("");
     const tokenDecimals = ref(0);
@@ -104,7 +104,7 @@ export default {
       errorMessage.value = "";
       try {
         createdTokenAddress.value = await createNewToken(
-          payerSeedPhrase.value,
+          payerSecret.value,
           mintAuthority.value,
           freezeAuthority.value,
           tokenDecimals.value
@@ -118,7 +118,7 @@ export default {
     };
 
     return {
-      payerSeedPhrase,
+      payerSecret,
       mintAuthority,
       freezeAuthority,
       tokenDecimals,

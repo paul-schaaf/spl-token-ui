@@ -17,13 +17,13 @@
         v-model="currentCloser"
         class="input is-black"
         type="text"
-        placeholder="Seed seed phrase"
+        placeholder="Secret (seed phrase or comma-separated array of 64 numbers)"
       />
     </div>
     <p class="help">
-      Your secret phrase is NOT saved NOR sent anywhere. It's only used to sign
-      the closer change request fee. The owner can only set the close authority
-      if there is no close authority or it's the owner themselves.
+      Your secret is NOT saved NOR sent anywhere. It's only used to sign the
+      closer change request fee. The owner can only set the close authority if
+      there is no close authority or it's the owner themselves.
     </p>
   </div>
   <div class="field">
@@ -60,7 +60,7 @@ import { setTokenAccountCloser } from "@/solana/token";
 export default defineComponent({
   name: accountComponents.SetCloser,
   props: {
-    payerSeedPhrase: {
+    payerSecret: {
       type: String,
       required: true
     },
@@ -70,7 +70,7 @@ export default defineComponent({
     }
   },
   setup(props, { emit }) {
-    const { payerSeedPhrase, tokenAddress } = toRefs(props);
+    const { payerSecret, tokenAddress } = toRefs(props);
     const settingCloser = ref(false);
     const accountAddress = ref("");
     const currentCloser = ref("");
@@ -81,7 +81,7 @@ export default defineComponent({
       emit("update:accountAddress", "");
       try {
         await setTokenAccountCloser(
-          payerSeedPhrase.value,
+          payerSecret.value,
           tokenAddress.value,
           accountAddress.value,
           currentCloser.value,

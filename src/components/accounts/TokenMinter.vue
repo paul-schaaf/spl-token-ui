@@ -6,12 +6,12 @@
         v-model="mintAuthority"
         class="input is-black"
         type="text"
-        placeholder="Secret Seed Phrase"
+        placeholder="Secret (seed phrase or comma-separated array of 64 numbers)"
       />
     </div>
     <p class="help">
-      Your secret phrase is NOT saved NOR sent anywhere. It's only used to sign
-      the token minting request.
+      Your secret is NOT saved NOR sent anywhere. It's only used to sign the
+      token minting request.
     </p>
   </div>
   <div class="field">
@@ -60,7 +60,7 @@ import accountComponents from "./accountComponents";
 export default defineComponent({
   name: accountComponents.Mint,
   props: {
-    payerSeedPhrase: {
+    payerSecret: {
       type: String,
       required: true
     },
@@ -70,7 +70,7 @@ export default defineComponent({
     }
   },
   setup(props, { emit }) {
-    const { payerSeedPhrase, tokenAddress } = toRefs(props);
+    const { payerSecret, tokenAddress } = toRefs(props);
     const mintAuthority = ref("");
     const destinationAccount = ref("");
     const mintingToAccount = ref(false);
@@ -81,7 +81,7 @@ export default defineComponent({
       emit("update:accountAddress", "");
       try {
         await mintToken(
-          payerSeedPhrase.value,
+          payerSecret.value,
           tokenAddress.value,
           mintAuthority.value,
           destinationAccount.value,

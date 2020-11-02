@@ -5,7 +5,7 @@ import nacl from "tweetnacl";
 
 async function mnemonicToSeed(mnemonic: string): Promise<Buffer> {
   if (!bip39.validateMnemonic(mnemonic)) {
-    throw new Error("Invalid seed words");
+    throw new Error("Invalid seed phrase");
   }
   return await bip39.mnemonicToSeed(mnemonic);
 }
@@ -23,7 +23,15 @@ function getAccountFromSeed(
   );
 }
 
-export const createAccount = async (mnemonic: string): Promise<Account> => {
-  const seed = await mnemonicToSeed(mnemonic);
+export const createAccount = async (secret: string): Promise<Account> => {
+  if (secret.includes(",")) {
+    return new Account(
+      secret
+        .replace(/ /g, "")
+        .split(",")
+        .map(n => parseInt(n))
+    );
+  }
+  const seed = await mnemonicToSeed(secret);
   return getAccountFromSeed(seed, 0, 0);
 };

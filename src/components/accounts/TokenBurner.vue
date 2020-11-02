@@ -6,12 +6,12 @@
         v-model="ownerAccount"
         class="input is-black"
         type="text"
-        placeholder="Secret Seed Phrase"
+        placeholder="Secret (seed phrase or comma-separated array of 64 numbers)"
       />
     </div>
     <p class="help">
-      Your secret phrase is NOT saved NOR sent anywhere. It's only used to sign
-      the token transfer request.
+      Your secret is NOT saved NOR sent anywhere. It's only used to sign the
+      token transfer request.
     </p>
   </div>
   <div class="field">
@@ -60,7 +60,7 @@ import accountComponents from "./accountComponents";
 export default defineComponent({
   name: accountComponents.Burn,
   props: {
-    payerSeedPhrase: {
+    payerSecret: {
       type: String,
       required: true
     },
@@ -70,7 +70,7 @@ export default defineComponent({
     }
   },
   setup(props, { emit }) {
-    const { payerSeedPhrase, tokenAddress } = toRefs(props);
+    const { payerSecret, tokenAddress } = toRefs(props);
     const ownerAccount = ref("");
     const accountAddress = ref("");
     const burningTokens = ref(false);
@@ -81,7 +81,7 @@ export default defineComponent({
       emit("update:accountAddress", "");
       try {
         await burnTokens(
-          payerSeedPhrase.value,
+          payerSecret.value,
           tokenAddress.value,
           accountAddress.value,
           ownerAccount.value,

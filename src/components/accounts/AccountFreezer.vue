@@ -6,12 +6,12 @@
         v-model="freezeAuthority"
         class="input is-black"
         type="text"
-        placeholder="Secret Seed Phrase"
+        placeholder="Secret (seed phrase or comma-separated array of 64 numbers)"
       />
     </div>
     <p class="help">
-      Your secret phrase is NOT saved NOR sent anywhere. It's only used to sign
-      the account freezing request.
+      Your secret is NOT saved NOR sent anywhere. It's only used to sign the
+      account freezing request.
     </p>
   </div>
   <div class="field">
@@ -44,7 +44,7 @@ import { freezeAccount } from "@/solana/token";
 export default defineComponent({
   name: accountComponents.Freeze,
   props: {
-    payerSeedPhrase: {
+    payerSecret: {
       type: String,
       required: true
     },
@@ -54,7 +54,7 @@ export default defineComponent({
     }
   },
   setup(props, { emit }) {
-    const { payerSeedPhrase, tokenAddress } = toRefs(props);
+    const { payerSecret, tokenAddress } = toRefs(props);
     const freezingAccount = ref(false);
     const accountToFreeze = ref("");
     const freezeAuthority = ref("");
@@ -64,7 +64,7 @@ export default defineComponent({
       emit("update:accountAddress", "");
       try {
         await freezeAccount(
-          payerSeedPhrase.value,
+          payerSecret.value,
           tokenAddress.value,
           accountToFreeze.value,
           freezeAuthority.value

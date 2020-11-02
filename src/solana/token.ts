@@ -99,7 +99,6 @@ export const freezeAccount = async (
     await createAccount(feePayer)
   );
 
-
   await token.freezeAccount(
     new PublicKey(accountToFreeze),
     await createAccount(freezeAuthority),
@@ -119,7 +118,6 @@ export const thawAccount = async (
     TOKEN_PROGRAM_ID,
     await createAccount(feePayer)
   );
-
 
   await token.thawAccount(
     new PublicKey(accountToThaw),

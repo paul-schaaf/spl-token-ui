@@ -22,15 +22,15 @@
     <label class="label">Fee payer*</label>
     <div class="control">
       <input
-        v-model="payerSeedPhrase"
+        v-model="payerSecret"
         class="input is-black"
         type="text"
-        placeholder="Secret Seed Phrase"
+        placeholder="Secret (seed phrase or comma-separated array of 64 numbers)"
       />
     </div>
     <p class="help">
-      Your secret phrase is NOT saved NOR sent anywhere. It's only used to pay
-      the token minting fee.
+      Your secret is NOT saved NOR sent anywhere. It's only used to pay the
+      token minting fee.
     </p>
   </div>
   <div class="field">
@@ -63,7 +63,7 @@
   <keep-alive>
     <component
       :is="currentAccountComponent"
-      :payerSeedPhrase="payerSeedPhrase"
+      :payerSecret="payerSecret"
       :tokenAddress="tokenAddress"
       @update:accountAddress="onUpdateAccountAddress"
     />
@@ -98,7 +98,7 @@ export default defineComponent({
     CloserSetter
   },
   setup() {
-    const payerSeedPhrase = ref("");
+    const payerSecret = ref("");
     const tokenAddress = ref("");
     const accountAddress = ref("");
 
@@ -121,7 +121,7 @@ export default defineComponent({
     };
 
     return {
-      payerSeedPhrase,
+      payerSecret,
       accountLink,
       accountAddress,
       currentAccountComponent,
