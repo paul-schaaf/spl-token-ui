@@ -31,7 +31,7 @@
     </div>
     <p class="help">
       Your secret is NOT saved NOR sent anywhere. It's only used to pay the
-      token minting fee.
+      token editing tx fee.
     </p>
   </div>
   <div class="field">

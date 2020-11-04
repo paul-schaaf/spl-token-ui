@@ -11,7 +11,7 @@
     </div>
     <p class="help">
       Your secret is NOT saved NOR sent anywhere. It's only used to sign the
-      token transfer request.
+      token burn request.
     </p>
   </div>
   <div class="field">
@@ -37,8 +37,8 @@
     </div>
     <p class="help">
       Please be aware that a token is burned using its smallest denomination
-      e.g. if you have a token with 2 decimals and you type in 200 you will
-      transfer 2 tokens.
+      e.g. if you have a token with 2 decimals and you type in 200 you will burn
+      2 tokens.
     </p>
   </div>
   <div style="display: flex" class="control is-justify-content-center mt-5">
