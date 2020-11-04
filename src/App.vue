@@ -127,11 +127,15 @@ export default {
   setup() {
     changeCluster(chosenCluster.value);
 
+    const isOnMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+      navigator.userAgent
+    );
+
     return {
       CLUSTERS,
       chosenCluster,
       changeCluster,
-      isOnMobile: window.outerWidth < 600
+      isOnMobile
     };
   }
 };
