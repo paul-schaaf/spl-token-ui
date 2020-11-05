@@ -71,6 +71,7 @@
 import { ref } from "vue";
 import { createTokenAccount } from "@/solana/token";
 import { chosenCluster } from "@/solana/connection";
+import * as SolanaErrorHandler from "@/solana/SolanaErrorHandler";
 
 export default {
   setup() {
@@ -94,7 +95,7 @@ export default {
         );
         accountLink.value = `https://explorer.solana.com/address/${createdAccountAddress.value}?cluster=${chosenCluster.value}`;
       } catch (err) {
-        errorMessage.value = err.message;
+        errorMessage.value = SolanaErrorHandler.getErrorMessage(err);
       }
 
       creatingAccount.value = false;

@@ -85,6 +85,7 @@ import AccountCloser from "./AccountCloser.vue";
 import CloserSetter from "./CloserSetter.vue";
 
 import { splitAtUppercase } from "@/util/stringFormatting";
+import * as SolanaErrorHandler from "@/solana/SolanaErrorHandler";
 
 export default defineComponent({
   components: {
@@ -111,7 +112,7 @@ export default defineComponent({
 
     const errorMessage = ref("");
     onErrorCaptured(err => {
-      errorMessage.value = (err as Error).message;
+      errorMessage.value = SolanaErrorHandler.getErrorMessage(err as Error);
       return false;
     });
 

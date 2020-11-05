@@ -103,8 +103,9 @@
 import { ref } from "vue";
 import { editToken } from "@/solana/token";
 import { chosenCluster } from "@/solana/connection";
-import Toggle from "@/components/util/Toggle.vue";
 import { AuthorityType } from "@solana/spl-token";
+import Toggle from "@/components/util/Toggle.vue";
+import * as SolanaErrorHandler from "@/solana/SolanaErrorHandler";
 
 export default {
   components: {
@@ -139,7 +140,7 @@ export default {
         editedTokenAddress.value = tokenAddress.value;
         tokenLink.value = `https://explorer.solana.com/address/${tokenAddress.value}?cluster=${chosenCluster.value}`;
       } catch (err) {
-        errorMessage.value = err.message;
+        errorMessage.value = SolanaErrorHandler.getErrorMessage(err);
       }
 
       editingToken.value = false;
