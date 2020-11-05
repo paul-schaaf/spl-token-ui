@@ -163,10 +163,6 @@ body {
 
 $navbar-breakpoint: 0px;
 @import "~bulma";
-@font-face {
-  font-family: Racing Sans One;
-  src: url(./assets/fonts/RacingSansOne-Regular.ttf)  format('truetype'),
-}
 
 #source-code {
   color: white;
