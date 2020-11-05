@@ -31,8 +31,8 @@
       <input
         v-model="tokenAmount"
         class="input is-black"
-        type="number"
-        placeholder="Tokens to send"
+        type="text"
+        placeholder="Tokens to burn"
       />
     </div>
     <p class="help">
@@ -56,6 +56,7 @@
 import { defineComponent, ref, toRefs } from "vue";
 import { burnTokens } from "@/solana/token";
 import accountComponents from "./accountComponents";
+import { u64 } from "@solana/spl-token";
 
 export default defineComponent({
   name: accountComponents.Burn,
@@ -74,7 +75,7 @@ export default defineComponent({
     const ownerAccount = ref("");
     const accountAddress = ref("");
     const burningTokens = ref(false);
-    const tokenAmount = ref(0);
+    const tokenAmount = ref("");
 
     const onBurnTokens = async () => {
       burningTokens.value = true;
@@ -85,7 +86,7 @@ export default defineComponent({
           tokenAddress.value,
           accountAddress.value,
           ownerAccount.value,
-          tokenAmount.value
+          new u64(tokenAmount.value, 10)
         );
         emit("update:accountAddress", accountAddress.value);
       } catch (err) {

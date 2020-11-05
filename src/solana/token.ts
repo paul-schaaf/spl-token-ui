@@ -1,5 +1,5 @@
 import { PublicKey } from "@solana/web3.js";
-import { AuthorityType, Token } from "@solana/spl-token";
+import { AuthorityType, Token, u64 } from "@solana/spl-token";
 import { getConnection } from "../solana/connection";
 import { createAccount } from "./account";
 
@@ -69,7 +69,7 @@ export const mintToken = async (
   tokenAddress: string,
   mintAuthority: string,
   destinationAccount: string,
-  amount: number
+  amount: u64
 ) => {
   const token = new Token(
     getConnection(),
@@ -132,7 +132,7 @@ export const transferTokens = async (
   sourceAccount: string,
   destAccount: string,
   owner: string,
-  amount: number
+  amount: u64
 ) => {
   const token = new Token(
     getConnection(),
@@ -178,7 +178,7 @@ export const burnTokens = async (
   tokenAddress: string,
   tokenAccount: string,
   owner: string,
-  amount: number
+  amount: u64
 ) => {
   const token = new Token(
     getConnection(),

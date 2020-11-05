@@ -31,7 +31,7 @@
       <input
         v-model="tokenAmount"
         class="input is-black"
-        type="number"
+        type="text"
         placeholder="Token mint to mint e.g. 20000"
       />
     </div>
@@ -56,6 +56,7 @@
 import { defineComponent, ref, toRefs } from "vue";
 import { mintToken } from "@/solana/token";
 import accountComponents from "./accountComponents";
+import { u64 } from "@solana/spl-token";
 
 export default defineComponent({
   name: accountComponents.Mint,
@@ -74,7 +75,7 @@ export default defineComponent({
     const mintAuthority = ref("");
     const destinationAccount = ref("");
     const mintingToAccount = ref(false);
-    const tokenAmount = ref(0);
+    const tokenAmount = ref("");
 
     const mintToAccount = async () => {
       mintingToAccount.value = true;
@@ -85,7 +86,7 @@ export default defineComponent({
           tokenAddress.value,
           mintAuthority.value,
           destinationAccount.value,
-          tokenAmount.value
+          new u64(tokenAmount.value, 10)
         );
         emit("update:accountAddress", destinationAccount.value);
       } catch (err) {

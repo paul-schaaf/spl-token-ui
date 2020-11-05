@@ -42,7 +42,7 @@
       <input
         v-model="tokenAmount"
         class="input is-black"
-        type="number"
+        type="text"
         placeholder="Tokens to send"
       />
     </div>
@@ -67,6 +67,7 @@
 import { defineComponent, ref, toRefs } from "vue";
 import { transferTokens } from "@/solana/token";
 import accountComponents from "./accountComponents";
+import { u64 } from "@solana/spl-token";
 
 export default defineComponent({
   name: accountComponents.Transfer,
@@ -86,7 +87,7 @@ export default defineComponent({
     const destinationAccount = ref("");
     const sourceAccount = ref("");
     const transferring = ref(false);
-    const tokenAmount = ref(0);
+    const tokenAmount = ref("");
 
     const onTransferTokens = async () => {
       transferring.value = true;
@@ -98,7 +99,7 @@ export default defineComponent({
           sourceAccount.value,
           destinationAccount.value,
           ownerAccount.value,
-          tokenAmount.value
+          new u64(tokenAmount.value, 10)
         );
         emit("update:accountAddress", destinationAccount.value);
       } catch (err) {
