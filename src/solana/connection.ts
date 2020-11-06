@@ -10,7 +10,7 @@ export const CLUSTERS = {
   LOCALNET: "localnet" as Localnet
 };
 
-export const chosenCluster = ref<Cluster | Localnet>(CLUSTERS.TESTNET);
+export const chosenCluster = ref<Cluster | Localnet>(CLUSTERS.MAINNET);
 
 let connection: Connection;
 
