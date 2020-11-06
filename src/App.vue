@@ -83,9 +83,7 @@
               >
             </div>
             <div class="navbar-item has-dropdown is-hoverable">
-              <a class="navbar-link">
-                {{ chosenCluster }}
-              </a>
+              <a class="navbar-link"> {{ currentClusterWithEmoji }} </a>
 
               <div class="navbar-dropdown is-right">
                 <a
@@ -119,6 +117,7 @@
 </template>
 
 <script lang="ts">
+import { computed } from "vue";
 import { CLUSTERS } from "./solana/connection";
 import { changeCluster, chosenCluster } from "./solana/connection";
 
@@ -131,11 +130,31 @@ export default {
       navigator.userAgent
     );
 
+    const currentClusterWithEmoji = computed(() => {
+      let emoji;
+      switch (chosenCluster.value) {
+        case "mainnet-beta":
+          emoji = "🚀";
+          break;
+        case "testnet":
+          emoji = "🧪";
+          break;
+        case "devnet":
+          emoji = "🥏";
+          break;
+        case "localnet":
+          emoji = "🏠";
+          break;
+      }
+      return chosenCluster.value + " " + emoji;
+    });
+
     return {
       CLUSTERS,
       chosenCluster,
       changeCluster,
-      isOnMobile
+      isOnMobile,
+      currentClusterWithEmoji
     };
   }
 };
