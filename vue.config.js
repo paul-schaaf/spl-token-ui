@@ -1,6 +1,10 @@
-// vue.config.js
 module.exports = {
   chainWebpack: config => {
+    config.plugin("html").tap(args => {
+      args[0].title = "SPL Token UI";
+      return args;
+    });
+
     config.module
       .rule("fonts")
       .use("url-loader")
