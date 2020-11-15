@@ -60,6 +60,7 @@ import { u64 } from "@solana/spl-token";
 
 export default defineComponent({
   name: accountComponents.Mint,
+  emits: ["update:accountAddress"],
   props: {
     payerSecret: {
       type: String,

@@ -43,6 +43,7 @@ import { freezeAccount } from "@/solana/token";
 
 export default defineComponent({
   name: accountComponents.Freeze,
+  emits: ["update:accountAddress"],
   props: {
     payerSecret: {
       type: String,

@@ -43,6 +43,7 @@ import { thawAccount } from "@/solana/token";
 
 export default defineComponent({
   name: accountComponents.Thaw,
+  emits: ["update:accountAddress"],
   props: {
     payerSecret: {
       type: String,

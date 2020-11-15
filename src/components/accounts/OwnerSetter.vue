@@ -54,6 +54,7 @@ import { setTokenAccountOwner } from "@/solana/token";
 
 export default defineComponent({
   name: accountComponents.SetOwner,
+  emits: ["update:accountAddress"],
   props: {
     payerSecret: {
       type: String,

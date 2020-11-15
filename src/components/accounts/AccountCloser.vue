@@ -59,6 +59,7 @@ import { closeAccount } from "@/solana/token";
 
 export default defineComponent({
   name: accountComponents.Close,
+  emits: ["update:accountAddress"],
   props: {
     payerSecret: {
       type: String,
