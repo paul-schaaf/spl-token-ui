@@ -11,6 +11,7 @@
 
 <script>
 export default {
+  emits: ["update:checked"],
   props: {
     checked: Boolean
   }
