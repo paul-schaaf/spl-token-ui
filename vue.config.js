@@ -1,10 +1,12 @@
 module.exports = {
   chainWebpack: config => {
+    // title that shows up in different places e.g. the tab title
     config.plugin("html").tap(args => {
       args[0].title = "SPL Token UI";
       return args;
     });
 
+    // setting custom font name so it can be imported inside index.html
     config.module
       .rule("fonts")
       .use("url-loader")
