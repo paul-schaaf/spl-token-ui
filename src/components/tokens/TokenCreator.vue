@@ -5,7 +5,6 @@
   >
     TOKEN CREATOR
   </div>
-
   <article v-if="createdTokenAddress" class="message is-black">
     <div class="message-body">
       Success! Take a look at your created token:
@@ -21,18 +20,7 @@
   </article>
   <div class="field">
     <label class="label">Fee payer*</label>
-    <div class="control">
-      <input
-        v-model="payerSecret"
-        class="input is-black"
-        type="text"
-        placeholder="Secret (seed phrase or comma-separated array of 64 numbers)"
-      />
-    </div>
-    <p class="help">
-      Your secret is NOT saved NOR sent anywhere. It's only used to pay the
-      token creation tx fee.
-    </p>
+    <secret-form-field v-model:secret="payerSecret" />
   </div>
   <div class="field">
     <label class="label">Mint authority*</label>
@@ -86,8 +74,12 @@ import { ref } from "vue";
 import { createNewToken } from "@/solana/token";
 import { chosenCluster } from "@/solana/connection";
 import * as SolanaErrorHandler from "@/solana/SolanaErrorHandler";
+import SecretFormField from "@/components/util/SecretFormField.vue";
 
 export default {
+  components: {
+    SecretFormField
+  },
   setup() {
     const payerSecret = ref("");
     const mintAuthority = ref("");
