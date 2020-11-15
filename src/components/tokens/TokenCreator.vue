@@ -5,67 +5,69 @@
   >
     TOKEN CREATOR
   </div>
-  <article v-if="createdTokenAddress" class="message is-black">
-    <div class="message-body">
-      Success! Take a look at your created token:
-      <a :href="tokenLink" target="_blank" rel="noopener noreferrer">{{
-        createdTokenAddress
-      }}</a>
+  <div style="margin-top: 30px">
+    <article v-if="createdTokenAddress" class="message is-black">
+      <div class="message-body">
+        Success! Take a look at your created token:
+        <a :href="tokenLink" target="_blank" rel="noopener noreferrer">{{
+          createdTokenAddress
+        }}</a>
+      </div>
+    </article>
+    <article v-else-if="errorMessage" class="message is-danger">
+      <div class="message-body">
+        {{ errorMessage }}
+      </div>
+    </article>
+    <div class="field">
+      <label class="label">Fee payer*</label>
+      <secret-form-field v-model:secret="payerSecret" />
     </div>
-  </article>
-  <article v-else-if="errorMessage" class="message is-danger">
-    <div class="message-body">
-      {{ errorMessage }}
+    <div class="field">
+      <label class="label">Mint authority*</label>
+      <div class="control">
+        <input
+          v-model="mintAuthority"
+          class="input is-black"
+          type="text"
+          placeholder="Public Key String e.g. GsbwXfJraMomNxBcjYLcG3mxkBUiyWXAB32fGbSMQRdW"
+        />
+      </div>
     </div>
-  </article>
-  <div class="field">
-    <label class="label">Fee payer*</label>
-    <secret-form-field v-model:secret="payerSecret" />
-  </div>
-  <div class="field">
-    <label class="label">Mint authority*</label>
-    <div class="control">
-      <input
-        v-model="mintAuthority"
-        class="input is-black"
-        type="text"
-        placeholder="Public Key String e.g. GsbwXfJraMomNxBcjYLcG3mxkBUiyWXAB32fGbSMQRdW"
-      />
+    <div class="field">
+      <label class="label">Freeze authority</label>
+      <div class="control">
+        <input
+          v-model="freezeAuthority"
+          class="input is-black"
+          type="text"
+          placeholder="Public Key String e.g. GsbwXfJraMomNxBcjYLcG3mxkBUiyWXAB32fGbSMQRdW"
+        />
+      </div>
+      <p class="help">
+        You can leave this empty if you don't want to set a freeze authority
+      </p>
     </div>
-  </div>
-  <div class="field">
-    <label class="label">Freeze authority</label>
-    <div class="control">
-      <input
-        v-model="freezeAuthority"
-        class="input is-black"
-        type="text"
-        placeholder="Public Key String e.g. GsbwXfJraMomNxBcjYLcG3mxkBUiyWXAB32fGbSMQRdW"
-      />
+    <div class="field">
+      <label class="label">Decimals*</label>
+      <div class="control">
+        <input
+          v-model="tokenDecimals"
+          class="input is-black"
+          type="number"
+          placeholder="Number of decimals the token should have"
+        />
+      </div>
     </div>
-    <p class="help">
-      You can leave this empty if you don't want to set a freeze authority
-    </p>
-  </div>
-  <div class="field">
-    <label class="label">Decimals*</label>
-    <div class="control">
-      <input
-        v-model="tokenDecimals"
-        class="input is-black"
-        type="number"
-        placeholder="Number of decimals the token should have"
-      />
+    <div style="display: flex" class="control is-justify-content-center mt-5">
+      <button
+        :class="{ 'is-loading': creatingToken }"
+        class="button is-black"
+        @click="createToken"
+      >
+        Create new token
+      </button>
     </div>
-  </div>
-  <div style="display: flex" class="control is-justify-content-center mt-5">
-    <button
-      :class="{ 'is-loading': creatingToken }"
-      class="button is-black"
-      @click="createToken"
-    >
-      Create new token
-    </button>
   </div>
 </template>
 

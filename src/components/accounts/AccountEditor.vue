@@ -5,69 +5,71 @@
   >
     ACCOUNT EDITOR
   </div>
-  <article v-if="accountAddress" class="message is-black">
-    <div class="message-body">
-      Success! Take a look at your account:
-      <a :href="accountLink" target="_blank" rel="noopener noreferrer">{{
-        accountAddress
-      }}</a>
+  <div style="margin-top: 30px">
+    <article v-if="accountAddress" class="message is-black">
+      <div class="message-body">
+        Success! Take a look at your account:
+        <a :href="accountLink" target="_blank" rel="noopener noreferrer">{{
+          accountAddress
+        }}</a>
+      </div>
+    </article>
+    <article v-else-if="errorMessage" class="message is-danger">
+      <div class="message-body">
+        {{ errorMessage }}
+      </div>
+    </article>
+    <div class="field">
+      <label class="label">Fee payer*</label>
+      <div class="control">
+        <input
+          v-model="payerSecret"
+          class="input is-black"
+          type="text"
+          placeholder="Secret (seed phrase or comma-separated array of 64 numbers)"
+        />
+      </div>
+      <p class="help">
+        Your secret is NOT saved NOR sent anywhere. It's only used to pay the tx
+        fees.
+      </p>
     </div>
-  </article>
-  <article v-else-if="errorMessage" class="message is-danger">
-    <div class="message-body">
-      {{ errorMessage }}
+    <div class="field">
+      <label class="label">Token mint address*</label>
+      <div class="control">
+        <input
+          v-model="tokenAddress"
+          class="input is-black"
+          type="text"
+          placeholder="Token address e.g. 9rJcHifFVNmZed1KgAaRMmpRbnkaBgn5wZZcK1A6CDiC"
+        />
+      </div>
     </div>
-  </article>
-  <div class="field">
-    <label class="label">Fee payer*</label>
-    <div class="control">
-      <input
-        v-model="payerSecret"
-        class="input is-black"
-        type="text"
-        placeholder="Secret (seed phrase or comma-separated array of 64 numbers)"
-      />
-    </div>
-    <p class="help">
-      Your secret is NOT saved NOR sent anywhere. It's only used to pay the tx
-      fees.
-    </p>
-  </div>
-  <div class="field">
-    <label class="label">Token mint address*</label>
-    <div class="control">
-      <input
-        v-model="tokenAddress"
-        class="input is-black"
-        type="text"
-        placeholder="Token address e.g. 9rJcHifFVNmZed1KgAaRMmpRbnkaBgn5wZZcK1A6CDiC"
-      />
-    </div>
-  </div>
-  <div
-    class="buttons is-justify-content-center"
-    style="display: flex; margin-top: 35px"
-  >
-    <button
-      v-for="action in Object.keys(accountComponents)"
-      :key="action"
-      :class="{
-        'is-black': currentAccountComponent === accountComponents[action]
-      }"
-      class="button"
-      @click="currentAccountComponent = accountComponents[action]"
+    <div
+      class="buttons is-justify-content-center"
+      style="display: flex; margin-top: 35px"
     >
-      {{ splitAtUppercase(action) }}
-    </button>
+      <button
+        v-for="action in Object.keys(accountComponents)"
+        :key="action"
+        :class="{
+          'is-black': currentAccountComponent === accountComponents[action]
+        }"
+        class="button"
+        @click="currentAccountComponent = accountComponents[action]"
+      >
+        {{ splitAtUppercase(action) }}
+      </button>
+    </div>
+    <keep-alive>
+      <component
+        :is="currentAccountComponent"
+        :payerSecret="payerSecret"
+        :tokenAddress="tokenAddress"
+        @update:accountAddress="onUpdateAccountAddress"
+      />
+    </keep-alive>
   </div>
-  <keep-alive>
-    <component
-      :is="currentAccountComponent"
-      :payerSecret="payerSecret"
-      :tokenAddress="tokenAddress"
-      @update:accountAddress="onUpdateAccountAddress"
-    />
-  </keep-alive>
 </template>
 
 <script lang="ts">
