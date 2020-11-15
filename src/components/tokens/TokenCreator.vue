@@ -21,7 +21,10 @@
     </article>
     <div class="field">
       <label class="label">Fee payer*</label>
-      <secret-form-field v-model:secret="payerSecret" />
+      <secret-form-field
+        v-model:secret="payerSecret"
+        v-model:signExternally="signExternally"
+      />
     </div>
     <div class="field">
       <label class="label">Mint authority*</label>
@@ -91,6 +94,7 @@ export default {
     const creatingToken = ref(false);
     const tokenLink = ref("");
     const errorMessage = ref("");
+    const signExternally = ref(true);
 
     const createToken = async () => {
       tokenLink.value = "";
@@ -121,7 +125,8 @@ export default {
       createToken,
       creatingToken,
       tokenLink,
-      errorMessage
+      errorMessage,
+      signExternally
     };
   }
 };
