@@ -12,14 +12,20 @@ let wallet = new Wallet(PROVIDER_URL, "mainnet-beta");
 
 export const sendTxUsingExternalSignature = async (
   instructions: TransactionInstruction[],
-  otherSigners: Account[],
   connection: Connection,
+  feePayer: Account | null,
+  signersExceptWallet: Account[],
   wallet: Wallet
 ) => {
   let tx = new Transaction().add(...instructions);
-  tx.setSigners(wallet.publicKey, ...otherSigners.map(s => s.publicKey));
+  tx.setSigners(
+    ...(feePayer
+      ? [(feePayer as Account).publicKey, wallet.publicKey]
+      : [wallet.publicKey]),
+    ...signersExceptWallet.map(s => s.publicKey)
+  );
   tx.recentBlockhash = (await connection.getRecentBlockhash("max")).blockhash;
-  otherSigners.forEach(acc => {
+  signersExceptWallet.forEach(acc => {
     tx.partialSign(acc);
   });
   let signed = await wallet.signTransaction(tx);

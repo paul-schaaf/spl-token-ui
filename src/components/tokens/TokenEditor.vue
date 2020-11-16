@@ -21,18 +21,10 @@
     </article>
     <div class="field">
       <label class="label">Fee payer*</label>
-      <div class="control">
-        <input
-          v-model="payerSecret"
-          class="input is-black"
-          type="text"
-          placeholder="Secret (seed phrase or comma-separated array of 64 numbers)"
-        />
-      </div>
-      <p class="help">
-        Your secret is NOT saved NOR sent anywhere. It's only used to pay the
-        token editing tx fee.
-      </p>
+      <secret-form-field
+        v-model:secret="payerSecret"
+        v-model:signExternally="feePayerSignsExternally"
+      />
     </div>
     <div class="field">
       <label class="label">Token mint address*</label>
@@ -59,16 +51,10 @@
         {{ editingFreezeAuthority ? "freeze" : "mint" }} authority*</label
       >
       <div class="control">
-        <input
-          v-model="currentAuthority"
-          class="input is-black"
-          type="text"
-          placeholder="Secret (seed phrase or comma-separated array of 64 numbers)"
+        <secret-form-field
+          v-model:secret="currentAuthority"
+          v-model:signExternally="currentAuthoritySignsExternally"
         />
-        <p class="help">
-          Your secret is NOT saved NOR sent anywhere. It's only used to sign the
-          authority change request.
-        </p>
       </div>
     </div>
 
@@ -107,16 +93,23 @@ import { chosenCluster } from "@/solana/connection";
 import { AuthorityType } from "@solana/spl-token";
 import Toggle from "@/components/util/Toggle.vue";
 import * as SolanaErrorHandler from "@/solana/SolanaErrorHandler";
+import SecretFormField from "../util/SecretFormField.vue";
 
 export default {
   components: {
-    Toggle
+    Toggle,
+    SecretFormField
   },
   setup() {
     const payerSecret = ref("");
+    const feePayerSignsExternally = ref(true);
+
     const tokenAddress = ref("");
     const editingFreezeAuthority = ref(false);
+
     const currentAuthority = ref("");
+    const currentAuthoritySignsExternally = ref(true);
+
     const newAuthority = ref("");
     const editedTokenAddress = ref("");
     const tokenLink = ref("");
@@ -127,6 +120,7 @@ export default {
       tokenLink.value = "";
       editedTokenAddress.value = "";
       editingToken.value = true;
+      errorMessage.value = "";
       try {
         const authorityType: AuthorityType = editingFreezeAuthority.value
           ? "FreezeAccount"
@@ -136,7 +130,9 @@ export default {
           tokenAddress.value,
           newAuthority.value,
           currentAuthority.value,
-          authorityType
+          authorityType,
+          feePayerSignsExternally.value,
+          currentAuthoritySignsExternally.value
         );
         editedTokenAddress.value = tokenAddress.value;
         tokenLink.value = `https://explorer.solana.com/address/${tokenAddress.value}?cluster=${chosenCluster.value}`;
@@ -157,7 +153,9 @@ export default {
       onEditToken,
       editingToken,
       tokenLink,
-      errorMessage
+      errorMessage,
+      feePayerSignsExternally,
+      currentAuthoritySignsExternally
     };
   }
 };

@@ -18,7 +18,7 @@ export const createNewToken = async (
   const connection = getConnection();
   if (signExternally) {
     const wallet = getWallet();
-    if (!wallet.connected && signExternally) {
+    if (!wallet.connected) {
       await wallet.connect();
     }
 
@@ -44,8 +44,9 @@ export const createNewToken = async (
 
     await sendTxUsingExternalSignature(
       [createAccIx, initMintIx],
-      [mintAccount],
       connection,
+      null,
+      [mintAccount],
       wallet
     );
     return mintAccount.publicKey.toString();
@@ -67,24 +68,53 @@ export const editToken = async (
   tokenAddress: string,
   newAuthority: string,
   currentAuthority: string,
-  authorityType: AuthorityType
+  authorityType: AuthorityType,
+  feePayerSignsExternally: boolean,
+  currentAuthoritySignsExternally: boolean
 ) => {
   const tokenPublicKey = new PublicKey(tokenAddress);
+  const newAuthorityOrNull = newAuthority ? new PublicKey(newAuthority) : null;
+  const connection = getConnection();
+  if (feePayerSignsExternally || currentAuthoritySignsExternally) {
+    const wallet = getWallet();
+    if (!wallet.connected) {
+      await wallet.connect();
+    }
 
-  const token = new Token(
-    getConnection(),
-    tokenPublicKey,
-    TOKEN_PROGRAM_ID,
-    await createAccount(feePayer)
-  );
+    const ix = Token.createSetAuthorityInstruction(
+      TOKEN_PROGRAM_ID,
+      tokenPublicKey,
+      newAuthorityOrNull,
+      authorityType,
+      wallet.publicKey,
+      //@ts-expect-error
+      []
+    );
+    await sendTxUsingExternalSignature(
+      [ix],
+      connection,
+      feePayerSignsExternally ? null : await createAccount(feePayer),
+      currentAuthoritySignsExternally
+        ? []
+        : [await createAccount(currentAuthority)],
+      wallet
+    );
+  } else {
+    const token = new Token(
+      connection,
+      tokenPublicKey,
+      TOKEN_PROGRAM_ID,
+      await createAccount(feePayer)
+    );
 
-  await token.setAuthority(
-    tokenPublicKey,
-    newAuthority ? new PublicKey(newAuthority) : null,
-    authorityType,
-    await createAccount(currentAuthority),
-    []
-  );
+    await token.setAuthority(
+      tokenPublicKey,
+      newAuthorityOrNull,
+      authorityType,
+      await createAccount(currentAuthority),
+      []
+    );
+  }
 };
 
 export const createTokenAccount = async (
