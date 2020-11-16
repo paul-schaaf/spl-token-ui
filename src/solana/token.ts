@@ -449,25 +449,56 @@ export const setTokenAccountOwner = async (
 };
 
 export const burnTokens = async (
-  feePayer: string,
-  tokenAddress: string,
-  tokenAccount: string,
-  owner: string,
-  amount: u64
+  feePayerSecret: string,
+  tokenMintAddress: string,
+  tokenAccountAddress: string,
+  ownerSecret: string,
+  amount: u64,
+  feePayerSignsExternally: boolean,
+  accountOwnerSignsExternally: boolean
 ) => {
-  const token = new Token(
-    getConnection(),
-    new PublicKey(tokenAddress),
-    TOKEN_PROGRAM_ID,
-    await createAccount(feePayer)
-  );
+  const tokenMintPubkey = new PublicKey(tokenMintAddress);
+  const connection = getConnection();
+  const tokenAccountPubkey = new PublicKey(tokenAccountAddress);
 
-  await token.burn(
-    new PublicKey(tokenAccount),
-    await createAccount(owner),
-    [],
-    amount
-  );
+  if (feePayerSignsExternally || accountOwnerSignsExternally) {
+    const [wallet, connectToWallet] = useWallet();
+    await connectToWallet();
+
+    const currentOwnerAccOrWallet = accountOwnerSignsExternally
+      ? wallet
+      : await createAccount(ownerSecret);
+
+    const ix = Token.createBurnInstruction(
+      TOKEN_PROGRAM_ID,
+      tokenMintPubkey,
+      tokenAccountPubkey,
+      currentOwnerAccOrWallet.publicKey,
+      [],
+      amount
+    );
+    await sendTxUsingExternalSignature(
+      [ix],
+      connection,
+      feePayerSignsExternally ? null : await createAccount(feePayerSecret),
+      accountOwnerSignsExternally ? [] : [currentOwnerAccOrWallet],
+      wallet
+    );
+  } else {
+    const token = new Token(
+      connection,
+      tokenMintPubkey,
+      TOKEN_PROGRAM_ID,
+      await createAccount(feePayerSecret)
+    );
+
+    await token.burn(
+      tokenAccountPubkey,
+      await createAccount(ownerSecret),
+      [],
+      amount
+    );
+  }
 };
 
 export const closeAccount = async (
@@ -524,7 +555,6 @@ export const setTokenAccountCloser = async (
       //@ts-expect-error
       []
     );
-    console.log("hi");
     await sendTxUsingExternalSignature(
       [ix],
       connection,
