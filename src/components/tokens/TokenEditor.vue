@@ -93,7 +93,7 @@ import { chosenCluster } from "@/solana/connection";
 import { AuthorityType } from "@solana/spl-token";
 import Toggle from "@/components/util/Toggle.vue";
 import * as SolanaErrorHandler from "@/solana/SolanaErrorHandler";
-import SecretFormField from "../util/SecretFormField.vue";
+import SecretFormField from "@/components/util/SecretFormField.vue";
 
 export default {
   components: {

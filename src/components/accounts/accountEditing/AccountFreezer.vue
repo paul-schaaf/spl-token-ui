@@ -11,14 +11,14 @@
     </div>
     <p class="help">
       Your secret is NOT saved NOR sent anywhere. It's only used to sign the
-      account thawing request.
+      account freezing request.
     </p>
   </div>
   <div class="field">
-    <label class="label">Account to thaw*</label>
+    <label class="label">Account to freeze*</label>
     <div class="control">
       <input
-        v-model="accountToThaw"
+        v-model="accountToFreeze"
         class="input is-black"
         type="text"
         placeholder="Public Key String e.g. GsbwXfJraMomNxBcjYLcG3mxkBUiyWXAB32fGbSMQRdW"
@@ -27,22 +27,22 @@
   </div>
   <div style="display: flex" class="control is-justify-content-center mt-5">
     <button
-      :class="{ 'is-loading': thawingAccount }"
+      :class="{ 'is-loading': freezingAccount }"
       class="button is-black"
-      @click="onThawAccount"
+      @click="onFreezeAccount"
     >
-      Thaw account
+      Freeze account
     </button>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, toRefs } from "vue";
-import accountComponents from "./accountComponents";
-import { thawAccount } from "@/solana/token";
+import accountComponents from "../accountComponents";
+import { freezeAccount } from "@/solana/token";
 
 export default defineComponent({
-  name: accountComponents.Thaw,
+  name: accountComponents.Freeze,
   emits: ["update:accountAddress"],
   props: {
     payerSecret: {
@@ -56,32 +56,32 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const { payerSecret, tokenAddress } = toRefs(props);
-    const thawingAccount = ref(false);
-    const accountToThaw = ref("");
+    const freezingAccount = ref(false);
+    const accountToFreeze = ref("");
     const freezeAuthority = ref("");
 
-    const onThawAccount = async () => {
-      thawingAccount.value = true;
+    const onFreezeAccount = async () => {
+      freezingAccount.value = true;
       emit("update:accountAddress", "");
       try {
-        await thawAccount(
+        await freezeAccount(
           payerSecret.value,
           tokenAddress.value,
-          accountToThaw.value,
+          accountToFreeze.value,
           freezeAuthority.value
         );
-        emit("update:accountAddress", accountToThaw.value);
+        emit("update:accountAddress", accountToFreeze.value);
       } catch (err) {
-        thawingAccount.value = false;
+        freezingAccount.value = false;
         throw err;
       }
-      thawingAccount.value = false;
+      freezingAccount.value = false;
     };
 
     return {
-      thawingAccount,
-      accountToThaw,
-      onThawAccount,
+      freezingAccount,
+      accountToFreeze,
+      onFreezeAccount,
       freezeAuthority
     };
   }

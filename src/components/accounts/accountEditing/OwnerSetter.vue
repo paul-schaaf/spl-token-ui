@@ -11,10 +11,10 @@
     </div>
   </div>
   <div class="field">
-    <label class="label">Current close authority or owner*</label>
+    <label class="label">Current owner*</label>
     <div class="control">
       <input
-        v-model="currentCloser"
+        v-model="currentOwner"
         class="input is-black"
         type="text"
         placeholder="Secret (seed phrase or comma-separated array of 64 numbers)"
@@ -22,43 +22,38 @@
     </div>
     <p class="help">
       Your secret is NOT saved NOR sent anywhere. It's only used to sign the
-      closer change request fee. The owner can only set the close authority if
-      there is no close authority or it's the owner themselves.
+      owner change request fee.
     </p>
   </div>
   <div class="field">
-    <label class="label">New close authority*</label>
+    <label class="label">New owner*</label>
     <div class="control">
       <input
-        v-model="newCloser"
+        v-model="newOwner"
         class="input is-black"
         type="text"
         placeholder="Public Key String e.g. GsbwXfJraMomNxBcjYLcG3mxkBUiyWXAB32fGbSMQRdW"
       />
     </div>
-    <p class="help">
-      You can leave this field empty to remove the closer authority from the
-      account
-    </p>
   </div>
   <div style="display: flex" class="control is-justify-content-center mt-5">
     <button
-      :class="{ 'is-loading': settingCloser }"
+      :class="{ 'is-loading': settingOwner }"
       class="button is-black"
-      @click="onSetCloser"
+      @click="onSetOwner"
     >
-      Set closer
+      Set owner
     </button>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, toRefs } from "vue";
-import accountComponents from "./accountComponents";
-import { setTokenAccountCloser } from "@/solana/token";
+import accountComponents from "../accountComponents";
+import { setTokenAccountOwner } from "@/solana/token";
 
 export default defineComponent({
-  name: accountComponents.SetCloser,
+  name: accountComponents.SetOwner,
   emits: ["update:accountAddress"],
   props: {
     payerSecret: {
@@ -72,36 +67,36 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const { payerSecret, tokenAddress } = toRefs(props);
-    const settingCloser = ref(false);
+    const settingOwner = ref(false);
     const accountAddress = ref("");
-    const currentCloser = ref("");
-    const newCloser = ref("");
+    const currentOwner = ref("");
+    const newOwner = ref("");
 
-    const onSetCloser = async () => {
-      settingCloser.value = true;
+    const onSetOwner = async () => {
+      settingOwner.value = true;
       emit("update:accountAddress", "");
       try {
-        await setTokenAccountCloser(
+        await setTokenAccountOwner(
           payerSecret.value,
           tokenAddress.value,
           accountAddress.value,
-          currentCloser.value,
-          newCloser.value
+          currentOwner.value,
+          newOwner.value
         );
         emit("update:accountAddress", accountAddress.value);
       } catch (err) {
-        settingCloser.value = false;
+        settingOwner.value = false;
         throw err;
       }
-      settingCloser.value = false;
+      settingOwner.value = false;
     };
 
     return {
-      settingCloser,
+      settingOwner,
       accountAddress,
-      onSetCloser,
-      currentCloser,
-      newCloser
+      onSetOwner,
+      currentOwner,
+      newOwner
     };
   }
 });

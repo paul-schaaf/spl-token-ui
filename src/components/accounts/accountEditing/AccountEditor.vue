@@ -68,7 +68,7 @@
 <script lang="ts">
 import { computed, defineComponent, onErrorCaptured, ref } from "vue";
 import { chosenCluster } from "@/solana/connection";
-import accountComponents from "./accountComponents";
+import accountComponents from "../accountComponents";
 
 import TokenMinter from "./TokenMinter.vue";
 import AccountFreezer from "./AccountFreezer.vue";
@@ -81,7 +81,7 @@ import CloserSetter from "./CloserSetter.vue";
 
 import { splitAtUppercase } from "@/util/stringFormatting";
 import * as SolanaErrorHandler from "@/solana/SolanaErrorHandler";
-import SecretFormField from "../util/SecretFormField.vue";
+import SecretFormField from "@/components/util/SecretFormField.vue";
 
 export default defineComponent({
   components: {

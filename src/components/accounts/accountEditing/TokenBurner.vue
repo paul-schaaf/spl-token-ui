@@ -55,7 +55,7 @@
 <script lang="ts">
 import { defineComponent, ref, toRefs } from "vue";
 import { burnTokens } from "@/solana/token";
-import accountComponents from "./accountComponents";
+import accountComponents from "../accountComponents";
 import { u64 } from "@solana/spl-token";
 
 export default defineComponent({

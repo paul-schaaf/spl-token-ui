@@ -49,9 +49,9 @@
 <script lang="ts">
 import { defineComponent, ref, toRefs } from "vue";
 import { mintToken } from "@/solana/token";
-import accountComponents from "./accountComponents";
+import accountComponents from "../accountComponents";
 import { u64 } from "@solana/spl-token";
-import SecretFormField from "../util/SecretFormField.vue";
+import SecretFormField from "@/components/util/SecretFormField.vue";
 
 export default defineComponent({
   name: accountComponents.Mint,
