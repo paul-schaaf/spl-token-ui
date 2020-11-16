@@ -30,7 +30,10 @@ export const sendTxUsingExternalSignature = async (
     tx.partialSign(acc);
   });
   let signed = await wallet.signTransaction(tx);
-  let txid = await connection.sendRawTransaction(signed.serialize());
+  let txid = await connection.sendRawTransaction(signed.serialize(), {
+    skipPreflight: false,
+    preflightCommitment: COMMITMENT
+  });
   return connection.confirmTransaction(txid, COMMITMENT);
 };
 
