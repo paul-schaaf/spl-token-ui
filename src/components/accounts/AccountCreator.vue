@@ -22,18 +22,10 @@
     </article>
     <div class="field">
       <label class="label">Fee payer*</label>
-      <div class="control">
-        <input
-          v-model="payerSecret"
-          class="input is-black"
-          type="text"
-          placeholder="Secret (seed phrase or comma-separated array of 64 numbers)"
-        />
-      </div>
-      <p class="help">
-        Your secret is NOT saved NOR sent anywhere. It's only used to pay the
-        account creation and rent fee.
-      </p>
+      <secret-form-field
+        v-model:secret="payerSecret"
+        v-model:signExternally="payerSignsExternally"
+      />
     </div>
     <div class="field">
       <label class="label">Token mint address*</label>
@@ -74,10 +66,15 @@ import { ref } from "vue";
 import { createTokenAccount } from "@/solana/token";
 import { chosenCluster } from "@/solana/connection";
 import * as SolanaErrorHandler from "@/solana/SolanaErrorHandler";
+import SecretFormField from "@/components/util/SecretFormField.vue";
 
 export default {
+  components: {
+    SecretFormField
+  },
   setup() {
     const payerSecret = ref("");
+    const payerSignsExternally = ref(true);
     const tokenAddress = ref("");
     const accountOwner = ref("");
     const creatingAccount = ref(false);
@@ -93,7 +90,8 @@ export default {
         createdAccountAddress.value = await createTokenAccount(
           payerSecret.value,
           tokenAddress.value,
-          accountOwner.value
+          accountOwner.value,
+          payerSignsExternally.value
         );
         accountLink.value = `https://explorer.solana.com/address/${createdAccountAddress.value}?cluster=${chosenCluster.value}`;
       } catch (err) {
@@ -111,7 +109,8 @@ export default {
       createAccount,
       createdAccountAddress,
       accountLink,
-      errorMessage
+      errorMessage,
+      payerSignsExternally
     };
   }
 };

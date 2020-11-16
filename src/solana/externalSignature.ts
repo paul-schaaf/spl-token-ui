@@ -33,4 +33,15 @@ export const sendTxUsingExternalSignature = async (
   return connection.confirmTransaction(txid, "singleGossip");
 };
 
-export const getWallet = () => wallet;
+const connectToWallet = () => {
+  if (!wallet.connected) {
+    return wallet.connect() as Promise<void>;
+  } else {
+    return Promise.resolve();
+  }
+};
+
+export const useWallet = (): [Wallet, () => Promise<void>] => [
+  wallet,
+  connectToWallet
+];

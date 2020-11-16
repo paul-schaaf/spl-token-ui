@@ -1,8 +1,14 @@
 import { Account, PublicKey, SystemProgram } from "@solana/web3.js";
-import { AuthorityType, MintLayout, Token, u64 } from "@solana/spl-token";
+import {
+  AuthorityType,
+  MintLayout,
+  Token,
+  u64,
+  AccountLayout
+} from "@solana/spl-token";
 import { getConnection } from "../solana/connection";
 import { createAccount } from "./account";
-import { getWallet, sendTxUsingExternalSignature } from "./externalSignature";
+import { useWallet, sendTxUsingExternalSignature } from "./externalSignature";
 
 const TOKEN_PROGRAM_ID = new PublicKey(
   "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
@@ -17,10 +23,8 @@ export const createNewToken = async (
 ) => {
   const connection = getConnection();
   if (signExternally) {
-    const wallet = getWallet();
-    if (!wallet.connected) {
-      await wallet.connect();
-    }
+    const [wallet, connectToWallet] = useWallet();
+    await connectToWallet();
 
     const mintAccount = new Account();
     const createAccIx = SystemProgram.createAccount({
@@ -76,10 +80,8 @@ export const editToken = async (
   const newAuthorityOrNull = newAuthority ? new PublicKey(newAuthority) : null;
   const connection = getConnection();
   if (feePayerSignsExternally || currentAuthoritySignsExternally) {
-    const wallet = getWallet();
-    if (!wallet.connected) {
-      await wallet.connect();
-    }
+    const [wallet, connectToWallet] = useWallet();
+    await connectToWallet();
 
     const ix = Token.createSetAuthorityInstruction(
       TOKEN_PROGRAM_ID,
@@ -119,17 +121,56 @@ export const editToken = async (
 
 export const createTokenAccount = async (
   feePayer: string,
-  tokenAddress: string,
-  owner: string
+  tokenMintAddress: string,
+  owner: string,
+  signExternally: boolean
 ) => {
-  const token = new Token(
-    getConnection(),
-    new PublicKey(tokenAddress),
-    TOKEN_PROGRAM_ID,
-    await createAccount(feePayer)
-  );
+  const tokenMintPubkey = new PublicKey(tokenMintAddress);
+  const ownerPubkey = new PublicKey(owner);
+  if (signExternally) {
+    const [wallet, connectToWallet] = useWallet();
+    await connectToWallet();
 
-  return (await token.createAccount(new PublicKey(owner))).toString();
+    const connection = getConnection();
+    //@ts-expect-error
+    const balanceNeeded = await Token.getMinBalanceRentForExemptAccount(
+      connection
+    );
+    const newAccount = new Account();
+    const createAccIx = SystemProgram.createAccount({
+      fromPubkey: wallet.publicKey,
+      newAccountPubkey: newAccount.publicKey,
+      lamports: balanceNeeded,
+      space: AccountLayout.span,
+      programId: TOKEN_PROGRAM_ID
+    });
+
+    const createTokenAccountIx = Token.createInitAccountInstruction(
+      TOKEN_PROGRAM_ID,
+      tokenMintPubkey,
+      newAccount.publicKey,
+      ownerPubkey
+    );
+
+    await sendTxUsingExternalSignature(
+      [createAccIx, createTokenAccountIx],
+      connection,
+      null,
+      [newAccount],
+      wallet
+    );
+
+    return newAccount.publicKey.toBase58();
+  } else {
+    const token = new Token(
+      getConnection(),
+      tokenMintPubkey,
+      TOKEN_PROGRAM_ID,
+      await createAccount(feePayer)
+    );
+
+    return (await token.createAccount(ownerPubkey)).toString();
+  }
 };
 
 export const mintToken = async (
