@@ -83,12 +83,14 @@ export const editToken = async (
     const [wallet, connectToWallet] = useWallet();
     await connectToWallet();
 
+    const currentAuthorityAccOrWallet = currentAuthoritySignsExternally ? wallet : await createAccount(currentAuthority);
+
     const ix = Token.createSetAuthorityInstruction(
       TOKEN_PROGRAM_ID,
       tokenPublicKey,
       newAuthorityOrNull,
       authorityType,
-      wallet.publicKey,
+      currentAuthorityAccOrWallet.publicKey,
       //@ts-expect-error
       []
     );
@@ -98,7 +100,7 @@ export const editToken = async (
       feePayerSignsExternally ? null : await createAccount(feePayer),
       currentAuthoritySignsExternally
         ? []
-        : [await createAccount(currentAuthority)],
+        : [currentAuthorityAccOrWallet],
       wallet
     );
   } else {
@@ -391,26 +393,59 @@ export const transferTokens = async (
 };
 
 export const setTokenAccountOwner = async (
-  feePayer: string,
-  tokenAddress: string,
-  tokenAccount: string,
-  currentAuthority: string,
-  newAuthority: string
+  feePayerSecret: string,
+  tokenMintAddress: string,
+  tokenAccountAddress: string,
+  currentAuthoritySecret: string,
+  newAuthorityAddress: string,
+  feePayerSignsExternally: boolean,
+  currentAuthoritySignsExternally: boolean
 ) => {
-  const token = new Token(
-    getConnection(),
-    new PublicKey(tokenAddress),
-    TOKEN_PROGRAM_ID,
-    await createAccount(feePayer)
-  );
+  const tokenMintPubkey = new PublicKey(tokenMintAddress);
+  const connection = getConnection();
+  const newAuthorityPubkey = new PublicKey(newAuthorityAddress);
+  const tokenAccountPubkey = new PublicKey(tokenAccountAddress);
 
-  await token.setAuthority(
-    new PublicKey(tokenAccount),
-    new PublicKey(newAuthority),
-    "AccountOwner",
-    await createAccount(currentAuthority),
-    []
-  );
+  if (feePayerSignsExternally || currentAuthoritySignsExternally) {
+    const [wallet, connectToWallet] = useWallet();
+    await connectToWallet();
+
+    const currentAuthorityAccOrWallet = currentAuthoritySignsExternally ? wallet : await createAccount(currentAuthoritySecret);
+
+    const ix = Token.createSetAuthorityInstruction(
+      TOKEN_PROGRAM_ID,
+      tokenAccountPubkey,
+      newAuthorityPubkey,
+      "AccountOwner",
+      currentAuthorityAccOrWallet.publicKey,
+      //@ts-expect-error
+      []
+    );
+    await sendTxUsingExternalSignature(
+      [ix],
+      connection,
+      feePayerSignsExternally ? null : await createAccount(feePayerSecret),
+      currentAuthoritySignsExternally
+        ? []
+        : [currentAuthorityAccOrWallet],
+      wallet
+    );
+  } else {
+    const token = new Token(
+      connection,
+      tokenMintPubkey,
+      TOKEN_PROGRAM_ID,
+      await createAccount(feePayerSecret)
+    );
+  
+    await token.setAuthority(
+      tokenAccountPubkey,
+      newAuthorityPubkey,
+      "AccountOwner",
+      await createAccount(currentAuthoritySecret),
+      []
+    );
+  }
 };
 
 export const burnTokens = async (
