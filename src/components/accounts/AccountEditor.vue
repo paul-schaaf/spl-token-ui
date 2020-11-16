@@ -21,18 +21,10 @@
     </article>
     <div class="field">
       <label class="label">Fee payer*</label>
-      <div class="control">
-        <input
-          v-model="payerSecret"
-          class="input is-black"
-          type="text"
-          placeholder="Secret (seed phrase or comma-separated array of 64 numbers)"
-        />
-      </div>
-      <p class="help">
-        Your secret is NOT saved NOR sent anywhere. It's only used to pay the tx
-        fees.
-      </p>
+      <secret-form-field
+        v-model:secret="payerSecret"
+        v-model:signExternally="payerSignsExternally"
+      />
     </div>
     <div class="field">
       <label class="label">Token mint address*</label>
@@ -66,6 +58,7 @@
         :is="currentAccountComponent"
         :payerSecret="payerSecret"
         :tokenAddress="tokenAddress"
+        :payerSignsExternally="payerSignsExternally"
         @update:accountAddress="onUpdateAccountAddress"
       />
     </keep-alive>
@@ -88,6 +81,7 @@ import CloserSetter from "./CloserSetter.vue";
 
 import { splitAtUppercase } from "@/util/stringFormatting";
 import * as SolanaErrorHandler from "@/solana/SolanaErrorHandler";
+import SecretFormField from "../util/SecretFormField.vue";
 
 export default defineComponent({
   components: {
@@ -98,10 +92,13 @@ export default defineComponent({
     OwnerSetter,
     TokenBurner,
     AccountCloser,
-    CloserSetter
+    CloserSetter,
+    SecretFormField
   },
   setup() {
     const payerSecret = ref("");
+    const payerSignsExternally = ref(true);
+
     const tokenAddress = ref("");
     const accountAddress = ref("");
 
@@ -132,7 +129,8 @@ export default defineComponent({
       tokenAddress,
       splitAtUppercase,
       errorMessage,
-      onUpdateAccountAddress
+      onUpdateAccountAddress,
+      payerSignsExternally
     };
   }
 });

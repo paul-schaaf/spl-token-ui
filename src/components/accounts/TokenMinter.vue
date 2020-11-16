@@ -2,17 +2,11 @@
   <div class="field">
     <label class="label">Mint authority*</label>
     <div class="control">
-      <input
-        v-model="mintAuthority"
-        class="input is-black"
-        type="text"
-        placeholder="Secret (seed phrase or comma-separated array of 64 numbers)"
+      <secret-form-field
+        v-model:signExternally="mintAuthoritySignsExternally"
+        v-model:secret="mintAuthoritySecret"
       />
     </div>
-    <p class="help">
-      Your secret is NOT saved NOR sent anywhere. It's only used to sign the
-      token minting request.
-    </p>
   </div>
   <div class="field">
     <label class="label">Destination account*</label>
@@ -57,9 +51,13 @@ import { defineComponent, ref, toRefs } from "vue";
 import { mintToken } from "@/solana/token";
 import accountComponents from "./accountComponents";
 import { u64 } from "@solana/spl-token";
+import SecretFormField from "../util/SecretFormField.vue";
 
 export default defineComponent({
   name: accountComponents.Mint,
+  components: {
+    SecretFormField
+  },
   emits: ["update:accountAddress"],
   props: {
     payerSecret: {
@@ -69,11 +67,17 @@ export default defineComponent({
     tokenAddress: {
       type: String,
       required: true
+    },
+    payerSignsExternally: {
+      type: Boolean,
+      default: true
     }
   },
   setup(props, { emit }) {
-    const { payerSecret, tokenAddress } = toRefs(props);
-    const mintAuthority = ref("");
+    const { payerSecret, tokenAddress, payerSignsExternally } = toRefs(props);
+    const mintAuthoritySecret = ref("");
+    const mintAuthoritySignsExternally = ref(true);
+
     const destinationAccount = ref("");
     const mintingToAccount = ref(false);
     const tokenAmount = ref("");
@@ -85,9 +89,11 @@ export default defineComponent({
         await mintToken(
           payerSecret.value,
           tokenAddress.value,
-          mintAuthority.value,
+          mintAuthoritySecret.value,
           destinationAccount.value,
-          new u64(tokenAmount.value, 10)
+          new u64(tokenAmount.value, 10),
+          payerSignsExternally.value,
+          mintAuthoritySignsExternally.value
         );
         emit("update:accountAddress", destinationAccount.value);
       } catch (err) {
@@ -101,8 +107,9 @@ export default defineComponent({
       destinationAccount,
       mintingToAccount,
       mintToAccount,
-      mintAuthority,
-      tokenAmount
+      mintAuthoritySecret,
+      tokenAmount,
+      mintAuthoritySignsExternally
     };
   }
 });
