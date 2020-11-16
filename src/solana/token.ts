@@ -6,7 +6,7 @@ import {
   u64,
   AccountLayout
 } from "@solana/spl-token";
-import { getConnection } from "../solana/connection";
+import { COMMITMENT, getConnection } from "../solana/connection";
 import { createAccount } from "./account";
 import { useWallet, sendTxUsingExternalSignature } from "./externalSignature";
 
@@ -32,7 +32,7 @@ export const createNewToken = async (
       newAccountPubkey: mintAccount.publicKey,
       lamports: await connection.getMinimumBalanceForRentExemption(
         MintLayout.span,
-        "singleGossip"
+        COMMITMENT
       ),
       space: MintLayout.span,
       programId: TOKEN_PROGRAM_ID
@@ -233,42 +233,105 @@ export const mintToken = async (
 
 export const freezeAccount = async (
   feePayer: string,
-  tokenAddress: string,
-  accountToFreeze: string,
-  freezeAuthority: string
+  tokenMintAddress: string,
+  addressToFreeze: string,
+  freezeAuthoritySecret: string,
+  feePayerSignsExternally: boolean,
+  freezeAuthoritysignsExternally: boolean
 ) => {
-  const token = new Token(
-    getConnection(),
-    new PublicKey(tokenAddress),
-    TOKEN_PROGRAM_ID,
-    await createAccount(feePayer)
-  );
+  const tokenMintPubkey = new PublicKey(tokenMintAddress);
+  const pubkeyToFreeze = new PublicKey(addressToFreeze);
+  const connection = getConnection();
+  if (feePayerSignsExternally || freezeAuthoritysignsExternally) {
+    const [wallet, connectToWallet] = useWallet();
+    await connectToWallet();
 
-  await token.freezeAccount(
-    new PublicKey(accountToFreeze),
-    await createAccount(freezeAuthority),
-    []
-  );
+    const authorityAccOrWallet = freezeAuthoritysignsExternally
+      ? wallet
+      : await createAccount(freezeAuthoritySecret);
+
+    //@ts-ignore
+    const freezeIx = Token.createFreezeAccountInstruction(
+      TOKEN_PROGRAM_ID,
+      pubkeyToFreeze,
+      tokenMintPubkey,
+      authorityAccOrWallet.publicKey,
+      []
+    );
+
+    await sendTxUsingExternalSignature(
+      [freezeIx],
+      connection,
+      feePayerSignsExternally ? null : await createAccount(feePayer),
+      freezeAuthoritysignsExternally ? [] : [authorityAccOrWallet],
+      wallet
+    );
+  } else {
+    const token = new Token(
+      connection,
+      tokenMintPubkey,
+      TOKEN_PROGRAM_ID,
+      await createAccount(feePayer)
+    );
+
+    await token.freezeAccount(
+      pubkeyToFreeze,
+      await createAccount(freezeAuthoritySecret),
+      []
+    );
+  }
 };
 
 export const thawAccount = async (
   feePayer: string,
-  tokenAddress: string,
-  accountToThaw: string,
-  freezeAuthority: string
+  tokenMintAddress: string,
+  addressToThaw: string,
+  freezeAuthoritySecret: string,
+  feePayerSignsExternally: boolean,
+  freezeAuthoritysignsExternally: boolean
 ) => {
-  const token = new Token(
-    getConnection(),
-    new PublicKey(tokenAddress),
-    TOKEN_PROGRAM_ID,
-    await createAccount(feePayer)
-  );
+  const tokenMintPubkey = new PublicKey(tokenMintAddress);
+  const pubkeyToThaw = new PublicKey(addressToThaw);
+  const connection = getConnection();
 
-  await token.thawAccount(
-    new PublicKey(accountToThaw),
-    await createAccount(freezeAuthority),
-    []
-  );
+  if (feePayerSignsExternally || freezeAuthoritysignsExternally) {
+    const [wallet, connectToWallet] = useWallet();
+    await connectToWallet();
+
+    const authorityAccOrWallet = freezeAuthoritysignsExternally
+      ? wallet
+      : await createAccount(freezeAuthoritySecret);
+
+    //@ts-ignore
+    const thawIx = Token.createThawAccountInstruction(
+      TOKEN_PROGRAM_ID,
+      pubkeyToThaw,
+      tokenMintPubkey,
+      authorityAccOrWallet.publicKey,
+      []
+    );
+
+    await sendTxUsingExternalSignature(
+      [thawIx],
+      connection,
+      feePayerSignsExternally ? null : await createAccount(feePayer),
+      freezeAuthoritysignsExternally ? [] : [authorityAccOrWallet],
+      wallet
+    );
+  } else {
+    const token = new Token(
+      connection,
+      tokenMintPubkey,
+      TOKEN_PROGRAM_ID,
+      await createAccount(feePayer)
+    );
+
+    await token.thawAccount(
+      pubkeyToThaw,
+      await createAccount(freezeAuthoritySecret),
+      []
+    );
+  }
 };
 
 export const transferTokens = async (

@@ -1,7 +1,14 @@
-import { Cluster, clusterApiUrl, Connection } from "@solana/web3.js";
+import {
+  Cluster,
+  clusterApiUrl,
+  Commitment,
+  Connection
+} from "@solana/web3.js";
 import { ref } from "vue";
 
 type Localnet = "localnet";
+
+export const COMMITMENT: Commitment = "singleGossip";
 
 export const CLUSTERS = {
   MAINNET: "mainnet-beta" as Cluster,
@@ -19,7 +26,7 @@ export const changeCluster = (clusterName: Cluster | Localnet) => {
     clusterName === CLUSTERS.LOCALNET
       ? "http://localhost:8899"
       : clusterApiUrl(clusterName),
-    "singleGossip"
+    COMMITMENT
   );
   chosenCluster.value = clusterName;
 };

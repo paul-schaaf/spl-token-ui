@@ -6,6 +6,7 @@ import {
 } from "@solana/web3.js";
 //@ts-expect-error
 import Wallet from "@project-serum/sol-wallet-adapter";
+import { COMMITMENT } from "./connection";
 
 const PROVIDER_URL = "https://www.sollet.io";
 let wallet = new Wallet(PROVIDER_URL, "mainnet-beta");
@@ -30,7 +31,7 @@ export const sendTxUsingExternalSignature = async (
   });
   let signed = await wallet.signTransaction(tx);
   let txid = await connection.sendRawTransaction(signed.serialize());
-  return connection.confirmTransaction(txid, "singleGossip");
+  return connection.confirmTransaction(txid, COMMITMENT);
 };
 
 const connectToWallet = () => {

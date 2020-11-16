@@ -2,17 +2,11 @@
   <div class="field">
     <label class="label">Freeze authority*</label>
     <div class="control">
-      <input
-        v-model="freezeAuthority"
-        class="input is-black"
-        type="text"
-        placeholder="Secret (seed phrase or comma-separated array of 64 numbers)"
+      <secret-form-field
+        v-model:secret="freezeAuthoritySecret"
+        v-model:signExternally="freezeAuthoritySignsExternally"
       />
     </div>
-    <p class="help">
-      Your secret is NOT saved NOR sent anywhere. It's only used to sign the
-      account freezing request.
-    </p>
   </div>
   <div class="field">
     <label class="label">Account to freeze*</label>
@@ -40,9 +34,13 @@
 import { defineComponent, ref, toRefs } from "vue";
 import accountComponents from "../accountComponents";
 import { freezeAccount } from "@/solana/token";
+import SecretFormField from "@/components/util/SecretFormField.vue";
 
 export default defineComponent({
   name: accountComponents.Freeze,
+  components: {
+    SecretFormField
+  },
   emits: ["update:accountAddress"],
   props: {
     payerSecret: {
@@ -52,13 +50,18 @@ export default defineComponent({
     tokenAddress: {
       type: String,
       required: true
+    },
+    payerSignsExternally: {
+      type: Boolean,
+      default: true
     }
   },
   setup(props, { emit }) {
-    const { payerSecret, tokenAddress } = toRefs(props);
+    const { payerSecret, tokenAddress, payerSignsExternally } = toRefs(props);
     const freezingAccount = ref(false);
     const accountToFreeze = ref("");
-    const freezeAuthority = ref("");
+    const freezeAuthoritySecret = ref("");
+    const freezeAuthoritySignsExternally = ref(true);
 
     const onFreezeAccount = async () => {
       freezingAccount.value = true;
@@ -68,7 +71,9 @@ export default defineComponent({
           payerSecret.value,
           tokenAddress.value,
           accountToFreeze.value,
-          freezeAuthority.value
+          freezeAuthoritySecret.value,
+          payerSignsExternally.value,
+          freezeAuthoritySignsExternally.value
         );
         emit("update:accountAddress", accountToFreeze.value);
       } catch (err) {
@@ -82,7 +87,8 @@ export default defineComponent({
       freezingAccount,
       accountToFreeze,
       onFreezeAccount,
-      freezeAuthority
+      freezeAuthoritySecret,
+      freezeAuthoritySignsExternally
     };
   }
 });
