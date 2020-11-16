@@ -1,11 +1,21 @@
-import { PublicKey } from "@solana/web3.js";
-import { AuthorityType, Token, u64 } from "@solana/spl-token";
+import {
+  Account,
+  PublicKey,
+  SystemProgram,
+  Transaction
+} from "@solana/web3.js";
+import { AuthorityType, MintLayout, Token, u64 } from "@solana/spl-token";
 import { getConnection } from "../solana/connection";
 import { createAccount } from "./account";
+//@ts-expect-error
+import Wallet from "@project-serum/sol-wallet-adapter";
 
 const TOKEN_PROGRAM_ID = new PublicKey(
   "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
 );
+
+const PROVIDER_URL = "https://www.sollet.io";
+let wallet = new Wallet(PROVIDER_URL, "mainnet-beta");
 
 export const createNewToken = async (
   feePayer: string,
@@ -13,15 +23,37 @@ export const createNewToken = async (
   freezeAuthority: string,
   decimals: number
 ) => {
-  const token = await Token.createMint(
-    getConnection(),
-    await createAccount(feePayer),
-    new PublicKey(mintAuthority),
-    freezeAuthority ? new PublicKey(freezeAuthority) : null,
+  const connection = getConnection();
+  if (!wallet.connected) {
+    await wallet.connect();
+  }
+
+  const mintAccount = new Account();
+  const createAccIx = SystemProgram.createAccount({
+    fromPubkey: wallet.publicKey,
+    newAccountPubkey: mintAccount.publicKey,
+    lamports: await connection.getMinimumBalanceForRentExemption(
+      MintLayout.span,
+      "singleGossip"
+    ),
+    space: MintLayout.span,
+    programId: TOKEN_PROGRAM_ID
+  });
+  const initMintIx = Token.createInitMintInstruction(
+    TOKEN_PROGRAM_ID,
+    mintAccount.publicKey,
     decimals,
-    TOKEN_PROGRAM_ID
+    new PublicKey(mintAuthority),
+    freezeAuthority ? new PublicKey(freezeAuthority) : null
   );
-  return token.publicKey.toString();
+  let tx = new Transaction().add(createAccIx, initMintIx);
+  tx.setSigners(wallet.publicKey, mintAccount.publicKey);
+  tx.recentBlockhash = (await connection.getRecentBlockhash("max")).blockhash;
+  let signed = await wallet.signTransaction(tx);
+  signed.partialSign(mintAccount);
+  let txid = await connection.sendRawTransaction(signed.serialize());
+  await connection.confirmTransaction(txid, "singleGossip");
+  return mintAccount.publicKey.toString();
 };
 
 export const editToken = async (
