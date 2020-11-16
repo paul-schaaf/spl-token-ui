@@ -13,7 +13,10 @@
   <div class="field">
     <label class="label">Current owner*</label>
     <div class="control">
-      <secret-form-field v-model:secret="currentOwnerSecret" v-model:signExternally="currentOwnerSignsExternally"/>
+      <secret-form-field
+        v-model:secret="currentOwnerSecret"
+        v-model:signExternally="currentOwnerSignsExternally"
+      />
     </div>
   </div>
   <div class="field">

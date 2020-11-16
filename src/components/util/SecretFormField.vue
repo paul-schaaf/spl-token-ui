@@ -13,11 +13,10 @@
     />
   </div>
   <p class="help">
-    <span
-      v-if="signExternally"
-      class="is-clickable"
-      @click="onToggleSignExternally"
-      >Switch to manual input</span
+    <span v-if="signExternally"
+      ><span class="is-clickable" @click="onToggleSignExternally"
+        >Switch to manual input</span
+      >{{ externalHint }}</span
     >
     <span v-else
       >{{ manualHint
@@ -41,6 +40,10 @@ export default defineComponent({
       type: String,
       default:
         "Your secret is NOT saved NOR sent anywhere. It's only used to sign transactions locally."
+    },
+    externalHint: {
+      type: String,
+      default: ""
     },
     signExternally: {
       type: Boolean,

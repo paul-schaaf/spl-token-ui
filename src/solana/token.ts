@@ -83,7 +83,9 @@ export const editToken = async (
     const [wallet, connectToWallet] = useWallet();
     await connectToWallet();
 
-    const currentAuthorityAccOrWallet = currentAuthoritySignsExternally ? wallet : await createAccount(currentAuthority);
+    const currentAuthorityAccOrWallet = currentAuthoritySignsExternally
+      ? wallet
+      : await createAccount(currentAuthority);
 
     const ix = Token.createSetAuthorityInstruction(
       TOKEN_PROGRAM_ID,
@@ -98,9 +100,7 @@ export const editToken = async (
       [ix],
       connection,
       feePayerSignsExternally ? null : await createAccount(feePayer),
-      currentAuthoritySignsExternally
-        ? []
-        : [currentAuthorityAccOrWallet],
+      currentAuthoritySignsExternally ? [] : [currentAuthorityAccOrWallet],
       wallet
     );
   } else {
@@ -410,7 +410,9 @@ export const setTokenAccountOwner = async (
     const [wallet, connectToWallet] = useWallet();
     await connectToWallet();
 
-    const currentAuthorityAccOrWallet = currentAuthoritySignsExternally ? wallet : await createAccount(currentAuthoritySecret);
+    const currentAuthorityAccOrWallet = currentAuthoritySignsExternally
+      ? wallet
+      : await createAccount(currentAuthoritySecret);
 
     const ix = Token.createSetAuthorityInstruction(
       TOKEN_PROGRAM_ID,
@@ -425,9 +427,7 @@ export const setTokenAccountOwner = async (
       [ix],
       connection,
       feePayerSignsExternally ? null : await createAccount(feePayerSecret),
-      currentAuthoritySignsExternally
-        ? []
-        : [currentAuthorityAccOrWallet],
+      currentAuthoritySignsExternally ? [] : [currentAuthorityAccOrWallet],
       wallet
     );
   } else {
@@ -437,7 +437,7 @@ export const setTokenAccountOwner = async (
       TOKEN_PROGRAM_ID,
       await createAccount(feePayerSecret)
     );
-  
+
     await token.setAuthority(
       tokenAccountPubkey,
       newAuthorityPubkey,
@@ -493,24 +493,59 @@ export const closeAccount = async (
 };
 
 export const setTokenAccountCloser = async (
-  feePayer: string,
-  tokenAddress: string,
-  tokenAccount: string,
-  currentAuthority: string,
-  newAuthority: string
+  feePayerSecret: string,
+  tokenMintAddress: string,
+  tokenAccountAddress: string,
+  currentAuthoritySecret: string,
+  newAuthorityAddress: string,
+  feePayerSignsExternally: boolean,
+  currentAuthoritySignsExternally: boolean
 ) => {
-  const token = new Token(
-    getConnection(),
-    new PublicKey(tokenAddress),
-    TOKEN_PROGRAM_ID,
-    await createAccount(feePayer)
-  );
+  const tokenMintPubkey = new PublicKey(tokenMintAddress);
+  const connection = getConnection();
+  const newAuthorityPubkeyOrNull = newAuthorityAddress
+    ? new PublicKey(newAuthorityAddress)
+    : null;
+  const tokenAccountPubkey = new PublicKey(tokenAccountAddress);
 
-  await token.setAuthority(
-    new PublicKey(tokenAccount),
-    newAuthority ? new PublicKey(newAuthority) : null,
-    "CloseAccount",
-    await createAccount(currentAuthority),
-    []
-  );
+  if (feePayerSignsExternally || currentAuthoritySignsExternally) {
+    const [wallet, connectToWallet] = useWallet();
+    await connectToWallet();
+    const currentAuthorityAccOrWallet = currentAuthoritySignsExternally
+      ? wallet
+      : await createAccount(currentAuthoritySecret);
+
+    const ix = Token.createSetAuthorityInstruction(
+      TOKEN_PROGRAM_ID,
+      tokenAccountPubkey,
+      newAuthorityPubkeyOrNull,
+      "CloseAccount",
+      currentAuthorityAccOrWallet.publicKey,
+      //@ts-expect-error
+      []
+    );
+    console.log("hi");
+    await sendTxUsingExternalSignature(
+      [ix],
+      connection,
+      feePayerSignsExternally ? null : await createAccount(feePayerSecret),
+      currentAuthoritySignsExternally ? [] : [currentAuthorityAccOrWallet],
+      wallet
+    );
+  } else {
+    const token = new Token(
+      connection,
+      tokenMintPubkey,
+      TOKEN_PROGRAM_ID,
+      await createAccount(feePayerSecret)
+    );
+
+    await token.setAuthority(
+      tokenAccountPubkey,
+      newAuthorityAddress ? newAuthorityPubkeyOrNull : null,
+      "CloseAccount",
+      await createAccount(currentAuthoritySecret),
+      []
+    );
+  }
 };
