@@ -1,14 +1,12 @@
 <template>
   <div class="field">
     <label class="label">Account address*</label>
-    <div class="control">
-      <input
-        v-model="accountAddress"
-        class="input is-black"
-        type="text"
-        placeholder="Public Key String e.g. GsbwXfJraMomNxBcjYLcG3mxkBUiyWXAB32fGbSMQRdW"
-      />
-    </div>
+    <input
+      v-model="accountAddress"
+      class="input is-black"
+      type="text"
+      placeholder="Public Key String e.g. GsbwXfJraMomNxBcjYLcG3mxkBUiyWXAB32fGbSMQRdW"
+    />
   </div>
   <div class="field">
     <label class="label">Current close authority or owner*</label>

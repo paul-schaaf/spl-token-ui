@@ -1,12 +1,10 @@
 <template>
   <div class="field">
     <label class="label">Mint authority*</label>
-    <div class="control">
-      <secret-form-field
-        v-model:signExternally="mintAuthoritySignsExternally"
-        v-model:secret="mintAuthoritySecret"
-      />
-    </div>
+    <secret-form-field
+      v-model:signExternally="mintAuthoritySignsExternally"
+      v-model:secret="mintAuthoritySecret"
+    />
   </div>
   <div class="field">
     <label class="label">Destination account*</label>

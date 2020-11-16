@@ -1,12 +1,10 @@
 <template>
   <div class="field">
     <label class="label">Freeze authority*</label>
-    <div class="control">
-      <secret-form-field
-        v-model:secret="freezeAuthoritySecret"
-        v-model:signExternally="freezeAuthoritySignsExternally"
-      />
-    </div>
+    <secret-form-field
+      v-model:secret="freezeAuthoritySecret"
+      v-model:signExternally="freezeAuthoritySignsExternally"
+    />
   </div>
   <div class="field">
     <label class="label">Account to freeze*</label>

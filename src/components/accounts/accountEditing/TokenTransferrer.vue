@@ -1,12 +1,10 @@
 <template>
   <div class="field">
     <label class="label">Account owner secret*</label>
-    <div class="control">
-      <secret-form-field
-        v-model:secret="ownerAccountSecret"
-        v-model:signExternally="ownerSignsExternally"
-      />
-    </div>
+    <secret-form-field
+      v-model:secret="ownerAccountSecret"
+      v-model:signExternally="ownerSignsExternally"
+    />
   </div>
   <div class="field">
     <label class="label">Source account*</label>
