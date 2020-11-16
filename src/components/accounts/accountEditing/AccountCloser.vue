@@ -1,30 +1,23 @@
 <template>
   <div class="field">
     <label class="label">Account address*</label>
-    <div class="control">
-      <input
-        v-model="accountAddress"
-        class="input is-black"
-        type="text"
-        placeholder="Public Key String e.g. GsbwXfJraMomNxBcjYLcG3mxkBUiyWXAB32fGbSMQRdW"
-      />
-    </div>
+    <input
+      v-model="accountAddress"
+      class="input is-black"
+      type="text"
+      placeholder="Public Key String e.g. GsbwXfJraMomNxBcjYLcG3mxkBUiyWXAB32fGbSMQRdW"
+    />
   </div>
   <div class="field">
     <label class="label"> Owner or close authority*</label>
-    <div class="control">
-      <input
-        v-model="owner"
-        class="input is-black"
-        type="text"
-        placeholder="Secret (seed phrase or comma-separated array of 64 numbers)"
-      />
-    </div>
-    <p class="help">
-      Your secret is NOT saved NOR sent anywhere. It's only used to sign the
-      owner change request fee. If there is no "close authority", the owner can
-      close the account, otherwise only the "close authority" may do so.
-    </p>
+    <secret-form-field
+      v-model:secret="ownerSecret"
+      v-model:signExternally="ownerSignsExternally"
+      manualHint='If there is no "close authority", the owner can
+      close the account, otherwise only the "close authority" may do so.'
+      externalHint='. If there is no "close authority", the owner can
+      close the account, otherwise only the "close authority" may do so.'
+    />
   </div>
   <div class="field">
     <label class="label">Destination account*</label>
@@ -54,11 +47,16 @@
 
 <script lang="ts">
 import { defineComponent, ref, toRefs } from "vue";
-import accountComponents from "./accountComponents";
+import accountComponents from "../accountComponents";
 import { closeAccount } from "@/solana/token";
+import SecretFormField from "@/components/util/SecretFormField.vue";
 
 export default defineComponent({
   name: accountComponents.Close,
+  components: {
+    SecretFormField
+  },
+  emits: ["update:accountAddress"],
   props: {
     payerSecret: {
       type: String,
@@ -67,13 +65,18 @@ export default defineComponent({
     tokenAddress: {
       type: String,
       required: true
+    },
+    payerSignsExternally: {
+      type: Boolean,
+      default: true
     }
   },
   setup(props, { emit }) {
-    const { payerSecret, tokenAddress } = toRefs(props);
+    const { payerSecret, tokenAddress, payerSignsExternally } = toRefs(props);
     const closingAccount = ref(false);
     const accountAddress = ref("");
-    const owner = ref("");
+    const ownerSecret = ref("");
+    const ownerSignsExternally = ref(true);
     const destinationAccount = ref("");
 
     const onCloseAccount = async () => {
@@ -85,7 +88,9 @@ export default defineComponent({
           tokenAddress.value,
           accountAddress.value,
           destinationAccount.value,
-          owner.value
+          ownerSecret.value,
+          payerSignsExternally.value,
+          ownerSignsExternally.value
         );
         emit("update:accountAddress", accountAddress.value);
       } catch (err) {
@@ -99,8 +104,9 @@ export default defineComponent({
       closingAccount,
       accountAddress,
       onCloseAccount,
-      owner,
-      destinationAccount
+      ownerSecret,
+      destinationAccount,
+      ownerSignsExternally
     };
   }
 });

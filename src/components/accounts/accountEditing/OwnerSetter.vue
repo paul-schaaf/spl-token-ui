@@ -1,29 +1,21 @@
 <template>
   <div class="field">
     <label class="label">Account address*</label>
-    <div class="control">
-      <input
-        v-model="accountAddress"
-        class="input is-black"
-        type="text"
-        placeholder="Public Key String e.g. GsbwXfJraMomNxBcjYLcG3mxkBUiyWXAB32fGbSMQRdW"
-      />
-    </div>
+    <input
+      v-model="accountAddress"
+      class="input is-black"
+      type="text"
+      placeholder="Public Key String e.g. GsbwXfJraMomNxBcjYLcG3mxkBUiyWXAB32fGbSMQRdW"
+    />
   </div>
   <div class="field">
     <label class="label">Current owner*</label>
     <div class="control">
-      <input
-        v-model="currentOwner"
-        class="input is-black"
-        type="text"
-        placeholder="Secret (seed phrase or comma-separated array of 64 numbers)"
+      <secret-form-field
+        v-model:secret="currentOwnerSecret"
+        v-model:signExternally="currentOwnerSignsExternally"
       />
     </div>
-    <p class="help">
-      Your secret is NOT saved NOR sent anywhere. It's only used to sign the
-      owner change request fee.
-    </p>
   </div>
   <div class="field">
     <label class="label">New owner*</label>
@@ -49,11 +41,16 @@
 
 <script lang="ts">
 import { defineComponent, ref, toRefs } from "vue";
-import accountComponents from "./accountComponents";
+import accountComponents from "../accountComponents";
 import { setTokenAccountOwner } from "@/solana/token";
+import SecretFormField from "@/components/util/SecretFormField.vue";
 
 export default defineComponent({
   name: accountComponents.SetOwner,
+  components: {
+    SecretFormField
+  },
+  emits: ["update:accountAddress"],
   props: {
     payerSecret: {
       type: String,
@@ -62,13 +59,18 @@ export default defineComponent({
     tokenAddress: {
       type: String,
       required: true
+    },
+    payerSignsExternally: {
+      type: Boolean,
+      default: true
     }
   },
   setup(props, { emit }) {
-    const { payerSecret, tokenAddress } = toRefs(props);
+    const { payerSecret, tokenAddress, payerSignsExternally } = toRefs(props);
     const settingOwner = ref(false);
     const accountAddress = ref("");
-    const currentOwner = ref("");
+    const currentOwnerSecret = ref("");
+    const currentOwnerSignsExternally = ref(true);
     const newOwner = ref("");
 
     const onSetOwner = async () => {
@@ -79,8 +81,10 @@ export default defineComponent({
           payerSecret.value,
           tokenAddress.value,
           accountAddress.value,
-          currentOwner.value,
-          newOwner.value
+          currentOwnerSecret.value,
+          newOwner.value,
+          payerSignsExternally.value,
+          currentOwnerSignsExternally.value
         );
         emit("update:accountAddress", accountAddress.value);
       } catch (err) {
@@ -94,8 +98,9 @@ export default defineComponent({
       settingOwner,
       accountAddress,
       onSetOwner,
-      currentOwner,
-      newOwner
+      currentOwnerSecret,
+      newOwner,
+      currentOwnerSignsExternally
     };
   }
 });

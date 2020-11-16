@@ -1,18 +1,10 @@
 <template>
   <div class="field">
     <label class="label">Account owner*</label>
-    <div class="control">
-      <input
-        v-model="ownerAccount"
-        class="input is-black"
-        type="text"
-        placeholder="Secret (seed phrase or comma-separated array of 64 numbers)"
-      />
-    </div>
-    <p class="help">
-      Your secret is NOT saved NOR sent anywhere. It's only used to sign the
-      token burn request.
-    </p>
+    <secret-form-field
+      v-model:secret="ownerAccountSecret"
+      v-model:signExternally="ownerSignsExternally"
+    />
   </div>
   <div class="field">
     <label class="label">Account address*</label>
@@ -55,11 +47,16 @@
 <script lang="ts">
 import { defineComponent, ref, toRefs } from "vue";
 import { burnTokens } from "@/solana/token";
-import accountComponents from "./accountComponents";
+import accountComponents from "../accountComponents";
 import { u64 } from "@solana/spl-token";
+import SecretFormField from "@/components/util/SecretFormField.vue";
 
 export default defineComponent({
   name: accountComponents.Burn,
+  components: {
+    SecretFormField
+  },
+  emits: ["update:accountAddress"],
   props: {
     payerSecret: {
       type: String,
@@ -68,11 +65,16 @@ export default defineComponent({
     tokenAddress: {
       type: String,
       required: true
+    },
+    payerSignsExternally: {
+      type: Boolean,
+      default: true
     }
   },
   setup(props, { emit }) {
-    const { payerSecret, tokenAddress } = toRefs(props);
-    const ownerAccount = ref("");
+    const { payerSecret, tokenAddress, payerSignsExternally } = toRefs(props);
+    const ownerAccountSecret = ref("");
+    const ownerSignsExternally = ref(true);
     const accountAddress = ref("");
     const burningTokens = ref(false);
     const tokenAmount = ref("");
@@ -85,8 +87,10 @@ export default defineComponent({
           payerSecret.value,
           tokenAddress.value,
           accountAddress.value,
-          ownerAccount.value,
-          new u64(tokenAmount.value, 10)
+          ownerAccountSecret.value,
+          new u64(tokenAmount.value, 10),
+          payerSignsExternally.value,
+          ownerSignsExternally.value
         );
         emit("update:accountAddress", accountAddress.value);
       } catch (err) {
@@ -99,9 +103,10 @@ export default defineComponent({
     return {
       burningTokens,
       tokenAmount,
-      ownerAccount,
+      ownerAccountSecret,
       accountAddress,
-      onBurnTokens
+      onBurnTokens,
+      ownerSignsExternally
     };
   }
 });

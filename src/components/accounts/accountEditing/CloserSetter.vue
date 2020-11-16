@@ -1,30 +1,23 @@
 <template>
   <div class="field">
     <label class="label">Account address*</label>
-    <div class="control">
-      <input
-        v-model="accountAddress"
-        class="input is-black"
-        type="text"
-        placeholder="Public Key String e.g. GsbwXfJraMomNxBcjYLcG3mxkBUiyWXAB32fGbSMQRdW"
-      />
-    </div>
+    <input
+      v-model="accountAddress"
+      class="input is-black"
+      type="text"
+      placeholder="Public Key String e.g. GsbwXfJraMomNxBcjYLcG3mxkBUiyWXAB32fGbSMQRdW"
+    />
   </div>
   <div class="field">
     <label class="label">Current close authority or owner*</label>
-    <div class="control">
-      <input
-        v-model="currentCloser"
-        class="input is-black"
-        type="text"
-        placeholder="Secret (seed phrase or comma-separated array of 64 numbers)"
-      />
-    </div>
-    <p class="help">
-      Your secret is NOT saved NOR sent anywhere. It's only used to sign the
-      closer change request fee. The owner can only set the close authority if
-      there is no close authority or it's the owner themselves.
-    </p>
+    <secret-form-field
+      v-model:secret="currentCloserSecret"
+      v-model:signExternally="currentCloserSignsExternally"
+      externalHint=". The owner can only set the close authority if
+      there is no close authority or it's the owner themselves."
+      manualHint="The owner can only set the close authority if
+      there is no close authority or it's the owner themselves."
+    />
   </div>
   <div class="field">
     <label class="label">New close authority*</label>
@@ -54,11 +47,16 @@
 
 <script lang="ts">
 import { defineComponent, ref, toRefs } from "vue";
-import accountComponents from "./accountComponents";
+import accountComponents from "../accountComponents";
 import { setTokenAccountCloser } from "@/solana/token";
+import SecretFormField from "@/components/util/SecretFormField.vue";
 
 export default defineComponent({
   name: accountComponents.SetCloser,
+  components: {
+    SecretFormField
+  },
+  emits: ["update:accountAddress"],
   props: {
     payerSecret: {
       type: String,
@@ -67,13 +65,18 @@ export default defineComponent({
     tokenAddress: {
       type: String,
       required: true
+    },
+    payerSignsExternally: {
+      type: Boolean,
+      default: true
     }
   },
   setup(props, { emit }) {
-    const { payerSecret, tokenAddress } = toRefs(props);
+    const { payerSecret, tokenAddress, payerSignsExternally } = toRefs(props);
     const settingCloser = ref(false);
     const accountAddress = ref("");
-    const currentCloser = ref("");
+    const currentCloserSecret = ref("");
+    const currentCloserSignsExternally = ref(true);
     const newCloser = ref("");
 
     const onSetCloser = async () => {
@@ -84,8 +87,10 @@ export default defineComponent({
           payerSecret.value,
           tokenAddress.value,
           accountAddress.value,
-          currentCloser.value,
-          newCloser.value
+          currentCloserSecret.value,
+          newCloser.value,
+          payerSignsExternally.value,
+          currentCloserSignsExternally.value
         );
         emit("update:accountAddress", accountAddress.value);
       } catch (err) {
@@ -99,8 +104,9 @@ export default defineComponent({
       settingCloser,
       accountAddress,
       onSetCloser,
-      currentCloser,
-      newCloser
+      currentCloserSecret,
+      newCloser,
+      currentCloserSignsExternally
     };
   }
 });
