@@ -1,59 +1,65 @@
-import {
-  Account,
-  PublicKey,
-  SystemProgram,
-  Transaction
-} from "@solana/web3.js";
+import { Account, PublicKey, SystemProgram } from "@solana/web3.js";
 import { AuthorityType, MintLayout, Token, u64 } from "@solana/spl-token";
 import { getConnection } from "../solana/connection";
 import { createAccount } from "./account";
-//@ts-expect-error
-import Wallet from "@project-serum/sol-wallet-adapter";
+import { getWallet, sendTxUsingExternalSignature } from "./externalSignature";
 
 const TOKEN_PROGRAM_ID = new PublicKey(
   "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
 );
 
-const PROVIDER_URL = "https://www.sollet.io";
-let wallet = new Wallet(PROVIDER_URL, "mainnet-beta");
-
 export const createNewToken = async (
   feePayer: string,
   mintAuthority: string,
   freezeAuthority: string,
-  decimals: number
+  decimals: number,
+  signExternally: boolean
 ) => {
   const connection = getConnection();
-  if (!wallet.connected) {
-    await wallet.connect();
-  }
+  if (signExternally) {
+    const wallet = getWallet();
+    if (!wallet.connected && signExternally) {
+      await wallet.connect();
+    }
 
-  const mintAccount = new Account();
-  const createAccIx = SystemProgram.createAccount({
-    fromPubkey: wallet.publicKey,
-    newAccountPubkey: mintAccount.publicKey,
-    lamports: await connection.getMinimumBalanceForRentExemption(
-      MintLayout.span,
-      "singleGossip"
-    ),
-    space: MintLayout.span,
-    programId: TOKEN_PROGRAM_ID
-  });
-  const initMintIx = Token.createInitMintInstruction(
-    TOKEN_PROGRAM_ID,
-    mintAccount.publicKey,
-    decimals,
-    new PublicKey(mintAuthority),
-    freezeAuthority ? new PublicKey(freezeAuthority) : null
-  );
-  let tx = new Transaction().add(createAccIx, initMintIx);
-  tx.setSigners(wallet.publicKey, mintAccount.publicKey);
-  tx.recentBlockhash = (await connection.getRecentBlockhash("max")).blockhash;
-  let signed = await wallet.signTransaction(tx);
-  signed.partialSign(mintAccount);
-  let txid = await connection.sendRawTransaction(signed.serialize());
-  await connection.confirmTransaction(txid, "singleGossip");
-  return mintAccount.publicKey.toString();
+    const mintAccount = new Account();
+    const createAccIx = SystemProgram.createAccount({
+      fromPubkey: wallet.publicKey,
+      newAccountPubkey: mintAccount.publicKey,
+      lamports: await connection.getMinimumBalanceForRentExemption(
+        MintLayout.span,
+        "singleGossip"
+      ),
+      space: MintLayout.span,
+      programId: TOKEN_PROGRAM_ID
+    });
+
+    const initMintIx = Token.createInitMintInstruction(
+      TOKEN_PROGRAM_ID,
+      mintAccount.publicKey,
+      decimals,
+      new PublicKey(mintAuthority),
+      freezeAuthority ? new PublicKey(freezeAuthority) : null
+    );
+
+    await sendTxUsingExternalSignature(
+      [createAccIx, initMintIx],
+      [mintAccount],
+      connection,
+      wallet
+    );
+    return mintAccount.publicKey.toString();
+  } else {
+    const token = await Token.createMint(
+      getConnection(),
+      await createAccount(feePayer),
+      new PublicKey(mintAuthority),
+      freezeAuthority ? new PublicKey(freezeAuthority) : null,
+      decimals,
+      TOKEN_PROGRAM_ID
+    );
+    return token.publicKey.toString();
+  }
 };
 
 export const editToken = async (

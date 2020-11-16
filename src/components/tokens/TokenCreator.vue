@@ -106,7 +106,8 @@ export default {
           payerSecret.value,
           mintAuthority.value,
           freezeAuthority.value,
-          tokenDecimals.value
+          tokenDecimals.value,
+          signExternally.value
         );
         tokenLink.value = `https://explorer.solana.com/address/${createdTokenAddress.value}?cluster=${chosenCluster.value}`;
       } catch (err) {
