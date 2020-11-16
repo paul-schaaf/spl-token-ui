@@ -274,25 +274,57 @@ export const thawAccount = async (
 export const transferTokens = async (
   feePayer: string,
   tokenAddress: string,
-  sourceAccount: string,
-  destAccount: string,
+  sourceAddress: string,
+  destAddress: string,
   owner: string,
-  amount: u64
+  amount: u64,
+  feePayerSignsExternally: boolean,
+  accountOwnerSignsExternally: boolean
 ) => {
-  const token = new Token(
-    getConnection(),
-    new PublicKey(tokenAddress),
-    TOKEN_PROGRAM_ID,
-    await createAccount(feePayer)
-  );
+  const tokenMintPubkey = new PublicKey(tokenAddress);
+  const sourcePubkey = new PublicKey(sourceAddress);
+  const destinationPubkey = new PublicKey(destAddress);
+  const connection = getConnection();
 
-  await token.transfer(
-    new PublicKey(sourceAccount),
-    new PublicKey(destAccount),
-    await createAccount(owner),
-    [],
-    amount
-  );
+  if (feePayerSignsExternally || accountOwnerSignsExternally) {
+    const [wallet, connectToWallet] = useWallet();
+    await connectToWallet();
+    const ownerAccountOrWallet = accountOwnerSignsExternally
+      ? wallet
+      : await createAccount(owner);
+
+    const transferIx = Token.createTransferInstruction(
+      TOKEN_PROGRAM_ID,
+      sourcePubkey,
+      destinationPubkey,
+      ownerAccountOrWallet.publicKey,
+      [],
+      amount
+    );
+
+    await sendTxUsingExternalSignature(
+      [transferIx],
+      connection,
+      feePayerSignsExternally ? null : await createAccount(feePayer),
+      accountOwnerSignsExternally ? [] : [ownerAccountOrWallet],
+      wallet
+    );
+  } else {
+    const token = new Token(
+      connection,
+      tokenMintPubkey,
+      TOKEN_PROGRAM_ID,
+      await createAccount(feePayer)
+    );
+
+    await token.transfer(
+      new PublicKey(sourceAddress),
+      destinationPubkey,
+      await createAccount(owner),
+      [],
+      amount
+    );
+  }
 };
 
 export const setTokenAccountOwner = async (
