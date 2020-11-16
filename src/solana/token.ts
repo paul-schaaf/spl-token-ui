@@ -502,25 +502,55 @@ export const burnTokens = async (
 };
 
 export const closeAccount = async (
-  feePayer: string,
-  tokenAddress: string,
-  tokenAccount: string,
-  destinationAccount: string,
-  owner: string
+  feePayerSecret: string,
+  tokenMintAddress: string,
+  tokenAccountAddress: string,
+  destinationAccountAddress: string,
+  ownerSecret: string,
+  feePayerSignsExternally: boolean,
+  accountOwnerSignsExternally: boolean
 ) => {
-  const token = new Token(
-    getConnection(),
-    new PublicKey(tokenAddress),
-    TOKEN_PROGRAM_ID,
-    await createAccount(feePayer)
-  );
+  const connection = getConnection();
+  const tokenAccountPubkey = new PublicKey(tokenAccountAddress);
+  const destinationAccountPubkey = new PublicKey(destinationAccountAddress);
+  if (feePayerSignsExternally || accountOwnerSignsExternally) {
+    const [wallet, connectToWallet] = useWallet();
+    await connectToWallet();
 
-  await token.closeAccount(
-    new PublicKey(tokenAccount),
-    new PublicKey(destinationAccount),
-    await createAccount(owner),
-    []
-  );
+    const currentOwnerAccOrWallet = accountOwnerSignsExternally
+      ? wallet
+      : await createAccount(ownerSecret);
+
+    const ix = Token.createCloseAccountInstruction(
+      TOKEN_PROGRAM_ID,
+      tokenAccountPubkey,
+      destinationAccountPubkey,
+      currentOwnerAccOrWallet.publicKey,
+      []
+    );
+    await sendTxUsingExternalSignature(
+      [ix],
+      connection,
+      feePayerSignsExternally ? null : await createAccount(feePayerSecret),
+      accountOwnerSignsExternally ? [] : [currentOwnerAccOrWallet],
+      wallet
+    );
+  } else {
+    const tokenMintPubkey = new PublicKey(tokenMintAddress);
+    const token = new Token(
+      connection,
+      tokenMintPubkey,
+      TOKEN_PROGRAM_ID,
+      await createAccount(feePayerSecret)
+    );
+
+    await token.closeAccount(
+      tokenAccountPubkey,
+      destinationAccountPubkey,
+      await createAccount(ownerSecret),
+      []
+    );
+  }
 };
 
 export const setTokenAccountCloser = async (
