@@ -1,3 +1,6 @@
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
+  .BundleAnalyzerPlugin;
+
 module.exports = {
   chainWebpack: config => {
     // title that shows up in different places e.g. the tab title
@@ -16,5 +19,9 @@ module.exports = {
         // modify the options...
         return options;
       });
+  },
+  configureWebpack: {
+    // this check exists so e.g. Netlify doesn't hang during deploy
+    plugins: process.env.DEPLOY ? [] : [new BundleAnalyzerPlugin()]
   }
 };
