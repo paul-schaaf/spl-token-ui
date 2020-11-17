@@ -12,6 +12,7 @@
         <a :href="accountLink" target="_blank" rel="noopener noreferrer">{{
           accountAddress
         }}</a>
+        <copy-icon class="ml-1" :value="accountAddress" />
       </div>
     </article>
     <article v-else-if="errorMessage" class="message is-danger">
@@ -82,6 +83,7 @@ import CloserSetter from "./CloserSetter.vue";
 import { splitAtUppercase } from "@/util/stringFormatting";
 import * as SolanaErrorHandler from "@/solana/SolanaErrorHandler";
 import SecretFormField from "@/components/util/SecretFormField.vue";
+import CopyIcon from "@/components/util/CopyIcon.vue";
 
 export default defineComponent({
   components: {
@@ -93,7 +95,8 @@ export default defineComponent({
     TokenBurner,
     AccountCloser,
     CloserSetter,
-    SecretFormField
+    SecretFormField,
+    CopyIcon
   },
   setup() {
     const payerSecret = ref("");

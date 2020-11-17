@@ -12,6 +12,7 @@
         <a :href="tokenLink" target="_blank" rel="noopener noreferrer">{{
           createdTokenAddress
         }}</a>
+        <copy-icon class="ml-1" :value="createdTokenAddress" />
       </div>
     </article>
     <article v-else-if="errorMessage" class="message is-danger">
@@ -80,10 +81,12 @@ import { createNewToken } from "@/solana/token";
 import { chosenCluster } from "@/solana/connection";
 import * as SolanaErrorHandler from "@/solana/SolanaErrorHandler";
 import SecretFormField from "@/components/util/SecretFormField.vue";
+import CopyIcon from "@/components/util/CopyIcon.vue";
 
 export default {
   components: {
-    SecretFormField
+    SecretFormField,
+    CopyIcon
   },
   setup() {
     const payerSecret = ref("");

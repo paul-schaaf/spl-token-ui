@@ -12,6 +12,7 @@
         <a :href="tokenLink" target="_blank" rel="noopener noreferrer">{{
           editedTokenAddress
         }}</a>
+        <copy-icon class="ml-1" :value="editedTokenAddress" />
       </div>
     </article>
     <article v-else-if="errorMessage" class="message is-danger">
@@ -94,11 +95,13 @@ import { AuthorityType } from "@solana/spl-token";
 import Toggle from "@/components/util/Toggle.vue";
 import * as SolanaErrorHandler from "@/solana/SolanaErrorHandler";
 import SecretFormField from "@/components/util/SecretFormField.vue";
+import CopyIcon from "@/components/util/CopyIcon.vue";
 
 export default {
   components: {
     Toggle,
-    SecretFormField
+    SecretFormField,
+    CopyIcon
   },
   setup() {
     const payerSecret = ref("");
