@@ -8,14 +8,7 @@
   </div>
   <div class="field">
     <label class="label">Account address*</label>
-    <div class="control">
-      <input
-        v-model="accountAddress"
-        class="input is-black"
-        type="text"
-        placeholder="Public Key String e.g. GsbwXfJraMomNxBcjYLcG3mxkBUiyWXAB32fGbSMQRdW"
-      />
-    </div>
+    <public-key-form-field v-model:address="accountAddress" />
   </div>
   <div class="field">
     <label class="label">Amount*</label>
@@ -50,11 +43,13 @@ import { burnTokens } from "@/solana/token";
 import accountComponents from "../accountComponents";
 import { u64 } from "@solana/spl-token";
 import SecretFormField from "@/components/util/SecretFormField.vue";
+import PublicKeyFormField from "@/components/util/PublicKeyFormField.vue";
 
 export default defineComponent({
   name: accountComponents.Burn,
   components: {
-    SecretFormField
+    SecretFormField,
+    PublicKeyFormField
   },
   emits: ["update:accountAddress"],
   props: {

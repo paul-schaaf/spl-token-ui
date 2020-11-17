@@ -63,17 +63,11 @@
       <label class="label"
         >New {{ editingFreezeAuthority ? "freeze" : "mint" }} authority</label
       >
-      <div class="control">
-        <input
-          v-model="newAuthority"
-          class="input is-black"
-          type="text"
-          placeholder="Public Key String e.g. GsbwXfJraMomNxBcjYLcG3mxkBUiyWXAB32fGbSMQRdW"
-        />
-      </div>
-      <p class="help">
-        You can leave this field empty to remove the authority from the token.
-      </p>
+      <public-key-form-field
+        v-model:address="newAuthorityAddress"
+        derivePublicKey
+        hint=". You can leave this field empty to remove the authority from the token."
+      />
     </div>
     <div style="display: flex" class="control is-justify-content-center mt-5">
       <button
@@ -96,12 +90,14 @@ import Toggle from "@/components/util/Toggle.vue";
 import * as SolanaErrorHandler from "@/solana/SolanaErrorHandler";
 import SecretFormField from "@/components/util/SecretFormField.vue";
 import CopyIcon from "@/components/util/CopyIcon.vue";
+import PublicKeyFormField from "@/components/util/PublicKeyFormField.vue";
 
 export default {
   components: {
     Toggle,
     SecretFormField,
-    CopyIcon
+    CopyIcon,
+    PublicKeyFormField
   },
   setup() {
     const payerSecret = ref("");
@@ -113,7 +109,7 @@ export default {
     const currentAuthority = ref("");
     const currentAuthoritySignsExternally = ref(true);
 
-    const newAuthority = ref("");
+    const newAuthorityAddress = ref("");
     const editedTokenAddress = ref("");
     const tokenLink = ref("");
     const editingToken = ref(false);
@@ -131,7 +127,7 @@ export default {
         await editToken(
           payerSecret.value,
           tokenAddress.value,
-          newAuthority.value,
+          newAuthorityAddress.value,
           currentAuthority.value,
           authorityType,
           feePayerSignsExternally.value,
@@ -148,7 +144,7 @@ export default {
 
     return {
       payerSecret,
-      newAuthority,
+      newAuthorityAddress,
       currentAuthority,
       editingFreezeAuthority,
       tokenAddress,

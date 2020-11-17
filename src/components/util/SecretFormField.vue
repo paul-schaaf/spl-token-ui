@@ -5,7 +5,7 @@
 
   <div v-else style="display: flex" class="control">
     <input
-      :input="secret"
+      :value="secret"
       class="input is-black"
       type="text"
       placeholder="Secret (seed phrase or Ed25519 comma-separated array of 64 numbers)"

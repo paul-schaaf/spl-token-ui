@@ -8,25 +8,11 @@
   </div>
   <div class="field">
     <label class="label">Source account*</label>
-    <div class="control">
-      <input
-        v-model="sourceAccount"
-        class="input is-black"
-        type="text"
-        placeholder="Public Key String e.g. GsbwXfJraMomNxBcjYLcG3mxkBUiyWXAB32fGbSMQRdW"
-      />
-    </div>
+    <public-key-form-field v-model:address="sourceAccountAddress" />
   </div>
   <div class="field">
     <label class="label">Destination account*</label>
-    <div class="control">
-      <input
-        v-model="destinationAccount"
-        class="input is-black"
-        type="text"
-        placeholder="Public Key String e.g. GsbwXfJraMomNxBcjYLcG3mxkBUiyWXAB32fGbSMQRdW"
-      />
-    </div>
+    <public-key-form-field v-model:address="destinationAccountAddress" />
   </div>
   <div class="field">
     <label class="label">Amount*</label>
@@ -61,9 +47,10 @@ import { transferTokens } from "@/solana/token";
 import accountComponents from "../accountComponents";
 import { u64 } from "@solana/spl-token";
 import SecretFormField from "@/components/util/SecretFormField.vue";
+import PublicKeyFormField from "@/components/util/PublicKeyFormField.vue";
 
 export default defineComponent({
-  components: { SecretFormField },
+  components: { SecretFormField, PublicKeyFormField },
   name: accountComponents.Transfer,
   emits: ["update:accountAddress"],
   props: {
@@ -71,7 +58,6 @@ export default defineComponent({
       type: String,
       required: true
     },
-
     payerSignsExternally: {
       type: Boolean,
       default: true
@@ -82,8 +68,8 @@ export default defineComponent({
     const ownerAccountSecret = ref("");
     const ownerSignsExternally = ref(true);
 
-    const destinationAccount = ref("");
-    const sourceAccount = ref("");
+    const destinationAccountAddress = ref("");
+    const sourceAccountAddress = ref("");
     const transferring = ref(false);
     const tokenAmount = ref("");
 
@@ -93,14 +79,14 @@ export default defineComponent({
       try {
         await transferTokens(
           payerSecret.value,
-          sourceAccount.value,
-          destinationAccount.value,
+          sourceAccountAddress.value,
+          destinationAccountAddress.value,
           ownerAccountSecret.value,
           new u64(tokenAmount.value, 10),
           payerSignsExternally.value,
           ownerSignsExternally.value
         );
-        emit("update:accountAddress", destinationAccount.value);
+        emit("update:accountAddress", destinationAccountAddress.value);
       } catch (err) {
         transferring.value = false;
         throw err;
@@ -109,8 +95,8 @@ export default defineComponent({
     };
 
     return {
-      destinationAccount,
-      sourceAccount,
+      destinationAccountAddress,
+      sourceAccountAddress,
       transferring,
       onTransferTokens,
       tokenAmount,

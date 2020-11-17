@@ -8,14 +8,7 @@
   </div>
   <div class="field">
     <label class="label">Destination account*</label>
-    <div class="control">
-      <input
-        v-model="destinationAccount"
-        class="input is-black"
-        type="text"
-        placeholder="Public Key String e.g. GsbwXfJraMomNxBcjYLcG3mxkBUiyWXAB32fGbSMQRdW"
-      />
-    </div>
+    <public-key-form-field v-model:address="destinationAccountAddress" />
   </div>
   <div class="field">
     <label class="label">Amount*</label>
@@ -50,11 +43,13 @@ import { mintToken } from "@/solana/token";
 import accountComponents from "../accountComponents";
 import { u64 } from "@solana/spl-token";
 import SecretFormField from "@/components/util/SecretFormField.vue";
+import PublicKeyFormField from "@/components/util/PublicKeyFormField.vue";
 
 export default defineComponent({
   name: accountComponents.Mint,
   components: {
-    SecretFormField
+    SecretFormField,
+    PublicKeyFormField
   },
   emits: ["update:accountAddress"],
   props: {
@@ -72,7 +67,7 @@ export default defineComponent({
     const mintAuthoritySecret = ref("");
     const mintAuthoritySignsExternally = ref(true);
 
-    const destinationAccount = ref("");
+    const destinationAccountAddress = ref("");
     const mintingToAccount = ref(false);
     const tokenAmount = ref("");
 
@@ -83,12 +78,12 @@ export default defineComponent({
         await mintToken(
           payerSecret.value,
           mintAuthoritySecret.value,
-          destinationAccount.value,
+          destinationAccountAddress.value,
           new u64(tokenAmount.value, 10),
           payerSignsExternally.value,
           mintAuthoritySignsExternally.value
         );
-        emit("update:accountAddress", destinationAccount.value);
+        emit("update:accountAddress", destinationAccountAddress.value);
       } catch (err) {
         mintingToAccount.value = false;
         throw err;
@@ -97,7 +92,7 @@ export default defineComponent({
     };
 
     return {
-      destinationAccount,
+      destinationAccountAddress,
       mintingToAccount,
       mintToAccount,
       mintAuthoritySecret,

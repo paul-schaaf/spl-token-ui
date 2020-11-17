@@ -30,25 +30,14 @@
     </div>
     <div class="field">
       <label class="label">Token mint address*</label>
-      <div class="control">
-        <input
-          v-model="tokenAddress"
-          class="input is-black"
-          type="text"
-          placeholder="Token address e.g. 9rJcHifFVNmZed1KgAaRMmpRbnkaBgn5wZZcK1A6CDiC"
-        />
-      </div>
+      <public-key-form-field v-model:address="tokenMintAddress" />
     </div>
     <div class="field">
       <label class="label">Account owner*</label>
-      <div class="control">
-        <input
-          v-model="accountOwner"
-          class="input is-black"
-          type="text"
-          placeholder="Public Key String e.g. GsbwXfJraMomNxBcjYLcG3mxkBUiyWXAB32fGbSMQRdW"
-        />
-      </div>
+      <public-key-form-field
+        v-model:address="accountOwnerAddress"
+        derivePublicKey
+      />
     </div>
     <div style="display: flex" class="control is-justify-content-center mt-5">
       <button
@@ -69,17 +58,19 @@ import { chosenCluster } from "@/solana/connection";
 import * as SolanaErrorHandler from "@/solana/SolanaErrorHandler";
 import SecretFormField from "@/components/util/SecretFormField.vue";
 import CopyIcon from "@/components/util/CopyIcon.vue";
+import PublicKeyFormField from "@/components/util/PublicKeyFormField.vue";
 
 export default {
   components: {
     SecretFormField,
-    CopyIcon
+    CopyIcon,
+    PublicKeyFormField
   },
   setup() {
     const payerSecret = ref("");
     const payerSignsExternally = ref(true);
-    const tokenAddress = ref("");
-    const accountOwner = ref("");
+    const tokenMintAddress = ref("");
+    const accountOwnerAddress = ref("");
     const creatingAccount = ref(false);
     const accountLink = ref("");
     const createdAccountAddress = ref("");
@@ -92,8 +83,8 @@ export default {
       try {
         createdAccountAddress.value = await createTokenAccount(
           payerSecret.value,
-          tokenAddress.value,
-          accountOwner.value,
+          tokenMintAddress.value,
+          accountOwnerAddress.value,
           payerSignsExternally.value
         );
         accountLink.value = `https://explorer.solana.com/address/${createdAccountAddress.value}?cluster=${chosenCluster.value}`;
@@ -106,8 +97,8 @@ export default {
 
     return {
       payerSecret,
-      tokenAddress,
-      accountOwner,
+      tokenMintAddress,
+      accountOwnerAddress,
       creatingAccount,
       createAccount,
       createdAccountAddress,

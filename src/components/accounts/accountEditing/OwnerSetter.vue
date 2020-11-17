@@ -1,12 +1,7 @@
 <template>
   <div class="field">
     <label class="label">Account address*</label>
-    <input
-      v-model="accountAddress"
-      class="input is-black"
-      type="text"
-      placeholder="Public Key String e.g. GsbwXfJraMomNxBcjYLcG3mxkBUiyWXAB32fGbSMQRdW"
-    />
+    <public-key-form-field v-model:address="accountAddress" />
   </div>
   <div class="field">
     <label class="label">Current owner*</label>
@@ -19,14 +14,7 @@
   </div>
   <div class="field">
     <label class="label">New owner*</label>
-    <div class="control">
-      <input
-        v-model="newOwner"
-        class="input is-black"
-        type="text"
-        placeholder="Public Key String e.g. GsbwXfJraMomNxBcjYLcG3mxkBUiyWXAB32fGbSMQRdW"
-      />
-    </div>
+    <public-key-form-field derivePublicKey v-model:address="newOwnerAddress" />
   </div>
   <div style="display: flex" class="control is-justify-content-center mt-5">
     <button
@@ -44,11 +32,13 @@ import { defineComponent, ref, toRefs } from "vue";
 import accountComponents from "../accountComponents";
 import { setTokenAccountOwner } from "@/solana/token";
 import SecretFormField from "@/components/util/SecretFormField.vue";
+import PublicKeyFormField from "@/components/util/PublicKeyFormField.vue";
 
 export default defineComponent({
   name: accountComponents.SetOwner,
   components: {
-    SecretFormField
+    SecretFormField,
+    PublicKeyFormField
   },
   emits: ["update:accountAddress"],
   props: {
@@ -56,7 +46,6 @@ export default defineComponent({
       type: String,
       required: true
     },
-
     payerSignsExternally: {
       type: Boolean,
       default: true
@@ -68,7 +57,7 @@ export default defineComponent({
     const accountAddress = ref("");
     const currentOwnerSecret = ref("");
     const currentOwnerSignsExternally = ref(true);
-    const newOwner = ref("");
+    const newOwnerAddress = ref("");
 
     const onSetOwner = async () => {
       settingOwner.value = true;
@@ -78,7 +67,7 @@ export default defineComponent({
           payerSecret.value,
           accountAddress.value,
           currentOwnerSecret.value,
-          newOwner.value,
+          newOwnerAddress.value,
           payerSignsExternally.value,
           currentOwnerSignsExternally.value
         );
@@ -95,7 +84,7 @@ export default defineComponent({
       accountAddress,
       onSetOwner,
       currentOwnerSecret,
-      newOwner,
+      newOwnerAddress,
       currentOwnerSignsExternally
     };
   }

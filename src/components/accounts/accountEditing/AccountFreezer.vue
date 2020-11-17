@@ -8,14 +8,7 @@
   </div>
   <div class="field">
     <label class="label">Account to freeze*</label>
-    <div class="control">
-      <input
-        v-model="accountToFreeze"
-        class="input is-black"
-        type="text"
-        placeholder="Public Key String e.g. GsbwXfJraMomNxBcjYLcG3mxkBUiyWXAB32fGbSMQRdW"
-      />
-    </div>
+    <public-key-form-field v-model:address="accountToFreezeAddress" />
   </div>
   <div style="display: flex" class="control is-justify-content-center mt-5">
     <button
@@ -33,11 +26,13 @@ import { defineComponent, ref, toRefs } from "vue";
 import accountComponents from "../accountComponents";
 import { freezeAccount } from "@/solana/token";
 import SecretFormField from "@/components/util/SecretFormField.vue";
+import PublicKeyFormField from "@/components/util/PublicKeyFormField.vue";
 
 export default defineComponent({
   name: accountComponents.Freeze,
   components: {
-    SecretFormField
+    SecretFormField,
+    PublicKeyFormField
   },
   emits: ["update:accountAddress"],
   props: {
@@ -54,7 +49,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const { payerSecret, payerSignsExternally } = toRefs(props);
     const freezingAccount = ref(false);
-    const accountToFreeze = ref("");
+    const accountToFreezeAddress = ref("");
     const freezeAuthoritySecret = ref("");
     const freezeAuthoritySignsExternally = ref(true);
 
@@ -64,12 +59,12 @@ export default defineComponent({
       try {
         await freezeAccount(
           payerSecret.value,
-          accountToFreeze.value,
+          accountToFreezeAddress.value,
           freezeAuthoritySecret.value,
           payerSignsExternally.value,
           freezeAuthoritySignsExternally.value
         );
-        emit("update:accountAddress", accountToFreeze.value);
+        emit("update:accountAddress", accountToFreezeAddress.value);
       } catch (err) {
         freezingAccount.value = false;
         throw err;
@@ -79,7 +74,7 @@ export default defineComponent({
 
     return {
       freezingAccount,
-      accountToFreeze,
+      accountToFreezeAddress,
       onFreezeAccount,
       freezeAuthoritySecret,
       freezeAuthoritySignsExternally
