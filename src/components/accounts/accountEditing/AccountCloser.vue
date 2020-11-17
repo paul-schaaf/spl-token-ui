@@ -1,12 +1,7 @@
 <template>
   <div class="field">
     <label class="label">Account address*</label>
-    <input
-      v-model="accountAddress"
-      class="input is-black"
-      type="text"
-      placeholder="Public Key String e.g. GsbwXfJraMomNxBcjYLcG3mxkBUiyWXAB32fGbSMQRdW"
-    />
+    <public-key-form-field v-model:address="accountAddress" />
   </div>
   <div class="field">
     <label class="label"> Owner or close authority*</label>
@@ -21,18 +16,8 @@
   </div>
   <div class="field">
     <label class="label">Destination account*</label>
-    <div class="control">
-      <input
-        v-model="destinationAccountAddress"
-        class="input is-black"
-        type="text"
-        placeholder="Public Key String e.g. GsbwXfJraMomNxBcjYLcG3mxkBUiyWXAB32fGbSMQRdW"
-      />
-    </div>
-    <p class="help">
-      This is the account that your rent reserve for the closed account gets
-      sent to.
-    </p>
+    <public-key-form-field derivePublicKey v-model:address="destinationAccountAddress" hint=". This is the account that your rent reserve for the closed account gets
+      sent to."/>
   </div>
   <div style="display: flex" class="control is-justify-content-center mt-5">
     <button
@@ -50,11 +35,13 @@ import { defineComponent, ref, toRefs } from "vue";
 import accountComponents from "../accountComponents";
 import { closeAccount } from "@/solana/token";
 import SecretFormField from "@/components/util/SecretFormField.vue";
+import PublicKeyFormField from "@/components/util/PublicKeyFormField.vue";
 
 export default defineComponent({
   name: accountComponents.Close,
   components: {
-    SecretFormField
+    SecretFormField,
+    PublicKeyFormField
   },
   emits: ["update:accountAddress"],
   props: {
