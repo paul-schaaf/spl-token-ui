@@ -15,7 +15,7 @@
       >{{ hint }}</span
     >
   </div>
-</template> 
+</template>
 
 <script lang="ts">
 import { useWallet } from "@/solana/externalWallet";

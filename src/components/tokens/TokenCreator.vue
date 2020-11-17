@@ -29,28 +29,18 @@
     </div>
     <div class="field">
       <label class="label">Mint authority*</label>
-      <div class="control">
-        <input
-          v-model="mintAuthority"
-          class="input is-black"
-          type="text"
-          placeholder="Public Key String e.g. GsbwXfJraMomNxBcjYLcG3mxkBUiyWXAB32fGbSMQRdW"
-        />
-      </div>
+      <public-key-form-field
+        v-model:address="mintAuthorityAddress"
+        :derivePublicKey="true"
+      />
     </div>
     <div class="field">
       <label class="label">Freeze authority</label>
-      <div class="control">
-        <input
-          v-model="freezeAuthority"
-          class="input is-black"
-          type="text"
-          placeholder="Public Key String e.g. GsbwXfJraMomNxBcjYLcG3mxkBUiyWXAB32fGbSMQRdW"
-        />
-      </div>
-      <p class="help">
-        You can leave this empty if you don't want to set a freeze authority
-      </p>
+      <public-key-form-field
+        v-model:address="freezeAuthorityAddress"
+        :derivePublicKey="true"
+        hint=". You can leave this empty if you don't want to set a freeze authority"
+      />
     </div>
     <div class="field">
       <label class="label">Decimals*</label>
@@ -82,16 +72,18 @@ import { chosenCluster } from "@/solana/connection";
 import * as SolanaErrorHandler from "@/solana/SolanaErrorHandler";
 import SecretFormField from "@/components/util/SecretFormField.vue";
 import CopyIcon from "@/components/util/CopyIcon.vue";
+import PublicKeyFormField from "@/components/util/PublicKeyFormField.vue";
 
 export default {
   components: {
     SecretFormField,
-    CopyIcon
+    CopyIcon,
+    PublicKeyFormField
   },
   setup() {
     const payerSecret = ref("");
-    const mintAuthority = ref("");
-    const freezeAuthority = ref("");
+    const mintAuthorityAddress = ref("");
+    const freezeAuthorityAddress = ref("");
     const tokenDecimals = ref(0);
     const createdTokenAddress = ref("");
     const creatingToken = ref(false);
@@ -107,8 +99,8 @@ export default {
       try {
         createdTokenAddress.value = await createNewToken(
           payerSecret.value,
-          mintAuthority.value,
-          freezeAuthority.value,
+          mintAuthorityAddress.value,
+          freezeAuthorityAddress.value,
           tokenDecimals.value,
           signExternally.value
         );
@@ -122,8 +114,8 @@ export default {
 
     return {
       payerSecret,
-      mintAuthority,
-      freezeAuthority,
+      mintAuthorityAddress,
+      freezeAuthorityAddress,
       tokenDecimals,
       createdTokenAddress,
       createToken,
