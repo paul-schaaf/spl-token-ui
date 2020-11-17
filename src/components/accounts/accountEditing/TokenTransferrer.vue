@@ -8,25 +8,11 @@
   </div>
   <div class="field">
     <label class="label">Source account*</label>
-    <div class="control">
-      <input
-        v-model="sourceAccountAddress"
-        class="input is-black"
-        type="text"
-        placeholder="Public Key String e.g. GsbwXfJraMomNxBcjYLcG3mxkBUiyWXAB32fGbSMQRdW"
-      />
-    </div>
+        <public-key-form-field derivePublicKey v-model:address="sourceAccountAddress" />
   </div>
   <div class="field">
     <label class="label">Destination account*</label>
-    <div class="control">
-      <input
-        v-model="destinationAccountAddress"
-        class="input is-black"
-        type="text"
-        placeholder="Public Key String e.g. GsbwXfJraMomNxBcjYLcG3mxkBUiyWXAB32fGbSMQRdW"
-      />
-    </div>
+    <public-key-form-field derivePublicKey v-model:address="destinationAccountAddress" />
   </div>
   <div class="field">
     <label class="label">Amount*</label>
@@ -61,9 +47,10 @@ import { transferTokens } from "@/solana/token";
 import accountComponents from "../accountComponents";
 import { u64 } from "@solana/spl-token";
 import SecretFormField from "@/components/util/SecretFormField.vue";
+import PublicKeyFormField from "@/components/util/PublicKeyFormField.vue";
 
 export default defineComponent({
-  components: { SecretFormField },
+  components: { SecretFormField, PublicKeyFormField },
   name: accountComponents.Transfer,
   emits: ["update:accountAddress"],
   props: {
@@ -71,7 +58,6 @@ export default defineComponent({
       type: String,
       required: true
     },
-
     payerSignsExternally: {
       type: Boolean,
       default: true
