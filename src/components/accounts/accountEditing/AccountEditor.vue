@@ -27,17 +27,6 @@
         v-model:signExternally="payerSignsExternally"
       />
     </div>
-    <div class="field">
-      <label class="label">Token mint address*</label>
-      <div class="control">
-        <input
-          v-model="tokenAddress"
-          class="input is-black"
-          type="text"
-          placeholder="Token address e.g. 9rJcHifFVNmZed1KgAaRMmpRbnkaBgn5wZZcK1A6CDiC"
-        />
-      </div>
-    </div>
     <div
       class="buttons is-justify-content-center"
       style="display: flex; margin-top: 35px"
@@ -58,7 +47,6 @@
       <component
         :is="currentAccountComponent"
         :payerSecret="payerSecret"
-        :tokenAddress="tokenAddress"
         :payerSignsExternally="payerSignsExternally"
         @update:accountAddress="onUpdateAccountAddress"
       />
@@ -102,9 +90,7 @@ export default defineComponent({
     const payerSecret = ref("");
     const payerSignsExternally = ref(true);
 
-    const tokenAddress = ref("");
     const accountAddress = ref("");
-
     const accountLink = computed(
       () =>
         `https://explorer.solana.com/address/${accountAddress.value}?cluster=${chosenCluster.value}`
@@ -129,7 +115,6 @@ export default defineComponent({
       accountAddress,
       currentAccountComponent,
       accountComponents,
-      tokenAddress,
       splitAtUppercase,
       errorMessage,
       onUpdateAccountAddress,
