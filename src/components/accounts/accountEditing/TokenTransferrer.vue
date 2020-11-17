@@ -8,11 +8,11 @@
   </div>
   <div class="field">
     <label class="label">Source account*</label>
-        <public-key-form-field derivePublicKey v-model:address="sourceAccountAddress" />
+    <public-key-form-field v-model:address="sourceAccountAddress" />
   </div>
   <div class="field">
     <label class="label">Destination account*</label>
-    <public-key-form-field derivePublicKey v-model:address="destinationAccountAddress" />
+    <public-key-form-field v-model:address="destinationAccountAddress" />
   </div>
   <div class="field">
     <label class="label">Amount*</label>
