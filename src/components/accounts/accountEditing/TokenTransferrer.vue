@@ -71,17 +71,14 @@ export default defineComponent({
       type: String,
       required: true
     },
-    tokenAddress: {
-      type: String,
-      required: true
-    },
+
     payerSignsExternally: {
       type: Boolean,
       default: true
     }
   },
   setup(props, { emit }) {
-    const { payerSecret, tokenAddress, payerSignsExternally } = toRefs(props);
+    const { payerSecret, payerSignsExternally } = toRefs(props);
     const ownerAccountSecret = ref("");
     const ownerSignsExternally = ref(true);
 
@@ -96,7 +93,6 @@ export default defineComponent({
       try {
         await transferTokens(
           payerSecret.value,
-          tokenAddress.value,
           sourceAccount.value,
           destinationAccount.value,
           ownerAccountSecret.value,

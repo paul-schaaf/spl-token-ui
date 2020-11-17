@@ -44,17 +44,14 @@ export default defineComponent({
       type: String,
       required: true
     },
-    tokenAddress: {
-      type: String,
-      required: true
-    },
+
     payerSignsExternally: {
       type: Boolean,
       default: true
     }
   },
   setup(props, { emit }) {
-    const { payerSecret, tokenAddress, payerSignsExternally } = toRefs(props);
+    const { payerSecret, payerSignsExternally } = toRefs(props);
     const thawingAccount = ref(false);
     const accountToThaw = ref("");
     const freezeAuthoritySecret = ref("");
@@ -66,7 +63,6 @@ export default defineComponent({
       try {
         await thawAccount(
           payerSecret.value,
-          tokenAddress.value,
           accountToThaw.value,
           freezeAuthoritySecret.value,
           payerSignsExternally.value,

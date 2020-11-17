@@ -4,6 +4,21 @@ import { getConnection } from "../connection";
 import { createAccount } from "../account";
 import { useWallet, sendTxUsingExternalSignature } from "../externalSignature";
 
+const getMintPubkeyFromTokenAccountPubkey = async (
+  tokenAccountPubkey: PublicKey
+) => {
+  const tokenMintData = (
+    await getConnection().getParsedAccountInfo(
+      tokenAccountPubkey,
+      "singleGossip"
+    )
+  ).value!.data;
+  //@ts-expect-error (doing the data parsing into steps so this ignore line is not moved around by formatting)
+  const tokenMintAddress = tokenMintData.parsed.info.mint;
+
+  return new PublicKey(tokenMintAddress);
+};
+
 export const mintToken = async (
   feePayerSecret: string,
   mintAuthoritySecret: string,
@@ -13,16 +28,9 @@ export const mintToken = async (
   mintAuthoritySignsExternally: boolean
 ) => {
   const destinationPubkey = new PublicKey(destinationAccountAddress);
-  const tokenMintData = (
-    await getConnection().getParsedAccountInfo(
-      destinationPubkey,
-      "singleGossip"
-    )
-  ).value!.data;
-  //@ts-expect-error (doing the data parsing into steps so this ignore line is not moved around by formatting)
-  const tokenMintAddress = tokenMintData.parsed.info.mint;
-
-  const tokenMintPubkey = new PublicKey(tokenMintAddress);
+  const tokenMintPubkey = await getMintPubkeyFromTokenAccountPubkey(
+    destinationPubkey
+  );
   const connection = getConnection();
 
   if (mintAuthoritySignsExternally || feePayerSignsExternally) {
@@ -72,14 +80,16 @@ export const mintToken = async (
 
 export const freezeAccount = async (
   feePayer: string,
-  tokenMintAddress: string,
   addressToFreeze: string,
   freezeAuthoritySecret: string,
   feePayerSignsExternally: boolean,
   freezeAuthoritysignsExternally: boolean
 ) => {
-  const tokenMintPubkey = new PublicKey(tokenMintAddress);
   const pubkeyToFreeze = new PublicKey(addressToFreeze);
+  const tokenMintPubkey = await getMintPubkeyFromTokenAccountPubkey(
+    pubkeyToFreeze
+  );
+
   const connection = getConnection();
   if (feePayerSignsExternally || freezeAuthoritysignsExternally) {
     const [wallet, connectToWallet] = useWallet();
@@ -123,14 +133,15 @@ export const freezeAccount = async (
 
 export const thawAccount = async (
   feePayer: string,
-  tokenMintAddress: string,
   addressToThaw: string,
   freezeAuthoritySecret: string,
   feePayerSignsExternally: boolean,
   freezeAuthoritysignsExternally: boolean
 ) => {
-  const tokenMintPubkey = new PublicKey(tokenMintAddress);
   const pubkeyToThaw = new PublicKey(addressToThaw);
+  const tokenMintPubkey = await getMintPubkeyFromTokenAccountPubkey(
+    pubkeyToThaw
+  );
   const connection = getConnection();
 
   if (feePayerSignsExternally || freezeAuthoritysignsExternally) {
@@ -174,18 +185,20 @@ export const thawAccount = async (
 };
 
 export const transferTokens = async (
-  feePayer: string,
-  tokenAddress: string,
+  feePayerSecret: string,
   sourceAddress: string,
   destAddress: string,
-  owner: string,
+  ownerSecret: string,
   amount: u64,
   feePayerSignsExternally: boolean,
   accountOwnerSignsExternally: boolean
 ) => {
-  const tokenMintPubkey = new PublicKey(tokenAddress);
   const sourcePubkey = new PublicKey(sourceAddress);
   const destinationPubkey = new PublicKey(destAddress);
+  const tokenMintPubkey = await getMintPubkeyFromTokenAccountPubkey(
+    sourcePubkey
+  );
+
   const connection = getConnection();
 
   if (feePayerSignsExternally || accountOwnerSignsExternally) {
@@ -193,7 +206,7 @@ export const transferTokens = async (
     await connectToWallet();
     const ownerAccountOrWallet = accountOwnerSignsExternally
       ? wallet
-      : await createAccount(owner);
+      : await createAccount(ownerSecret);
 
     const transferIx = Token.createTransferInstruction(
       TOKEN_PROGRAM_ID,
@@ -207,7 +220,7 @@ export const transferTokens = async (
     await sendTxUsingExternalSignature(
       [transferIx],
       connection,
-      feePayerSignsExternally ? null : await createAccount(feePayer),
+      feePayerSignsExternally ? null : await createAccount(feePayerSecret),
       accountOwnerSignsExternally ? [] : [ownerAccountOrWallet],
       wallet
     );
@@ -216,13 +229,13 @@ export const transferTokens = async (
       connection,
       tokenMintPubkey,
       TOKEN_PROGRAM_ID,
-      await createAccount(feePayer)
+      await createAccount(feePayerSecret)
     );
 
     await token.transfer(
       new PublicKey(sourceAddress),
       destinationPubkey,
-      await createAccount(owner),
+      await createAccount(ownerSecret),
       [],
       amount
     );
@@ -231,17 +244,18 @@ export const transferTokens = async (
 
 export const setTokenAccountOwner = async (
   feePayerSecret: string,
-  tokenMintAddress: string,
   tokenAccountAddress: string,
   currentAuthoritySecret: string,
   newAuthorityAddress: string,
   feePayerSignsExternally: boolean,
   currentAuthoritySignsExternally: boolean
 ) => {
-  const tokenMintPubkey = new PublicKey(tokenMintAddress);
-  const connection = getConnection();
-  const newAuthorityPubkey = new PublicKey(newAuthorityAddress);
   const tokenAccountPubkey = new PublicKey(tokenAccountAddress);
+  const tokenMintPubkey = await getMintPubkeyFromTokenAccountPubkey(
+    tokenAccountPubkey
+  );
+  const newAuthorityPubkey = new PublicKey(newAuthorityAddress);
+  const connection = getConnection();
 
   if (feePayerSignsExternally || currentAuthoritySignsExternally) {
     const [wallet, connectToWallet] = useWallet();
@@ -287,16 +301,17 @@ export const setTokenAccountOwner = async (
 
 export const burnTokens = async (
   feePayerSecret: string,
-  tokenMintAddress: string,
   tokenAccountAddress: string,
   ownerSecret: string,
   amount: u64,
   feePayerSignsExternally: boolean,
   accountOwnerSignsExternally: boolean
 ) => {
-  const tokenMintPubkey = new PublicKey(tokenMintAddress);
-  const connection = getConnection();
   const tokenAccountPubkey = new PublicKey(tokenAccountAddress);
+  const tokenMintPubkey = await getMintPubkeyFromTokenAccountPubkey(
+    tokenAccountPubkey
+  );
+  const connection = getConnection();
 
   if (feePayerSignsExternally || accountOwnerSignsExternally) {
     const [wallet, connectToWallet] = useWallet();
@@ -340,7 +355,6 @@ export const burnTokens = async (
 
 export const closeAccount = async (
   feePayerSecret: string,
-  tokenMintAddress: string,
   tokenAccountAddress: string,
   destinationAccountAddress: string,
   ownerSecret: string,
@@ -373,7 +387,9 @@ export const closeAccount = async (
       wallet
     );
   } else {
-    const tokenMintPubkey = new PublicKey(tokenMintAddress);
+    const tokenMintPubkey = await getMintPubkeyFromTokenAccountPubkey(
+      tokenAccountPubkey
+    );
     const token = new Token(
       connection,
       tokenMintPubkey,
@@ -392,19 +408,20 @@ export const closeAccount = async (
 
 export const setTokenAccountCloser = async (
   feePayerSecret: string,
-  tokenMintAddress: string,
   tokenAccountAddress: string,
   currentAuthoritySecret: string,
   newAuthorityAddress: string,
   feePayerSignsExternally: boolean,
   currentAuthoritySignsExternally: boolean
 ) => {
-  const tokenMintPubkey = new PublicKey(tokenMintAddress);
+  const tokenAccountPubkey = new PublicKey(tokenAccountAddress);
+  const tokenMintPubkey = await getMintPubkeyFromTokenAccountPubkey(
+    tokenAccountPubkey
+  );
   const connection = getConnection();
   const newAuthorityPubkeyOrNull = newAuthorityAddress
     ? new PublicKey(newAuthorityAddress)
     : null;
-  const tokenAccountPubkey = new PublicKey(tokenAccountAddress);
 
   if (feePayerSignsExternally || currentAuthoritySignsExternally) {
     const [wallet, connectToWallet] = useWallet();

@@ -62,17 +62,13 @@ export default defineComponent({
       type: String,
       required: true
     },
-    tokenAddress: {
-      type: String,
-      required: true
-    },
     payerSignsExternally: {
       type: Boolean,
       default: true
     }
   },
   setup(props, { emit }) {
-    const { payerSecret, tokenAddress, payerSignsExternally } = toRefs(props);
+    const { payerSecret, payerSignsExternally } = toRefs(props);
     const closingAccount = ref(false);
     const accountAddress = ref("");
     const ownerSecret = ref("");
@@ -85,7 +81,6 @@ export default defineComponent({
       try {
         await closeAccount(
           payerSecret.value,
-          tokenAddress.value,
           accountAddress.value,
           destinationAccount.value,
           ownerSecret.value,
