@@ -1,12 +1,7 @@
 <template>
   <div class="field">
     <label class="label">Account address*</label>
-    <input
-      v-model="accountAddress"
-      class="input is-black"
-      type="text"
-      placeholder="Public Key String e.g. GsbwXfJraMomNxBcjYLcG3mxkBUiyWXAB32fGbSMQRdW"
-    />
+    <public-key-form-field v-model:address="accountAddress" />
   </div>
   <div class="field">
     <label class="label">Current close authority or owner*</label>
@@ -21,18 +16,12 @@
   </div>
   <div class="field">
     <label class="label">New close authority*</label>
-    <div class="control">
-      <input
-        v-model="newCloserAddress"
-        class="input is-black"
-        type="text"
-        placeholder="Public Key String e.g. GsbwXfJraMomNxBcjYLcG3mxkBUiyWXAB32fGbSMQRdW"
-      />
-    </div>
-    <p class="help">
-      You can leave this field empty to remove the closer authority from the
-      account
-    </p>
+    <public-key-form-field
+      derivePublicKey
+      v-model:address="newCloserAddress"
+      hint=". You can leave this field empty to remove the closer authority from the
+      account"
+    />
   </div>
   <div style="display: flex" class="control is-justify-content-center mt-5">
     <button
@@ -50,11 +39,13 @@ import { defineComponent, ref, toRefs } from "vue";
 import accountComponents from "../accountComponents";
 import { setTokenAccountCloser } from "@/solana/token";
 import SecretFormField from "@/components/util/SecretFormField.vue";
+import PublicKeyFormField from "@/components/util/PublicKeyFormField.vue";
 
 export default defineComponent({
   name: accountComponents.SetCloser,
   components: {
-    SecretFormField
+    SecretFormField,
+    PublicKeyFormField
   },
   emits: ["update:accountAddress"],
   props: {
@@ -62,7 +53,6 @@ export default defineComponent({
       type: String,
       required: true
     },
-
     payerSignsExternally: {
       type: Boolean,
       default: true
