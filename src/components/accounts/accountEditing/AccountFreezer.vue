@@ -45,17 +45,14 @@ export default defineComponent({
       type: String,
       required: true
     },
-    tokenAddress: {
-      type: String,
-      required: true
-    },
+
     payerSignsExternally: {
       type: Boolean,
       default: true
     }
   },
   setup(props, { emit }) {
-    const { payerSecret, tokenAddress, payerSignsExternally } = toRefs(props);
+    const { payerSecret, payerSignsExternally } = toRefs(props);
     const freezingAccount = ref(false);
     const accountToFreeze = ref("");
     const freezeAuthoritySecret = ref("");
@@ -67,7 +64,6 @@ export default defineComponent({
       try {
         await freezeAccount(
           payerSecret.value,
-          tokenAddress.value,
           accountToFreeze.value,
           freezeAuthoritySecret.value,
           payerSignsExternally.value,
