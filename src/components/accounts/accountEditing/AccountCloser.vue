@@ -23,7 +23,7 @@
     <label class="label">Destination account*</label>
     <div class="control">
       <input
-        v-model="destinationAccount"
+        v-model="destinationAccountAddress"
         class="input is-black"
         type="text"
         placeholder="Public Key String e.g. GsbwXfJraMomNxBcjYLcG3mxkBUiyWXAB32fGbSMQRdW"
@@ -73,7 +73,7 @@ export default defineComponent({
     const accountAddress = ref("");
     const ownerSecret = ref("");
     const ownerSignsExternally = ref(true);
-    const destinationAccount = ref("");
+    const destinationAccountAddress = ref("");
 
     const onCloseAccount = async () => {
       closingAccount.value = true;
@@ -82,7 +82,7 @@ export default defineComponent({
         await closeAccount(
           payerSecret.value,
           accountAddress.value,
-          destinationAccount.value,
+          destinationAccountAddress.value,
           ownerSecret.value,
           payerSignsExternally.value,
           ownerSignsExternally.value
@@ -100,7 +100,7 @@ export default defineComponent({
       accountAddress,
       onCloseAccount,
       ownerSecret,
-      destinationAccount,
+      destinationAccountAddress,
       ownerSignsExternally
     };
   }

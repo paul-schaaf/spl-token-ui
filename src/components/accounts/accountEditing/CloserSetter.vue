@@ -23,7 +23,7 @@
     <label class="label">New close authority*</label>
     <div class="control">
       <input
-        v-model="newCloser"
+        v-model="newCloserAddress"
         class="input is-black"
         type="text"
         placeholder="Public Key String e.g. GsbwXfJraMomNxBcjYLcG3mxkBUiyWXAB32fGbSMQRdW"
@@ -74,7 +74,7 @@ export default defineComponent({
     const accountAddress = ref("");
     const currentCloserSecret = ref("");
     const currentCloserSignsExternally = ref(true);
-    const newCloser = ref("");
+    const newCloserAddress = ref("");
 
     const onSetCloser = async () => {
       settingCloser.value = true;
@@ -84,7 +84,7 @@ export default defineComponent({
           payerSecret.value,
           accountAddress.value,
           currentCloserSecret.value,
-          newCloser.value,
+          newCloserAddress.value,
           payerSignsExternally.value,
           currentCloserSignsExternally.value
         );
@@ -101,7 +101,7 @@ export default defineComponent({
       accountAddress,
       onSetCloser,
       currentCloserSecret,
-      newCloser,
+      newCloserAddress,
       currentCloserSignsExternally
     };
   }

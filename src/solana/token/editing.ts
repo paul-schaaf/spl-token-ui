@@ -79,7 +79,7 @@ export const mintToken = async (
 };
 
 export const freezeAccount = async (
-  feePayer: string,
+  feePayerSecret: string,
   addressToFreeze: string,
   freezeAuthoritySecret: string,
   feePayerSignsExternally: boolean,
@@ -111,7 +111,7 @@ export const freezeAccount = async (
     await sendTxUsingExternalSignature(
       [freezeIx],
       connection,
-      feePayerSignsExternally ? null : await createAccount(feePayer),
+      feePayerSignsExternally ? null : await createAccount(feePayerSecret),
       freezeAuthoritysignsExternally ? [] : [authorityAccOrWallet],
       wallet
     );
@@ -120,7 +120,7 @@ export const freezeAccount = async (
       connection,
       tokenMintPubkey,
       TOKEN_PROGRAM_ID,
-      await createAccount(feePayer)
+      await createAccount(feePayerSecret)
     );
 
     await token.freezeAccount(
@@ -132,7 +132,7 @@ export const freezeAccount = async (
 };
 
 export const thawAccount = async (
-  feePayer: string,
+  feePayerSecret: string,
   addressToThaw: string,
   freezeAuthoritySecret: string,
   feePayerSignsExternally: boolean,
@@ -164,7 +164,7 @@ export const thawAccount = async (
     await sendTxUsingExternalSignature(
       [thawIx],
       connection,
-      feePayerSignsExternally ? null : await createAccount(feePayer),
+      feePayerSignsExternally ? null : await createAccount(feePayerSecret),
       freezeAuthoritysignsExternally ? [] : [authorityAccOrWallet],
       wallet
     );
@@ -173,7 +173,7 @@ export const thawAccount = async (
       connection,
       tokenMintPubkey,
       TOKEN_PROGRAM_ID,
-      await createAccount(feePayer)
+      await createAccount(feePayerSecret)
     );
 
     await token.thawAccount(

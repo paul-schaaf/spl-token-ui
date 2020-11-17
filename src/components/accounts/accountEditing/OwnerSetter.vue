@@ -21,7 +21,7 @@
     <label class="label">New owner*</label>
     <div class="control">
       <input
-        v-model="newOwner"
+        v-model="newOwnerAddress"
         class="input is-black"
         type="text"
         placeholder="Public Key String e.g. GsbwXfJraMomNxBcjYLcG3mxkBUiyWXAB32fGbSMQRdW"
@@ -68,7 +68,7 @@ export default defineComponent({
     const accountAddress = ref("");
     const currentOwnerSecret = ref("");
     const currentOwnerSignsExternally = ref(true);
-    const newOwner = ref("");
+    const newOwnerAddress = ref("");
 
     const onSetOwner = async () => {
       settingOwner.value = true;
@@ -78,7 +78,7 @@ export default defineComponent({
           payerSecret.value,
           accountAddress.value,
           currentOwnerSecret.value,
-          newOwner.value,
+          newOwnerAddress.value,
           payerSignsExternally.value,
           currentOwnerSignsExternally.value
         );
@@ -95,7 +95,7 @@ export default defineComponent({
       accountAddress,
       onSetOwner,
       currentOwnerSecret,
-      newOwner,
+      newOwnerAddress,
       currentOwnerSignsExternally
     };
   }

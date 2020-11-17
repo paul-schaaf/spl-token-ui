@@ -32,7 +32,7 @@
       <label class="label">Token mint address*</label>
       <div class="control">
         <input
-          v-model="tokenAddress"
+          v-model="tokenMintAddress"
           class="input is-black"
           type="text"
           placeholder="Token address e.g. 9rJcHifFVNmZed1KgAaRMmpRbnkaBgn5wZZcK1A6CDiC"
@@ -43,7 +43,7 @@
       <label class="label">Account owner*</label>
       <div class="control">
         <input
-          v-model="accountOwner"
+          v-model="accountOwnerAddress"
           class="input is-black"
           type="text"
           placeholder="Public Key String e.g. GsbwXfJraMomNxBcjYLcG3mxkBUiyWXAB32fGbSMQRdW"
@@ -78,8 +78,8 @@ export default {
   setup() {
     const payerSecret = ref("");
     const payerSignsExternally = ref(true);
-    const tokenAddress = ref("");
-    const accountOwner = ref("");
+    const tokenMintAddress = ref("");
+    const accountOwnerAddress = ref("");
     const creatingAccount = ref(false);
     const accountLink = ref("");
     const createdAccountAddress = ref("");
@@ -92,8 +92,8 @@ export default {
       try {
         createdAccountAddress.value = await createTokenAccount(
           payerSecret.value,
-          tokenAddress.value,
-          accountOwner.value,
+          tokenMintAddress.value,
+          accountOwnerAddress.value,
           payerSignsExternally.value
         );
         accountLink.value = `https://explorer.solana.com/address/${createdAccountAddress.value}?cluster=${chosenCluster.value}`;
@@ -106,8 +106,8 @@ export default {
 
     return {
       payerSecret,
-      tokenAddress,
-      accountOwner,
+      tokenMintAddress,
+      accountOwnerAddress,
       creatingAccount,
       createAccount,
       createdAccountAddress,

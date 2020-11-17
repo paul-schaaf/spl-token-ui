@@ -10,7 +10,7 @@
     <label class="label">Account to thaw*</label>
     <div class="control">
       <input
-        v-model="accountToThaw"
+        v-model="accountToThawAddress"
         class="input is-black"
         type="text"
         placeholder="Public Key String e.g. GsbwXfJraMomNxBcjYLcG3mxkBUiyWXAB32fGbSMQRdW"
@@ -53,7 +53,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const { payerSecret, payerSignsExternally } = toRefs(props);
     const thawingAccount = ref(false);
-    const accountToThaw = ref("");
+    const accountToThawAddress = ref("");
     const freezeAuthoritySecret = ref("");
     const freezeAuthoritySignsExternally = ref(true);
 
@@ -63,12 +63,12 @@ export default defineComponent({
       try {
         await thawAccount(
           payerSecret.value,
-          accountToThaw.value,
+          accountToThawAddress.value,
           freezeAuthoritySecret.value,
           payerSignsExternally.value,
           freezeAuthoritySignsExternally.value
         );
-        emit("update:accountAddress", accountToThaw.value);
+        emit("update:accountAddress", accountToThawAddress.value);
       } catch (err) {
         thawingAccount.value = false;
         throw err;
@@ -78,7 +78,7 @@ export default defineComponent({
 
     return {
       thawingAccount,
-      accountToThaw,
+      accountToThawAddress,
       onThawAccount,
       freezeAuthoritySecret,
       freezeAuthoritySignsExternally
