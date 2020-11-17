@@ -16,8 +16,12 @@
   </div>
   <div class="field">
     <label class="label">Destination account*</label>
-    <public-key-form-field derivePublicKey v-model:address="destinationAccountAddress" hint=". This is the account that your rent reserve for the closed account gets
-      sent to."/>
+    <public-key-form-field
+      derivePublicKey
+      v-model:address="destinationAccountAddress"
+      hint=". This is the account that your rent reserve for the closed account gets
+      sent to."
+    />
   </div>
   <div style="display: flex" class="control is-justify-content-center mt-5">
     <button
