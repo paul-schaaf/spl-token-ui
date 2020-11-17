@@ -1,13 +1,16 @@
 import { Account } from "@solana/web3.js";
-import * as bip39 from "bip39";
-import * as bip32 from "bip32";
-import nacl from "tweetnacl";
+import {
+  validateMnemonic as bip39validateMnemonic,
+  mnemonicToSeed as bip39mnemonicToSeed
+} from "bip39";
+import { fromSeed as bip32FromSeed } from "bip32";
+import { sign as naclSign } from "tweetnacl";
 
 async function mnemonicToSeed(mnemonic: string): Promise<Buffer> {
-  if (!bip39.validateMnemonic(mnemonic)) {
+  if (!bip39validateMnemonic(mnemonic)) {
     throw new Error("Invalid seed phrase");
   }
-  return await bip39.mnemonicToSeed(mnemonic);
+  return await bip39mnemonicToSeed(mnemonic);
 }
 
 function getAccountFromSeed(
@@ -15,11 +18,11 @@ function getAccountFromSeed(
   walletIndex: number,
   accountIndex = 0
 ) {
-  const derivedSeed = bip32
-    .fromSeed(seed)
-    .derivePath(`m/501'/${walletIndex}'/0/${accountIndex}`).privateKey;
+  const derivedSeed = bip32FromSeed(seed).derivePath(
+    `m/501'/${walletIndex}'/0/${accountIndex}`
+  ).privateKey;
   return new Account(
-    nacl.sign.keyPair.fromSeed(derivedSeed as Uint8Array).secretKey
+    naclSign.keyPair.fromSeed(derivedSeed as Uint8Array).secretKey
   );
 }
 
