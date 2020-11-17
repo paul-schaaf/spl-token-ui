@@ -21,7 +21,7 @@ export const createNewToken = async (
 ) => {
   const connection = getConnection();
   if (signExternally) {
-    const wallet = useWallet();
+    const wallet = await useWallet();
 
     const mintAccount = new Account();
     const createAccIx = SystemProgram.createAccount({
@@ -77,7 +77,7 @@ export const editToken = async (
   const newAuthorityOrNull = newAuthority ? new PublicKey(newAuthority) : null;
   const connection = getConnection();
   if (feePayerSignsExternally || currentAuthoritySignsExternally) {
-    const wallet = useWallet();
+    const wallet = await useWallet();
 
     const currentAuthorityAccOrWallet = currentAuthoritySignsExternally
       ? wallet
@@ -126,7 +126,7 @@ export const createTokenAccount = async (
   const tokenMintPubkey = new PublicKey(tokenMintAddress);
   const ownerPubkey = new PublicKey(owner);
   if (signExternally) {
-    const wallet = useWallet();
+    const wallet = await useWallet();
 
     const connection = getConnection();
     //@ts-expect-error

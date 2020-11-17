@@ -34,7 +34,7 @@ export const mintToken = async (
   const connection = getConnection();
 
   if (mintAuthoritySignsExternally || feePayerSignsExternally) {
-    const wallet = useWallet();
+    const wallet = await useWallet();
 
     const mintAuthorityAccOrWallet = mintAuthoritySignsExternally
       ? wallet
@@ -91,7 +91,7 @@ export const freezeAccount = async (
 
   const connection = getConnection();
   if (feePayerSignsExternally || freezeAuthoritysignsExternally) {
-    const wallet = useWallet();
+    const wallet = await useWallet();
 
     const authorityAccOrWallet = freezeAuthoritysignsExternally
       ? wallet
@@ -143,7 +143,7 @@ export const thawAccount = async (
   const connection = getConnection();
 
   if (feePayerSignsExternally || freezeAuthoritysignsExternally) {
-    const wallet = useWallet();
+    const wallet = await useWallet();
 
     const authorityAccOrWallet = freezeAuthoritysignsExternally
       ? wallet
@@ -199,7 +199,7 @@ export const transferTokens = async (
   const connection = getConnection();
 
   if (feePayerSignsExternally || accountOwnerSignsExternally) {
-    const wallet = useWallet();
+    const wallet = await useWallet();
     const ownerAccountOrWallet = accountOwnerSignsExternally
       ? wallet
       : await createAccount(ownerSecret);
@@ -254,7 +254,7 @@ export const setTokenAccountOwner = async (
   const connection = getConnection();
 
   if (feePayerSignsExternally || currentAuthoritySignsExternally) {
-    const wallet = useWallet();
+    const wallet = await useWallet();
 
     const currentAuthorityAccOrWallet = currentAuthoritySignsExternally
       ? wallet
@@ -309,7 +309,7 @@ export const burnTokens = async (
   const connection = getConnection();
 
   if (feePayerSignsExternally || accountOwnerSignsExternally) {
-    const wallet = useWallet();
+    const wallet = await useWallet();
 
     const currentOwnerAccOrWallet = accountOwnerSignsExternally
       ? wallet
@@ -359,7 +359,7 @@ export const closeAccount = async (
   const tokenAccountPubkey = new PublicKey(tokenAccountAddress);
   const destinationAccountPubkey = new PublicKey(destinationAccountAddress);
   if (feePayerSignsExternally || accountOwnerSignsExternally) {
-    const wallet = useWallet();
+    const wallet = await useWallet();
 
     const currentOwnerAccOrWallet = accountOwnerSignsExternally
       ? wallet
@@ -417,7 +417,7 @@ export const setTokenAccountCloser = async (
     : null;
 
   if (feePayerSignsExternally || currentAuthoritySignsExternally) {
-    const wallet = useWallet();
+    const wallet = await useWallet();
     const currentAuthorityAccOrWallet = currentAuthoritySignsExternally
       ? wallet
       : await createAccount(currentAuthoritySecret);
