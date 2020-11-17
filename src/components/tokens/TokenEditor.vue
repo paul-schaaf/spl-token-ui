@@ -65,7 +65,7 @@
       >
       <public-key-form-field
         v-model:address="newAuthorityAddress"
-        :derivePublicKey="true"
+        derivePublicKey
         hint=". You can leave this field empty to remove the authority from the token."
       />
     </div>

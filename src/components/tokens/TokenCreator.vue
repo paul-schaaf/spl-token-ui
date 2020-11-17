@@ -31,14 +31,14 @@
       <label class="label">Mint authority*</label>
       <public-key-form-field
         v-model:address="mintAuthorityAddress"
-        :derivePublicKey="true"
+        derivePublicKey
       />
     </div>
     <div class="field">
       <label class="label">Freeze authority</label>
       <public-key-form-field
         v-model:address="freezeAuthorityAddress"
-        :derivePublicKey="true"
+        derivePublicKey
         hint=". You can leave this empty if you don't want to set a freeze authority"
       />
     </div>
