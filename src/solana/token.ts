@@ -4,15 +4,12 @@ import {
   MintLayout,
   Token,
   u64,
-  AccountLayout
+  AccountLayout,
+  TOKEN_PROGRAM_ID
 } from "@solana/spl-token";
 import { COMMITMENT, getConnection } from "../solana/connection";
 import { createAccount } from "./account";
 import { useWallet, sendTxUsingExternalSignature } from "./externalSignature";
-
-const TOKEN_PROGRAM_ID = new PublicKey(
-  "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
-);
 
 export const createNewToken = async (
   feePayer: string,
