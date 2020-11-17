@@ -21,6 +21,7 @@ module.exports = {
       });
   },
   configureWebpack: {
-    plugins: [new BundleAnalyzerPlugin()]
+    // this check exists so e.g. Netlify doesn't hang during deploy
+    plugins: process.env.DEPLOY ? [] : [new BundleAnalyzerPlugin()]
   }
 };
