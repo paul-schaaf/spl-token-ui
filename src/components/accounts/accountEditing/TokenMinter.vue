@@ -24,7 +24,7 @@
         v-model="tokenAmount"
         class="input is-black"
         type="text"
-        placeholder="Token mint to mint e.g. 20000"
+        placeholder="Amount of tokens to mint e.g. 20000"
       />
     </div>
     <p class="help">
