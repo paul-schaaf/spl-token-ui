@@ -5,16 +5,24 @@ import { createAccount } from "../account";
 import { useWallet, sendTxUsingExternalSignature } from "../externalSignature";
 
 export const mintToken = async (
-  feePayer: string,
-  tokenMintAddress: string,
-  mintAuthority: string,
-  destinationAccount: string,
+  feePayerSecret: string,
+  mintAuthoritySecret: string,
+  destinationAccountAddress: string,
   amount: u64,
   feePayerSignsExternally: boolean,
   mintAuthoritySignsExternally: boolean
 ) => {
+  const destinationPubkey = new PublicKey(destinationAccountAddress);
+  const tokenMintData = (
+    await getConnection().getParsedAccountInfo(
+      destinationPubkey,
+      "singleGossip"
+    )
+  ).value!.data;
+  //@ts-expect-error (doing the data parsing into steps so this ignore line is not moved around by formatting)
+  const tokenMintAddress = tokenMintData.parsed.info.mint;
+
   const tokenMintPubkey = new PublicKey(tokenMintAddress);
-  const destinationPubkey = new PublicKey(destinationAccount);
   const connection = getConnection();
 
   if (mintAuthoritySignsExternally || feePayerSignsExternally) {
@@ -23,7 +31,7 @@ export const mintToken = async (
 
     const mintAuthorityAccOrWallet = mintAuthoritySignsExternally
       ? wallet
-      : await createAccount(mintAuthority);
+      : await createAccount(mintAuthoritySecret);
 
     const mintIx = Token.createMintToInstruction(
       TOKEN_PROGRAM_ID,
@@ -37,7 +45,7 @@ export const mintToken = async (
     await sendTxUsingExternalSignature(
       [mintIx],
       connection,
-      feePayerSignsExternally ? null : await createAccount(feePayer),
+      feePayerSignsExternally ? null : await createAccount(feePayerSecret),
       mintAuthoritySignsExternally ? [] : [mintAuthorityAccOrWallet],
       wallet
     );
@@ -48,12 +56,12 @@ export const mintToken = async (
       connection,
       tokenMintPubkey,
       TOKEN_PROGRAM_ID,
-      await createAccount(feePayer)
+      await createAccount(feePayerSecret)
     );
 
     await token.mintTo(
       destinationPubkey,
-      await createAccount(mintAuthority),
+      await createAccount(mintAuthoritySecret),
       [],
       amount
     );

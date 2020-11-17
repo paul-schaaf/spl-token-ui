@@ -62,17 +62,13 @@ export default defineComponent({
       type: String,
       required: true
     },
-    tokenAddress: {
-      type: String,
-      required: true
-    },
     payerSignsExternally: {
       type: Boolean,
       default: true
     }
   },
   setup(props, { emit }) {
-    const { payerSecret, tokenAddress, payerSignsExternally } = toRefs(props);
+    const { payerSecret, payerSignsExternally } = toRefs(props);
     const mintAuthoritySecret = ref("");
     const mintAuthoritySignsExternally = ref(true);
 
@@ -86,7 +82,6 @@ export default defineComponent({
       try {
         await mintToken(
           payerSecret.value,
-          tokenAddress.value,
           mintAuthoritySecret.value,
           destinationAccount.value,
           new u64(tokenAmount.value, 10),
