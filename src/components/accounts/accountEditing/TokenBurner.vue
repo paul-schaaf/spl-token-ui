@@ -8,7 +8,7 @@
   </div>
   <div class="field">
     <label class="label">Account address*</label>
-    <public-key-form-field v-model:address="accountAddress"/>
+    <public-key-form-field v-model:address="accountAddress" />
   </div>
   <div class="field">
     <label class="label">Amount*</label>
