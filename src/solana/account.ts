@@ -3,6 +3,7 @@ import {
   validateMnemonic as bip39validateMnemonic,
   mnemonicToSeed as bip39mnemonicToSeed
 } from "bip39";
+import bs58 from "bs58";
 import { fromSeed as bip32FromSeed } from "bip32";
 import { sign as naclSign } from "tweetnacl";
 
@@ -27,6 +28,7 @@ function getAccountFromSeed(
 }
 
 export const createAccount = async (secret: string): Promise<Account> => {
+  // Ed25519 byte array
   if (secret.includes(",")) {
     return new Account(
       secret
@@ -35,6 +37,13 @@ export const createAccount = async (secret: string): Promise<Account> => {
         .map(n => parseInt(n))
     );
   }
+
+  // Base58 encoded Ed25519 byte array
+  if (!secret.includes(" ")) {
+    return new Account(bs58.decode(secret));
+  }
+
+  // Seed phrase
   const seed = await mnemonicToSeed(secret);
   return getAccountFromSeed(seed, 0, 0);
 };
