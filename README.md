@@ -13,7 +13,7 @@
 - Creating new tokens
 - Editing a token's mint and freeze authority
 ### Managing Token Accounts
-- Creating token accounts
+- Creating token accounts and associated token accounts
 - Minting tokens to token accounts
 - Transferring tokens
 - Freezing token accounts

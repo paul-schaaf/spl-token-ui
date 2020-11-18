@@ -11,6 +11,7 @@ import { createAccount } from "../account";
 import { useWallet, sendTxUsingExternalSignature } from "../externalWallet";
 
 export * from "./editing";
+export * from "./associatedToken";
 
 export const createNewToken = async (
   feePayer: string,
