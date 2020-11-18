@@ -8,7 +8,7 @@
       :value="secret"
       class="input is-black"
       type="text"
-      placeholder="Secret (seed phrase or Ed25519 comma-separated array of 64 numbers)"
+      placeholder="Your secret"
       @input="$emit('update:secret', $event.target.value)"
     />
   </div>
@@ -39,7 +39,7 @@ export default defineComponent({
     manualHint: {
       type: String,
       default:
-        "Your secret is NOT saved NOR sent anywhere. It's only used to sign transactions locally."
+        "Check FAQ for valid secret types. Your secret is NOT saved NOR sent anywhere. It's only used to sign transactions locally."
     },
     externalHint: {
       type: String,
