@@ -29,9 +29,6 @@
         <div class="control">
           <input
             v-model="amount"
-            class="input is-black"
-            type="number"
-            placeholder="Amount of SOL to airdrop"
             :onkeyup="
               () => {
                 if (amount < 0) {
@@ -41,6 +38,10 @@
                 }
               }
             "
+            class="input is-black"
+            type="number"
+            placeholder="Amount of SOL to airdrop"
+            min="1"
           />
         </div>
         <p class="help">Max 10 SOL may be requested at once.</p>
