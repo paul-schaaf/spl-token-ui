@@ -23,5 +23,6 @@
 - Setting account owners
 - Setting acount close authorities
 
+## Contributing
 
-MORE COMING (HOPEFULLY) SOON
+Please see [CONTRIBUTING.md](CONTRIBUTING.md)
