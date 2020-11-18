@@ -2,56 +2,68 @@
   <heading heading="AIRDROP" />
 
   <div style="margin-top: 30px">
-    <article v-if="addressThatReceivedAirdrop" class="message is-black">
-      <div class="message-body">
-        Success! Take a look at your account:
-        <a :href="accountLink" target="_blank" rel="noopener noreferrer">{{
-          addressThatReceivedAirdrop
-        }}</a>
-        <copy-icon class="ml-1" :value="addressThatReceivedAirdrop" />
-      </div>
-    </article>
-    <article v-else-if="errorMessage" class="message is-danger">
-      <div class="message-body">
-        {{ errorMessage }}
-      </div>
-    </article>
-    <div class="field">
-      <label class="label">SOL address to send airdrop to*</label>
-      <public-key-form-field
-        derivePublicKey
-        v-model:address="addressToAirdrop"
-      />
-    </div>
-    <div class="field">
-      <label class="label">Amount*</label>
-      <div class="control">
-        <input
-          v-model="amount"
-          class="input is-black"
-          type="number"
-          placeholder="Amount of SOL to airdrop"
-          :onkeyup="
-            () => {
-              if (amount < 0) {
-                amount *= -1;
-              } else if (amount > 10) {
-                amount = 10;
-              }
-            }
-          "
+    <template v-if="notMainnet">
+      <article v-if="addressThatReceivedAirdrop" class="message is-black">
+        <div class="message-body">
+          Success! Take a look at your account:
+          <a :href="accountLink" target="_blank" rel="noopener noreferrer">{{
+            addressThatReceivedAirdrop
+          }}</a>
+          <copy-icon class="ml-1" :value="addressThatReceivedAirdrop" />
+        </div>
+      </article>
+      <article v-else-if="errorMessage" class="message is-danger">
+        <div class="message-body">
+          {{ errorMessage }}
+        </div>
+      </article>
+      <div class="field">
+        <label class="label">SOL address to send airdrop to*</label>
+        <public-key-form-field
+          derivePublicKey
+          v-model:address="addressToAirdrop"
         />
       </div>
-      <p class="help">Max 10 SOL may be requested at once.</p>
-    </div>
-    <div style="display: flex" class="control is-justify-content-center mt-5">
-      <button
-        :class="{ 'is-loading': requestingAirdrop }"
-        class="button is-black"
-        @click="onRequestAirdrop"
+      <div class="field">
+        <label class="label">Amount*</label>
+        <div class="control">
+          <input
+            v-model="amount"
+            class="input is-black"
+            type="number"
+            placeholder="Amount of SOL to airdrop"
+            :onkeyup="
+              () => {
+                if (amount < 0) {
+                  amount *= -1;
+                } else if (amount > 10) {
+                  amount = 10;
+                }
+              }
+            "
+          />
+        </div>
+        <p class="help">Max 10 SOL may be requested at once.</p>
+      </div>
+      <div style="display: flex" class="control is-justify-content-center mt-5">
+        <button
+          :class="{ 'is-loading': requestingAirdrop }"
+          class="button is-black"
+          @click="onRequestAirdrop"
+        >
+          Request Airdrop
+        </button>
+      </div>
+    </template>
+    <div v-else class="has-text-centered">
+      Please refer to
+      <a
+        href="http://www.bonfida.com/airdrop"
+        target="_blank"
+        rel="noopener noreferrer"
+        >Bonfida</a
       >
-        Request Airdrop
-      </button>
+      to receive an airdrop on mainnet
     </div>
   </div>
 </template>
@@ -64,7 +76,7 @@ import { requestAirdrop } from "@/solana/airdrop";
 import { chosenCluster } from "@/solana/connection";
 import * as SolanaErrorHandler from "@/solana/SolanaErrorHandler";
 
-import { defineComponent, ref } from "vue";
+import { computed, defineComponent, ref } from "vue";
 export default defineComponent({
   components: {
     Heading,
@@ -95,6 +107,8 @@ export default defineComponent({
       requestingAirdrop.value = false;
     };
 
+    const notMainnet = computed(() => chosenCluster.value !== "mainnet-beta");
+
     return {
       addressToAirdrop,
       requestingAirdrop,
@@ -102,7 +116,8 @@ export default defineComponent({
       onRequestAirdrop,
       accountLink,
       errorMessage,
-      addressThatReceivedAirdrop
+      addressThatReceivedAirdrop,
+      notMainnet
     };
   }
 });
