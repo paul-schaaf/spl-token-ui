@@ -33,7 +33,15 @@
         derivePublicKey
       />
     </div>
-    <div style="display: flex" class="control is-justify-content-center mt-5">
+    <div
+      style="display: flex; margin-top: 35px"
+      class="is-justify-content-center"
+    >
+      <p><strong> Create normal account</strong></p>
+      <Toggle v-model:checked="creatingAssociatedAccount" class="ml-2" />
+      <p class="ml-2"><strong> Create associated account</strong></p>
+    </div>
+    <div style="display: flex" class="control is-justify-content-center mt-6">
       <button
         :class="{ 'is-loading': creatingAccount }"
         class="button is-black"
@@ -47,20 +55,25 @@
 
 <script lang="ts">
 import { ref } from "vue";
-import { createTokenAccount } from "@/solana/token";
+import {
+  createTokenAccount,
+  createAssociatedTokenAccount
+} from "@/solana/token";
 import { chosenCluster } from "@/solana/connection";
 import * as SolanaErrorHandler from "@/solana/SolanaErrorHandler";
 import SecretFormField from "@/components/util/SecretFormField.vue";
 import CopyIcon from "@/components/util/CopyIcon.vue";
 import PublicKeyFormField from "@/components/util/PublicKeyFormField.vue";
 import Heading from "@/components/util/Heading.vue";
+import Toggle from "@/components/util/Toggle.vue";
 
 export default {
   components: {
     SecretFormField,
     CopyIcon,
     PublicKeyFormField,
-    Heading
+    Heading,
+    Toggle
   },
   setup() {
     const payerSecret = ref("");
@@ -71,18 +84,27 @@ export default {
     const accountLink = ref("");
     const createdAccountAddress = ref("");
     const errorMessage = ref("");
+    const creatingAssociatedAccount = ref(false);
 
     const createAccount = async () => {
       accountLink.value = "";
       creatingAccount.value = true;
       createdAccountAddress.value = "";
+      errorMessage.value = "";
       try {
-        createdAccountAddress.value = await createTokenAccount(
-          payerSecret.value,
-          tokenMintAddress.value,
-          accountOwnerAddress.value,
-          payerSignsExternally.value
-        );
+        createdAccountAddress.value = creatingAssociatedAccount.value
+          ? await createAssociatedTokenAccount(
+              payerSecret.value,
+              payerSignsExternally.value,
+              tokenMintAddress.value,
+              accountOwnerAddress.value
+            )
+          : await createTokenAccount(
+              payerSecret.value,
+              tokenMintAddress.value,
+              accountOwnerAddress.value,
+              payerSignsExternally.value
+            );
         accountLink.value = `https://explorer.solana.com/address/${createdAccountAddress.value}?cluster=${chosenCluster.value}`;
       } catch (err) {
         errorMessage.value = SolanaErrorHandler.getErrorMessage(err);
@@ -100,7 +122,8 @@ export default {
       createdAccountAddress,
       accountLink,
       errorMessage,
-      payerSignsExternally
+      payerSignsExternally,
+      creatingAssociatedAccount
     };
   }
 };
