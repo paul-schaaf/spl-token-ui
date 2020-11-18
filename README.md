@@ -28,7 +28,7 @@
 
 ## FAQ
 
-What secret types are supported in the maunal input secret field?
+What secret types are supported in the manual input secret field?
 
 - Seed phrase
 - Ed25519 comma-separated number array
