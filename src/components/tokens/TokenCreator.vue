@@ -1,10 +1,5 @@
 <template>
-  <div
-    style="font-family: 'Racing Sans One', cursive; font-size:70px"
-    class="has-text-black has-text-centered	"
-  >
-    TOKEN CREATOR
-  </div>
+  <heading heading="TOKEN CREATOR" />
   <div style="margin-top: 30px">
     <article v-if="createdTokenAddress" class="message is-black">
       <div class="message-body">
@@ -73,12 +68,14 @@ import * as SolanaErrorHandler from "@/solana/SolanaErrorHandler";
 import SecretFormField from "@/components/util/SecretFormField.vue";
 import CopyIcon from "@/components/util/CopyIcon.vue";
 import PublicKeyFormField from "@/components/util/PublicKeyFormField.vue";
+import Heading from "@/components/util/Heading.vue";
 
 export default {
   components: {
     SecretFormField,
     CopyIcon,
-    PublicKeyFormField
+    PublicKeyFormField,
+    Heading
   },
   setup() {
     const payerSecret = ref("");

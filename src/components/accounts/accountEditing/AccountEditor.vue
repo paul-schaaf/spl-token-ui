@@ -1,10 +1,5 @@
 <template>
-  <div
-    style="font-family: 'Racing Sans One', cursive; font-size:70px"
-    class="has-text-black has-text-centered	"
-  >
-    ACCOUNT EDITOR
-  </div>
+  <heading heading="ACCOUNT EDITOR" />
   <div style="margin-top: 30px">
     <article v-if="accountAddress" class="message is-black">
       <div class="message-body">
@@ -67,6 +62,7 @@ import OwnerSetter from "./OwnerSetter.vue";
 import TokenBurner from "./TokenBurner.vue";
 import AccountCloser from "./AccountCloser.vue";
 import CloserSetter from "./CloserSetter.vue";
+import Heading from "@/components/util/Heading.vue";
 
 import { splitAtUppercase } from "@/util/stringFormatting";
 import * as SolanaErrorHandler from "@/solana/SolanaErrorHandler";
@@ -84,7 +80,8 @@ export default defineComponent({
     AccountCloser,
     CloserSetter,
     SecretFormField,
-    CopyIcon
+    CopyIcon,
+    Heading
   },
   setup() {
     const payerSecret = ref("");
