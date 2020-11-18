@@ -83,6 +83,15 @@
             <div class="navbar-item">
               <a
                 id="source-code"
+                href="https://github.com/paul-schaaf/spl-token-ui/blob/main/README.md#faq"
+                target="_blank"
+                rel="noopener noreferrer"
+                >FAQ</a
+              >
+            </div>
+            <div class="navbar-item">
+              <a
+                id="source-code"
                 href="https://github.com/paul-schaaf/spl-token-ui"
                 target="_blank"
                 rel="noopener noreferrer"
