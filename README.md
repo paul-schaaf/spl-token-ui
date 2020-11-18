@@ -23,6 +23,8 @@
 - Setting account owners
 - Setting acount close authorities
 
+### Requesting Airdrops
+
 ## Contributing
 
 Please see [CONTRIBUTING.md](CONTRIBUTING.md)
