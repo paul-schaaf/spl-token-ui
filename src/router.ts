@@ -5,6 +5,7 @@ const TokenEditor = () => import("@/components/tokens/TokenEditor.vue");
 const AccountCreator = () => import("@/components/accounts/AccountCreator.vue");
 const AccountEditor = () =>
   import("@/components/accounts/accountEditing/AccountEditor.vue");
+const Airdrop = () => import("@/components/Airdrop.vue");
 
 const routes = [
   { path: "/", name: "token-creator", component: TokenCreator },
@@ -18,6 +19,11 @@ const routes = [
     path: "/account-editor",
     name: "account-editor",
     component: AccountEditor
+  },
+  {
+    path: "/airdrop",
+    name: "airdrop",
+    component: Airdrop
   }
 ];
 

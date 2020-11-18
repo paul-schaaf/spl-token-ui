@@ -71,6 +71,13 @@
                 </router-link>
               </div>
             </div>
+            <router-link :to="{ name: 'airdrop' }">
+              <div class="navbar-item p-0" style="height: 100%">
+                <a class="navbar-link is-arrowless">
+                  Airdrop
+                </a>
+              </div>
+            </router-link>
           </div>
           <div class="navbar-end">
             <div class="navbar-item">
