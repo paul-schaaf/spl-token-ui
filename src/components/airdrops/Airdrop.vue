@@ -1,5 +1,5 @@
 <template>
-  <heading heading="AIRDROP" />
+  <heading heading="SOL AIRDROP" />
 
   <div style="margin-top: 30px">
     <template v-if="notMainnet">

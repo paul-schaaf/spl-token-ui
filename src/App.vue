@@ -71,13 +71,58 @@
                 </router-link>
               </div>
             </div>
-            <router-link :to="{ name: 'airdrop' }">
-              <div class="navbar-item p-0" style="height: 100%">
-                <a class="navbar-link is-arrowless">
-                  Airdrop
-                </a>
+            <div class="navbar-item has-dropdown is-hoverable">
+              <a class="navbar-link">
+                Airdrops
+              </a>
+              <div class="navbar-dropdown">
+                <p
+                  class="navbar-item"
+                  style="margin-bottom: 5px; padding: 0 0 0 16px; font-size: 13px"
+                >
+                  <strong>SOL</strong>
+                </p>
+                <router-link :to="{ name: 'sol-airdrop' }">
+                  <a
+                    :class="{
+                      'has-background-light': 'sol-airdrop' === $route.name,
+                      'has-text-black': 'sol-airdrop' === $route.name
+                    }"
+                    class="navbar-item"
+                  >
+                    SOL Airdrop
+                  </a>
+                </router-link>
+                <p
+                  class="navbar-item"
+                  style="margin-bottom: 5px;padding: 6px 0 0 16px;font-size: 13px"
+                >
+                  <strong>TOKENS</strong>
+                </p>
+                <router-link :to="{ name: 'faucet-creator' }">
+                  <a
+                    :class="{
+                      'has-background-light': 'faucet-creator' === $route.name,
+                      'has-text-black': 'faucet-creator' === $route.name
+                    }"
+                    class="navbar-item"
+                  >
+                    Create Faucet
+                  </a>
+                </router-link>
+                <router-link :to="{ name: 'token-airdrop' }">
+                  <a
+                    :class="{
+                      'has-background-light': 'token-airdrop' === $route.name,
+                      'has-text-black': 'token-airdrop' === $route.name
+                    }"
+                    class="navbar-item"
+                  >
+                    Token Airdrop
+                  </a>
+                </router-link>
               </div>
-            </router-link>
+            </div>
           </div>
           <div class="navbar-end">
             <div class="navbar-item">
