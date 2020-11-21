@@ -12,6 +12,7 @@ import { useWallet, sendTxUsingExternalSignature } from "../externalWallet";
 
 export * from "./editing";
 export * from "./associatedToken";
+export * from "./faucet";
 
 export const createNewToken = async (
   feePayer: string,

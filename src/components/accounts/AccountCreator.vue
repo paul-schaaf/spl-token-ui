@@ -38,7 +38,7 @@
       class="is-justify-content-center"
     >
       <p><strong> Create normal account</strong></p>
-      <Toggle v-model:checked="creatingAssociatedAccount" class="ml-2" />
+      <Toggle v-model:checked="createAssociatedAccount" class="ml-2" />
       <p class="ml-2"><strong> Create associated account</strong></p>
     </div>
     <div style="display: flex" class="control is-justify-content-center mt-6">
@@ -84,7 +84,7 @@ export default {
     const accountLink = ref("");
     const createdAccountAddress = ref("");
     const errorMessage = ref("");
-    const creatingAssociatedAccount = ref(false);
+    const createAssociatedAccount = ref(false);
 
     const createAccount = async () => {
       accountLink.value = "";
@@ -92,7 +92,7 @@ export default {
       createdAccountAddress.value = "";
       errorMessage.value = "";
       try {
-        createdAccountAddress.value = creatingAssociatedAccount.value
+        createdAccountAddress.value = createAssociatedAccount.value
           ? await createAssociatedTokenAccount(
               payerSecret.value,
               payerSignsExternally.value,
@@ -123,7 +123,7 @@ export default {
       accountLink,
       errorMessage,
       payerSignsExternally,
-      creatingAssociatedAccount
+      createAssociatedAccount
     };
   }
 };
