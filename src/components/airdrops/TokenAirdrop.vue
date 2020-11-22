@@ -1,125 +1,141 @@
 <template>
   <heading heading="TOKEN AIRDROP" />
-
   <div style="margin-top: 30px">
-    <template v-if="notMainnet">
-      <article v-if="addressThatReceivedAirdrop" class="message is-black">
-        <div class="message-body">
-          Success! Take a look at your account:
-          <a :href="accountLink" target="_blank" rel="noopener noreferrer">{{
-            addressThatReceivedAirdrop
-          }}</a>
-          <copy-icon class="ml-1" :value="addressThatReceivedAirdrop" />
-        </div>
-      </article>
-      <article v-else-if="errorMessage" class="message is-danger">
-        <div class="message-body">
-          {{ errorMessage }}
-        </div>
-      </article>
-      <div class="field">
-        <label class="label">SOL address to send airdrop to*</label>
-        <public-key-form-field
-          derivePublicKey
-          v-model:address="addressToAirdrop"
+    <article v-if="airdroppedAccountAddress" class="message is-black">
+      <div class="message-body">
+        Success! Take a look at your account:
+        <a :href="accountLink" target="_blank" rel="noopener noreferrer">{{
+          airdroppedAccountAddress
+        }}</a>
+        <copy-icon class="ml-1" :value="airdroppedAccountAddress" />
+      </div>
+    </article>
+    <article v-else-if="errorMessage" class="message is-danger">
+      <div class="message-body">
+        {{ errorMessage }}
+      </div>
+    </article>
+    <div class="field">
+      <label class="label">Fee payer*</label>
+      <secret-form-field
+        v-model:secret="payerSecret"
+        v-model:signExternally="feePayerSignsExternally"
+      />
+    </div>
+    <div class="field">
+      <label class="label">Admin</label>
+      <secret-form-field
+        v-model:secret="adminSecret"
+        v-model:signExternally="adminSignsExternally"
+        manualHint="You can leave this field empty if you're not the admin of the faucet."
+      />
+    </div>
+    <div class="field">
+      <label class="label">Token destination address</label>
+      <public-key-form-field v-model:address="addressToAirdrop" />
+    </div>
+    <div class="field">
+      <label class="label">Faucet address</label>
+      <public-key-form-field v-model:address="faucetAddress" />
+    </div>
+    <div class="field">
+      <label class="label">Amount*</label>
+      <div class="control">
+        <input
+          v-model="tokenAmount"
+          :onkeyup="
+            () => {
+              if (tokenAmount < 0) {
+                tokenAmount *= -1;
+              }
+            }
+          "
+          class="input is-black"
+          type="text"
+          placeholder="Amount of tokens to airdrop"
         />
       </div>
-      <div class="field">
-        <label class="label">Amount*</label>
-        <div class="control">
-          <input
-            v-model="amount"
-            :onkeyup="
-              () => {
-                if (amount < 0) {
-                  amount *= -1;
-                } else if (amount > 10) {
-                  amount = 10;
-                }
-              }
-            "
-            class="input is-black"
-            type="number"
-            placeholder="Amount of SOL to airdrop"
-            min="1"
-          />
-        </div>
-        <p class="help">Max 10 SOL may be requested at once.</p>
-      </div>
-      <div style="display: flex" class="control is-justify-content-center mt-5">
-        <button
-          :class="{ 'is-loading': requestingAirdrop }"
-          class="button is-black"
-          @click="onRequestAirdrop"
-        >
-          Request Airdrop
-        </button>
-      </div>
-    </template>
-    <div v-else class="has-text-centered">
-      Please refer to
-      <a
-        href="http://www.bonfida.com/airdrop"
-        target="_blank"
-        rel="noopener noreferrer"
-        >Bonfida</a
+    </div>
+    <div style="display: flex" class="control is-justify-content-center mt-5">
+      <button
+        :class="{ 'is-loading': airdroppingTokens }"
+        class="button is-black"
+        @click="onAirdropTokens"
       >
-      to receive an airdrop on mainnet
+        Airdrop tokens
+      </button>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import Heading from "@/components/util/Heading.vue";
-import PublicKeyFormField from "@/components/util/PublicKeyFormField.vue";
-import CopyIcon from "@/components/util/CopyIcon.vue";
-import { requestAirdrop } from "@/solana/airdrop";
+import { ref } from "vue";
+import { airdropTokens } from "@/solana/token";
 import { chosenCluster } from "@/solana/connection";
 import * as SolanaErrorHandler from "@/solana/SolanaErrorHandler";
+import SecretFormField from "@/components/util/SecretFormField.vue";
+import CopyIcon from "@/components/util/CopyIcon.vue";
+import PublicKeyFormField from "@/components/util/PublicKeyFormField.vue";
+import Heading from "@/components/util/Heading.vue";
+import { u64 } from "@solana/spl-token";
 
-import { computed, defineComponent, ref } from "vue";
-export default defineComponent({
+export default {
   components: {
-    Heading,
+    SecretFormField,
+    CopyIcon,
     PublicKeyFormField,
-    CopyIcon
+    Heading
   },
   setup() {
+    const payerSecret = ref("");
+    const feePayerSignsExternally = ref(true);
+    const adminSecret = ref("");
+    const adminSignsExternally = ref(false);
     const addressToAirdrop = ref("");
-    const requestingAirdrop = ref(false);
-    const amount = ref(10);
-    const addressThatReceivedAirdrop = ref("");
+    const tokenAmount = ref("");
+
+    const airdroppingTokens = ref(false);
     const accountLink = ref("");
     const errorMessage = ref("");
+    const airdroppedAccountAddress = ref("");
+    const faucetAddress = ref("");
 
-    const onRequestAirdrop = async () => {
-      requestingAirdrop.value = true;
-      errorMessage.value = "";
+    const onAirdropTokens = async () => {
+      airdroppingTokens.value = true;
+      airdroppedAccountAddress.value = "";
       accountLink.value = "";
-      const addressStatic = addressToAirdrop.value;
-      addressThatReceivedAirdrop.value = "";
+      errorMessage.value = "";
       try {
-        await requestAirdrop(addressToAirdrop.value, amount.value);
-        addressThatReceivedAirdrop.value = addressStatic;
-        accountLink.value = `https://explorer.solana.com/address/${addressThatReceivedAirdrop.value}?cluster=${chosenCluster.value}`;
+        airdroppedAccountAddress.value = await airdropTokens(
+          payerSecret.value,
+          feePayerSignsExternally.value,
+          faucetAddress.value,
+          addressToAirdrop.value,
+          adminSecret.value,
+          adminSignsExternally.value,
+          new u64(tokenAmount.value, 10)
+        );
+        accountLink.value = `https://explorer.solana.com/address/${airdroppedAccountAddress.value}?cluster=${chosenCluster.value}`;
       } catch (err) {
         errorMessage.value = SolanaErrorHandler.getErrorMessage(err);
       }
-      requestingAirdrop.value = false;
+      airdroppingTokens.value = false;
     };
-
-    const notMainnet = computed(() => chosenCluster.value !== "mainnet-beta");
 
     return {
-      addressToAirdrop,
-      requestingAirdrop,
-      amount,
-      onRequestAirdrop,
+      payerSecret,
+      adminSecret,
+      airdroppedAccountAddress,
+      airdroppingTokens,
       accountLink,
       errorMessage,
-      addressThatReceivedAirdrop,
-      notMainnet
+      feePayerSignsExternally,
+      adminSignsExternally,
+      tokenAmount,
+      addressToAirdrop,
+      onAirdropTokens,
+      faucetAddress
     };
   }
-});
+};
 </script>

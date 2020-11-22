@@ -11,9 +11,10 @@ import {
 import { createAccount } from "../account";
 import { COMMITMENT, getConnection } from "../connection";
 import { sendTxUsingExternalSignature, useWallet } from "../externalWallet";
+import { getMintPubkeyFromTokenAccountPubkey } from "./index";
 
 const FAUCET_PROGRAM_ID = new PublicKey(
-  "DH6gwMhqenesvKazacaRgbB5PiNAB9cS9VVWuW3FgnYP"
+  "8LJoSP7NsB8ybpLG1zFnwrzucpgZBCd2H7YJrrgPoss2"
 );
 
 const getPDA = () =>
@@ -112,8 +113,10 @@ export const createFaucet = async (
       wallet
     );
   } else {
-    const feePayerAccount = await createAccount(feePayerSecret);
-    const mintAuthorityAccount = await createAccount(mintAuthoritySecret);
+    const [feePayerAccount, mintAuthorityAccount] = await Promise.all([
+      createAccount(feePayerSecret),
+      createAccount(mintAuthoritySecret)
+    ]);
 
     const createAccIx = SystemProgram.createAccount({
       fromPubkey: feePayerAccount.publicKey,
@@ -147,4 +150,112 @@ export const createFaucet = async (
     );
   }
   return faucetAcc.publicKey.toBase58();
+};
+
+const buildAirdropTokensIx = async (
+  amount: u64,
+  adminPubkey: PublicKey | null,
+  tokenMintPublicKey: PublicKey,
+  destinationAccountPubkey: PublicKey,
+  faucetPubkey: PublicKey
+) => {
+  const pubkeyNonce = await getPDA();
+
+  const keys = [
+    { pubkey: pubkeyNonce[0], isSigner: false, isWritable: false },
+    {
+      pubkey: tokenMintPublicKey,
+      isSigner: false,
+      isWritable: true
+    },
+    { pubkey: destinationAccountPubkey, isSigner: false, isWritable: true },
+    { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
+    { pubkey: faucetPubkey, isSigner: false, isWritable: false }
+  ];
+
+  if (adminPubkey) {
+    keys.push({
+      pubkey: adminPubkey,
+      isSigner: true,
+      isWritable: false
+    });
+  }
+
+  return new TransactionInstruction({
+    programId: FAUCET_PROGRAM_ID,
+    data: Buffer.from([1, ...amount.toArray("le", 8)]),
+    keys
+  });
+};
+
+export const airdropTokens = async (
+  feePayerSecret: string,
+  feePayerSignsExternally: boolean,
+  faucetAddress: string,
+  tokenDestinationAddress: string,
+  adminSecret: string,
+  adminSignsExternally: boolean,
+  amount: u64
+) => {
+  const tokenDestinationPublicKey = new PublicKey(tokenDestinationAddress);
+  const faucetPubkey = new PublicKey(faucetAddress);
+  const connection = getConnection();
+  const tokenMintPubkey = await getMintPubkeyFromTokenAccountPubkey(
+    tokenDestinationPublicKey
+  );
+
+  if (feePayerSignsExternally || adminSignsExternally) {
+    const wallet = await useWallet();
+
+    const adminAccountOrWalletOrNull = adminSignsExternally
+      ? wallet
+      : adminSecret
+      ? await createAccount(adminSecret)
+      : null;
+
+    const ix = await buildAirdropTokensIx(
+      amount,
+      adminAccountOrWalletOrNull ? adminAccountOrWalletOrNull.publicKey : null,
+      tokenMintPubkey,
+      tokenDestinationPublicKey,
+      faucetPubkey
+    );
+
+    await sendTxUsingExternalSignature(
+      [ix],
+      connection,
+      feePayerSignsExternally ? null : await createAccount(feePayerSecret),
+      adminSignsExternally
+        ? []
+        : adminAccountOrWalletOrNull
+        ? [adminAccountOrWalletOrNull]
+        : [],
+      wallet
+    );
+  } else {
+    const feePayerAccount = await createAccount(feePayerSecret);
+
+    const adminAccount = adminSecret ? await createAccount(adminSecret) : null;
+
+    const ix = await buildAirdropTokensIx(
+      amount,
+      adminAccount ? adminAccount.publicKey : null,
+      tokenMintPubkey,
+      tokenDestinationPublicKey,
+      faucetPubkey
+    );
+
+    const tx = new Transaction();
+    tx.add(ix);
+
+    const signers = [feePayerAccount];
+    if (adminAccount) {
+      signers.push(adminAccount);
+    }
+    await sendAndConfirmTransaction(connection, tx, signers, {
+      skipPreflight: false,
+      commitment: COMMITMENT
+    });
+  }
+  return tokenDestinationPublicKey.toBase58();
 };
