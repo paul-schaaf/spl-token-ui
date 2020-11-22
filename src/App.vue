@@ -78,7 +78,7 @@
               <div class="navbar-dropdown">
                 <p
                   class="navbar-item"
-                  style="margin-bottom: 5px; padding: 0 0 0 16px; font-size: 13px"
+                  style="margin-bottom: 5px; padding: 2px 0 0 16px; font-size: 13px"
                 >
                   <strong>SOL</strong>
                 </p>
@@ -95,7 +95,7 @@
                 </router-link>
                 <p
                   class="navbar-item"
-                  style="margin-bottom: 5px;padding: 6px 0 0 16px;font-size: 13px"
+                  style="margin-bottom: 5px; padding: 6px 0 0 16px; font-size: 13px"
                 >
                   <strong>TOKENS</strong>
                 </p>
