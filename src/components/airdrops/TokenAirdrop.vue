@@ -31,11 +31,11 @@
       />
     </div>
     <div class="field">
-      <label class="label">Token destination address</label>
+      <label class="label">Token destination address*</label>
       <public-key-form-field v-model:address="addressToAirdrop" />
     </div>
     <div class="field">
-      <label class="label">Faucet address</label>
+      <label class="label">Faucet address*</label>
       <public-key-form-field v-model:address="faucetAddress" />
     </div>
     <div class="field">
