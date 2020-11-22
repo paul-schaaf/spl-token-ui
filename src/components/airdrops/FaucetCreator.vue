@@ -53,6 +53,13 @@
       <div class="control">
         <input
           v-model="tokenAmount"
+          :onkeyup="
+            () => {
+              if (tokenAmount < 0) {
+                tokenAmount *= -1;
+              }
+            }
+          "
           class="input is-black"
           type="text"
           placeholder="Max tokens that may be airdropped to non-admins per ix"
@@ -131,6 +138,7 @@ export default {
       creatingFaucet.value = true;
       createdFaucetAddress.value = "";
       accountLink.value = "";
+      errorMessage.value = "";
       try {
         createdFaucetAddress.value = await createFaucet(
           payerSecret.value,
