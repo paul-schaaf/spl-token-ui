@@ -14,6 +14,21 @@ export * from "./editing";
 export * from "./associatedToken";
 export * from "./faucet";
 
+export const getMintPubkeyFromTokenAccountPubkey = async (
+  tokenAccountPubkey: PublicKey
+) => {
+  const tokenMintData = (
+    await getConnection().getParsedAccountInfo(
+      tokenAccountPubkey,
+      "singleGossip"
+    )
+  ).value!.data;
+  //@ts-expect-error (doing the data parsing into steps so this ignore line is not moved around by formatting)
+  const tokenMintAddress = tokenMintData.parsed.info.mint;
+
+  return new PublicKey(tokenMintAddress);
+};
+
 export const createNewToken = async (
   feePayer: string,
   mintAuthority: string,
