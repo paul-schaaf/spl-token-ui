@@ -3,7 +3,7 @@
   <div style="margin-top: 30px">
     <article v-if="createdFaucetAddress" class="message is-black">
       <div class="message-body">
-        Success! Take a look at your created token:
+        Success! Take a look at your created faucet:
         <a :href="accountLink" target="_blank" rel="noopener noreferrer">{{
           createdFaucetAddress
         }}</a>
