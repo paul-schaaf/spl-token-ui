@@ -14,7 +14,7 @@ import { sendTxUsingExternalSignature, useWallet } from "../externalWallet";
 import { getMintPubkeyFromTokenAccountPubkey } from "./index";
 
 const FAUCET_PROGRAM_ID = new PublicKey(
-  "8LJoSP7NsB8ybpLG1zFnwrzucpgZBCd2H7YJrrgPoss2"
+  "3heDgs1QaZmQjXsSRu3FANf1Bb29FBzEr4R55SVNqzZ2"
 );
 
 const getPDA = () =>
