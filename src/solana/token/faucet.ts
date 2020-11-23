@@ -15,7 +15,7 @@ import { sendTxUsingExternalSignature, useWallet } from "../externalWallet";
 import { getMintPubkeyFromTokenAccountPubkey } from "./index";
 
 const FAUCET_PROGRAM_ID = new PublicKey(
-  "7n5xKj5unpN8Qd1wEGqPMs5bzSxy7JiCif9YFthFRgq"
+  "8frvUeZbzVmm9NsKRMFmfwhjda3FUD2D34pTxkVpzSRG"
 );
 
 const FAUCET_SIZE = 77;
