@@ -1,6 +1,7 @@
 import { u64, Token, TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import {
   Account,
+  Connection,
   PublicKey,
   sendAndConfirmTransaction,
   SystemProgram,
@@ -14,8 +15,10 @@ import { sendTxUsingExternalSignature, useWallet } from "../externalWallet";
 import { getMintPubkeyFromTokenAccountPubkey } from "./index";
 
 const FAUCET_PROGRAM_ID = new PublicKey(
-  "3heDgs1QaZmQjXsSRu3FANf1Bb29FBzEr4R55SVNqzZ2"
+  "7n5xKj5unpN8Qd1wEGqPMs5bzSxy7JiCif9YFthFRgq"
 );
+
+const FAUCET_SIZE = 77;
 
 const getPDA = () =>
   PublicKey.findProgramAddress([Buffer.from("faucet")], FAUCET_PROGRAM_ID);
@@ -82,9 +85,9 @@ export const createFaucet = async (
       fromPubkey: feePayerAccOrWallet.publicKey,
       newAccountPubkey: faucetAcc.publicKey,
       programId: FAUCET_PROGRAM_ID,
-      space: 45,
+      space: FAUCET_SIZE,
       lamports: await connection.getMinimumBalanceForRentExemption(
-        45,
+        FAUCET_SIZE,
         COMMITMENT
       )
     });
@@ -122,9 +125,9 @@ export const createFaucet = async (
       fromPubkey: feePayerAccount.publicKey,
       newAccountPubkey: faucetAcc.publicKey,
       programId: FAUCET_PROGRAM_ID,
-      space: 45,
+      space: FAUCET_SIZE,
       lamports: await connection.getMinimumBalanceForRentExemption(
-        45,
+        FAUCET_SIZE,
         COMMITMENT
       )
     });
@@ -258,4 +261,93 @@ export const airdropTokens = async (
     });
   }
   return tokenDestinationPublicKey.toBase58();
+};
+
+const buildCloseFaucetIx = async (
+  connection: Connection,
+  adminPubkey: PublicKey,
+  faucetPubkey: PublicKey,
+  destPubkey: PublicKey
+) => {
+  const rawFaucetData = await connection.getParsedAccountInfo(faucetPubkey);
+  const mintPubkey = new PublicKey(
+    [...(rawFaucetData.value?.data as Buffer)].slice(45)
+  );
+
+  const keys = [
+    { pubkey: adminPubkey, isSigner: true, isWritable: false },
+    {
+      pubkey: faucetPubkey,
+      isSigner: false,
+      isWritable: true
+    },
+    { pubkey: destPubkey, isSigner: false, isWritable: true },
+    { pubkey: mintPubkey, isSigner: false, isWritable: true },
+    { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
+    { pubkey: (await getPDA())[0], isSigner: false, isWritable: false }
+  ];
+
+  return new TransactionInstruction({
+    programId: FAUCET_PROGRAM_ID,
+    data: Buffer.from([2]),
+    keys
+  });
+};
+
+export const closeFaucet = async (
+  feePayerSecret: string,
+  feePayerSignsExternally: boolean,
+  adminSecret: string,
+  adminSignsExternally: boolean,
+  faucetAddress: string,
+  destAddress: string
+) => {
+  const connection = getConnection();
+  const destPubkey = new PublicKey(destAddress);
+  const faucetPubkey = new PublicKey(faucetAddress);
+
+  if (feePayerSignsExternally || adminSignsExternally) {
+    const wallet = await useWallet();
+
+    const adminAccOrWallet = adminSignsExternally
+      ? wallet
+      : await createAccount(adminSecret);
+
+    const closeFaucetIx = await buildCloseFaucetIx(
+      connection,
+      adminAccOrWallet.publicKey,
+      faucetPubkey,
+      destPubkey
+    );
+
+    await sendTxUsingExternalSignature(
+      [closeFaucetIx],
+      connection,
+      feePayerSignsExternally ? null : await createAccount(feePayerSecret),
+      adminSignsExternally ? [] : [adminAccOrWallet],
+      wallet
+    );
+  } else {
+    const feePayerAccount = await createAccount(feePayerSecret);
+    const adminAccount = await createAccount(adminSecret);
+
+    const closeFaucetIx = await buildCloseFaucetIx(
+      connection,
+      adminAccount.publicKey,
+      faucetPubkey,
+      destPubkey
+    );
+
+    await sendAndConfirmTransaction(
+      connection,
+      new Transaction().add(closeFaucetIx),
+      [feePayerAccount, adminAccount],
+      {
+        skipPreflight: false,
+        commitment: COMMITMENT
+      }
+    );
+  }
+
+  return faucetPubkey.toBase58();
 };

@@ -7,6 +7,7 @@ const AccountEditor = () =>
   import("@/components/accounts/accountEditing/AccountEditor.vue");
 const Airdrop = () => import("@/components/airdrops/Airdrop.vue");
 const FaucetCreator = () => import("@/components/airdrops/FaucetCreator.vue");
+const FaucetCloser = () => import("@/components/airdrops/FaucetCloser.vue");
 const TokenAirdrop = () => import("@/components/airdrops/TokenAirdrop.vue");
 
 const routes = [
@@ -31,6 +32,11 @@ const routes = [
     path: "/faucet-creator",
     name: "faucet-creator",
     component: FaucetCreator
+  },
+  {
+    path: "/faucet-closer",
+    name: "faucet-closer",
+    component: FaucetCloser
   },
   {
     path: "/token-airdrop",

@@ -110,6 +110,17 @@
                     Create Faucet
                   </a>
                 </router-link>
+                <router-link :to="{ name: 'faucet-closer' }">
+                  <a
+                    :class="{
+                      'has-background-light': 'faucet-closer' === $route.name,
+                      'has-text-black': 'faucet-closer' === $route.name
+                    }"
+                    class="navbar-item"
+                  >
+                    Close Faucet
+                  </a>
+                </router-link>
                 <router-link :to="{ name: 'token-airdrop' }">
                   <a
                     :class="{
