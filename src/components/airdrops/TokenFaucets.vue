@@ -15,7 +15,10 @@
         {{ errorMessage }}
       </div>
     </article>
-    <div class="field">
+    <div
+      v-if="currentTokenFaucetComponent !== tokenFaucetComponents.InspectFaucet"
+      class="field"
+    >
       <label class="label">Fee payer*</label>
       <secret-form-field
         v-model:secret="payerSecret"
@@ -52,17 +55,18 @@
 
 <script lang="ts">
 import { defineComponent, ref, onErrorCaptured, computed } from "vue";
-import Heading from "@/components/util/Heading.vue";
 import tokenFaucetComponents from "./tokenFaucetComponents";
 import { splitAtUppercase } from "@/util/stringFormatting";
 import { chosenCluster } from "@/solana/connection";
+import * as SolanaErrorHandler from "@/solana/SolanaErrorHandler";
 
+import Heading from "@/components/util/Heading.vue";
 import SecretFormField from "@/components/util/SecretFormField.vue";
 import CopyIcon from "@/components/util/CopyIcon.vue";
 import TokenAirdrop from "@/components/airdrops/TokenAirdrop.vue";
 import FaucetCreator from "@/components/airdrops/FaucetCreator.vue";
 import FaucetCloser from "@/components/airdrops/FaucetCloser.vue";
-import * as SolanaErrorHandler from "@/solana/SolanaErrorHandler";
+import FaucetInspector from "@/components/airdrops/FaucetInspector.vue";
 
 export default defineComponent({
   components: {
@@ -71,7 +75,8 @@ export default defineComponent({
     SecretFormField,
     TokenAirdrop,
     FaucetCreator,
-    FaucetCloser
+    FaucetCloser,
+    FaucetInspector
   },
   setup() {
     const payerSecret = ref("");

@@ -10,7 +10,7 @@ import {
   TransactionInstruction
 } from "@solana/web3.js";
 import { createAccount } from "../account";
-import { COMMITMENT, getConnection } from "../connection";
+import { chosenCluster, COMMITMENT, getConnection } from "../connection";
 import { sendTxUsingExternalSignature, useWallet } from "../externalWallet";
 import { getMintPubkeyFromTokenAccountPubkey } from "./index";
 
@@ -22,6 +22,29 @@ const FAUCET_SIZE = 77;
 
 const getPDA = () =>
   PublicKey.findProgramAddress([Buffer.from("faucet")], FAUCET_PROGRAM_ID);
+
+export const inspectFaucet = async (faucetAddress: string) => {
+  try {
+    const faucetKey = new PublicKey(faucetAddress);
+    const rawFaucetData = await getConnection().getParsedAccountInfo(faucetKey);
+    const faucetArray = [...(rawFaucetData.value?.data as Buffer)];
+    const mintPubkey = new PublicKey(faucetArray.slice(45, 77));
+    const adminKey: null | PublicKey = faucetArray[1]
+      ? new PublicKey(faucetArray.slice(5, 37))
+      : null;
+    const permittedAmount = new u64(faucetArray.slice(37, 45), undefined, "le");
+    return {
+      faucetKey: faucetKey.toBase58(),
+      mintPubkey: mintPubkey.toBase58(),
+      adminKey: adminKey?.toBase58(),
+      permittedAmount: permittedAmount.toString(10)
+    };
+  } catch (err) {
+    throw new Error(
+      `Are you sure there is a faucet at this address on cluster ${chosenCluster.value}? If yes, just try again.`
+    );
+  }
+};
 
 const buildCreateFaucetIx = (
   tokenMintPublicKey: PublicKey,
