@@ -99,37 +99,15 @@
                 >
                   <strong>TOKENS</strong>
                 </p>
-                <router-link :to="{ name: 'faucet-creator' }">
+                <router-link :to="{ name: 'token-faucets' }">
                   <a
                     :class="{
-                      'has-background-light': 'faucet-creator' === $route.name,
-                      'has-text-black': 'faucet-creator' === $route.name
+                      'has-background-light': 'token-faucets' === $route.name,
+                      'has-text-black': 'token-faucets' === $route.name
                     }"
                     class="navbar-item"
                   >
-                    Create Faucet
-                  </a>
-                </router-link>
-                <router-link :to="{ name: 'faucet-closer' }">
-                  <a
-                    :class="{
-                      'has-background-light': 'faucet-closer' === $route.name,
-                      'has-text-black': 'faucet-closer' === $route.name
-                    }"
-                    class="navbar-item"
-                  >
-                    Close Faucet
-                  </a>
-                </router-link>
-                <router-link :to="{ name: 'token-airdrop' }">
-                  <a
-                    :class="{
-                      'has-background-light': 'token-airdrop' === $route.name,
-                      'has-text-black': 'token-airdrop' === $route.name
-                    }"
-                    class="navbar-item"
-                  >
-                    Token Airdrop
+                    Token Faucets
                   </a>
                 </router-link>
               </div>

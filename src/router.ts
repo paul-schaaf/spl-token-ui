@@ -9,6 +9,7 @@ const Airdrop = () => import("@/components/airdrops/Airdrop.vue");
 const FaucetCreator = () => import("@/components/airdrops/FaucetCreator.vue");
 const FaucetCloser = () => import("@/components/airdrops/FaucetCloser.vue");
 const TokenAirdrop = () => import("@/components/airdrops/TokenAirdrop.vue");
+const TokenFaucets = () => import("@/components/airdrops/TokenFaucets.vue");
 
 const routes = [
   { path: "/", name: "token-creator", component: TokenCreator },
@@ -42,6 +43,11 @@ const routes = [
     path: "/token-airdrop",
     name: "token-airdrop",
     component: TokenAirdrop
+  },
+  {
+    path: "/token-faucets",
+    name: "token-faucets",
+    component: TokenFaucets
   }
 ];
 
