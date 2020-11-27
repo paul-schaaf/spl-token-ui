@@ -12,6 +12,28 @@ import { useWallet, sendTxUsingExternalSignature } from "../externalWallet";
 
 export * from "./editing";
 export * from "./associatedToken";
+export * from "./faucet";
+
+export const getMintPubkeyFromTokenAccountPubkey = async (
+  tokenAccountPubkey: PublicKey
+) => {
+  try {
+    const tokenMintData = (
+      await getConnection().getParsedAccountInfo(
+        tokenAccountPubkey,
+        "singleGossip"
+      )
+    ).value!.data;
+    //@ts-expect-error (doing the data parsing into steps so this ignore line is not moved around by formatting)
+    const tokenMintAddress = tokenMintData.parsed.info.mint;
+
+    return new PublicKey(tokenMintAddress);
+  } catch (err) {
+    throw new Error(
+      "Error calculating mint address from token account. Are you sure you inserted a valid token account address"
+    );
+  }
+};
 
 export const createNewToken = async (
   feePayer: string,

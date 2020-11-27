@@ -71,13 +71,47 @@
                 </router-link>
               </div>
             </div>
-            <router-link :to="{ name: 'airdrop' }">
-              <div class="navbar-item p-0" style="height: 100%">
-                <a class="navbar-link is-arrowless">
-                  Airdrop
-                </a>
+            <div class="navbar-item has-dropdown is-hoverable">
+              <a class="navbar-link">
+                Airdrops
+              </a>
+              <div class="navbar-dropdown">
+                <p
+                  class="navbar-item"
+                  style="margin-bottom: 5px; padding: 2px 0 0 16px; font-size: 13px"
+                >
+                  <strong>SOL</strong>
+                </p>
+                <router-link :to="{ name: 'sol-airdrop' }">
+                  <a
+                    :class="{
+                      'has-background-light': 'sol-airdrop' === $route.name,
+                      'has-text-black': 'sol-airdrop' === $route.name
+                    }"
+                    class="navbar-item"
+                  >
+                    SOL Airdrop
+                  </a>
+                </router-link>
+                <p
+                  class="navbar-item"
+                  style="margin-bottom: 5px; padding: 6px 0 0 16px; font-size: 13px"
+                >
+                  <strong>TOKENS</strong>
+                </p>
+                <router-link :to="{ name: 'token-faucets' }">
+                  <a
+                    :class="{
+                      'has-background-light': 'token-faucets' === $route.name,
+                      'has-text-black': 'token-faucets' === $route.name
+                    }"
+                    class="navbar-item"
+                  >
+                    Token Faucets
+                  </a>
+                </router-link>
               </div>
-            </router-link>
+            </div>
           </div>
           <div class="navbar-end">
             <div class="navbar-item">
@@ -87,6 +121,15 @@
                 target="_blank"
                 rel="noopener noreferrer"
                 >FAQ</a
+              >
+            </div>
+            <div class="navbar-item">
+              <a
+                id="source-code"
+                href="https://github.com/paul-schaaf/spl-token-ui/blob/main/README.md#how-to"
+                target="_blank"
+                rel="noopener noreferrer"
+                >how-to</a
               >
             </div>
             <div class="navbar-item">

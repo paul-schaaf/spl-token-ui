@@ -5,7 +5,11 @@ const TokenEditor = () => import("@/components/tokens/TokenEditor.vue");
 const AccountCreator = () => import("@/components/accounts/AccountCreator.vue");
 const AccountEditor = () =>
   import("@/components/accounts/accountEditing/AccountEditor.vue");
-const Airdrop = () => import("@/components/Airdrop.vue");
+const Airdrop = () => import("@/components/airdrops/Airdrop.vue");
+const FaucetCreator = () => import("@/components/airdrops/FaucetCreator.vue");
+const FaucetCloser = () => import("@/components/airdrops/FaucetCloser.vue");
+const TokenAirdrop = () => import("@/components/airdrops/TokenAirdrop.vue");
+const TokenFaucets = () => import("@/components/airdrops/TokenFaucets.vue");
 
 const routes = [
   { path: "/", name: "token-creator", component: TokenCreator },
@@ -21,9 +25,29 @@ const routes = [
     component: AccountEditor
   },
   {
-    path: "/airdrop",
-    name: "airdrop",
+    path: "/sol-airdrop",
+    name: "sol-airdrop",
     component: Airdrop
+  },
+  {
+    path: "/faucet-creator",
+    name: "faucet-creator",
+    component: FaucetCreator
+  },
+  {
+    path: "/faucet-closer",
+    name: "faucet-closer",
+    component: FaucetCloser
+  },
+  {
+    path: "/token-airdrop",
+    name: "token-airdrop",
+    component: TokenAirdrop
+  },
+  {
+    path: "/token-faucets",
+    name: "token-faucets",
+    component: TokenFaucets
   }
 ];
 

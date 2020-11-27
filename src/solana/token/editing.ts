@@ -4,20 +4,7 @@ import { getConnection } from "../connection";
 import { createAccount } from "../account";
 import { useWallet, sendTxUsingExternalSignature } from "../externalWallet";
 
-const getMintPubkeyFromTokenAccountPubkey = async (
-  tokenAccountPubkey: PublicKey
-) => {
-  const tokenMintData = (
-    await getConnection().getParsedAccountInfo(
-      tokenAccountPubkey,
-      "singleGossip"
-    )
-  ).value!.data;
-  //@ts-expect-error (doing the data parsing into steps so this ignore line is not moved around by formatting)
-  const tokenMintAddress = tokenMintData.parsed.info.mint;
-
-  return new PublicKey(tokenMintAddress);
-};
+import { getMintPubkeyFromTokenAccountPubkey } from "./index";
 
 export const mintToken = async (
   feePayerSecret: string,
