@@ -22,6 +22,7 @@
 - Closing accounts
 - Setting account owners
 - Setting acount close authorities
+- Approving and revoking delegates
 
 ### Airdrops
 - Requesting SOL airdrops

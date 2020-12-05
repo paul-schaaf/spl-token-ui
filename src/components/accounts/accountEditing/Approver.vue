@@ -1,14 +1,20 @@
 <template>
   <div class="field">
-    <label class="label">Account owner / delegate secret*</label>
-    <secret-form-field
-      v-model:secret="ownerAccountSecret"
-      v-model:signExternally="ownerSignsExternally"
-    />
-  </div>
-  <div class="field">
     <label class="label">Account address*</label>
     <public-key-form-field v-model:address="accountAddress" />
+  </div>
+  <div class="field">
+    <label class="label">Owner*</label>
+    <div class="control">
+      <secret-form-field
+        v-model:secret="ownerSecret"
+        v-model:signExternally="ownerSignsExternally"
+      />
+    </div>
+  </div>
+  <div class="field">
+    <label class="label">Delegate*</label>
+    <public-key-form-field derivePublicKey v-model:address="delegateAddress" />
   </div>
   <div class="field">
     <label class="label">Amount*</label>
@@ -17,36 +23,36 @@
         v-model="tokenAmount"
         class="input is-black"
         type="text"
-        placeholder="Tokens to burn"
+        placeholder="Amount of tokens to approve e.g. 20000"
       />
     </div>
     <p class="help">
-      Please be aware that a token is burned using its smallest denomination
-      e.g. if you have a token with 2 decimals and you type in 200 you will burn
-      2 tokens.
+      Please be aware that a token is approved using its smallest denomination
+      e.g. if you have a token with 2 decimals and you type in 200 you will
+      approve 2 tokens.
     </p>
   </div>
   <div style="display: flex" class="control is-justify-content-center mt-5">
     <button
-      :class="{ 'is-loading': burningTokens }"
+      :class="{ 'is-loading': approvingDelegate }"
       class="button is-black"
-      @click="onBurnTokens"
+      @click="onApproveDelegate"
     >
-      Burn tokens
+      Approve
     </button>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, toRefs } from "vue";
-import { burnTokens } from "@/solana/token";
-import accountComponents from "../accountComponents";
 import { u64 } from "@solana/spl-token";
+import accountComponents from "../accountComponents";
+import { approveDelegate } from "@/solana/token";
 import SecretFormField from "@/components/util/SecretFormField.vue";
 import PublicKeyFormField from "@/components/util/PublicKeyFormField.vue";
 
 export default defineComponent({
-  name: accountComponents.Burn,
+  name: accountComponents.Approve,
   components: {
     SecretFormField,
     PublicKeyFormField
@@ -57,7 +63,6 @@ export default defineComponent({
       type: String,
       required: true
     },
-
     payerSignsExternally: {
       type: Boolean,
       default: true
@@ -65,39 +70,42 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const { payerSecret, payerSignsExternally } = toRefs(props);
-    const ownerAccountSecret = ref("");
-    const ownerSignsExternally = ref(true);
+    const approvingDelegate = ref(false);
     const accountAddress = ref("");
-    const burningTokens = ref(false);
+    const ownerSecret = ref("");
+    const ownerSignsExternally = ref(true);
+    const delegateAddress = ref("");
     const tokenAmount = ref("");
 
-    const onBurnTokens = async () => {
-      burningTokens.value = true;
+    const onApproveDelegate = async () => {
+      approvingDelegate.value = true;
       emit("update:accountAddress", "");
       try {
-        await burnTokens(
+        await approveDelegate(
           payerSecret.value,
-          accountAddress.value,
-          ownerAccountSecret.value,
-          new u64(tokenAmount.value, 10),
           payerSignsExternally.value,
-          ownerSignsExternally.value
+          ownerSecret.value,
+          ownerSignsExternally.value,
+          accountAddress.value,
+          delegateAddress.value,
+          new u64(tokenAmount.value, 10)
         );
         emit("update:accountAddress", accountAddress.value);
       } catch (err) {
-        burningTokens.value = false;
+        approvingDelegate.value = false;
         throw err;
       }
-      burningTokens.value = false;
+      approvingDelegate.value = false;
     };
 
     return {
-      burningTokens,
-      tokenAmount,
-      ownerAccountSecret,
+      approvingDelegate,
       accountAddress,
-      onBurnTokens,
-      ownerSignsExternally
+      onApproveDelegate,
+      ownerSecret,
+      delegateAddress,
+      ownerSignsExternally,
+      tokenAmount
     };
   }
 });
