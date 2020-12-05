@@ -1,6 +1,6 @@
 <template>
   <div class="field">
-    <label class="label">Account owner secret*</label>
+    <label class="label">Account owner / delegate secret*</label>
     <secret-form-field
       v-model:secret="ownerAccountSecret"
       v-model:signExternally="ownerSignsExternally"
