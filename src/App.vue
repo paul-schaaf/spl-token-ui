@@ -209,6 +209,7 @@ export default {
     });
 
     onMounted(() => {
+      // workaround for bulma bug -- navbar dropdowns not closing after route change
       document
         .getElementsByClassName("navbar")[0]
         .querySelectorAll(".has-dropdown")
