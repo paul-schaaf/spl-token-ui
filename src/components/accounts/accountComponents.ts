@@ -6,5 +6,7 @@ export default {
   SetOwner: "owner-setter",
   SetCloser: "closer-setter",
   Burn: "token-burner",
-  Close: "account-closer"
+  Close: "account-closer",
+  Approve: "approver",
+  Revoke: "revoker"
 };
