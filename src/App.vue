@@ -176,7 +176,7 @@
 </template>
 
 <script lang="ts">
-import { computed } from "vue";
+import { computed, onMounted } from "vue";
 import { CLUSTERS } from "./solana/connection";
 import { changeCluster, chosenCluster } from "./solana/connection";
 
@@ -206,6 +206,27 @@ export default {
           break;
       }
       return chosenCluster.value + " " + emoji;
+    });
+
+    onMounted(() => {
+      // workaround for bulma bug -- navbar dropdowns not closing after route change
+      document
+        .getElementsByClassName("navbar")[0]
+        .querySelectorAll(".has-dropdown")
+        .forEach(el => {
+          el.addEventListener("click", () => {
+            let menu = el.querySelector(".navbar-dropdown");
+            //@ts-expect-error
+            menu.style.display = "none";
+            setTimeout(() => {
+              //@ts-expect-error
+              el.blur();
+              // Reset the display property to its original state, so the menu can appear again next time
+              //@ts-expect-error
+              menu.style.display = "";
+            }, 200);
+          });
+        });
     });
 
     return {
