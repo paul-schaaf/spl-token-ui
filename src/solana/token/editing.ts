@@ -506,3 +506,53 @@ export const approveDelegate = async (
     return tokenAccountPubkey.toBase58();
   }
 };
+
+export const revoke = async (
+  feePayerSecret: string,
+  feePayerSignsExternally: boolean,
+  accountOwnerSecret: string,
+  accountOwnerSignsExternally: boolean,
+  tokenAccountAddress: string
+) => {
+  const tokenAccountPubkey = new PublicKey(tokenAccountAddress);
+  const connection = getConnection();
+
+  if (feePayerSignsExternally || accountOwnerSignsExternally) {
+    const wallet = await useWallet();
+
+    const accountOwnerAccOrWallet = accountOwnerSignsExternally
+      ? wallet
+      : await createAccount(accountOwnerSecret);
+
+    const ix = Token.createRevokeInstruction(
+      TOKEN_PROGRAM_ID,
+      tokenAccountPubkey,
+      accountOwnerAccOrWallet.publicKey,
+      []
+    );
+
+    await sendTxUsingExternalSignature(
+      [ix],
+      connection,
+      feePayerSignsExternally ? null : await createAccount(feePayerSecret),
+      accountOwnerSignsExternally ? [] : [accountOwnerAccOrWallet],
+      wallet
+    );
+  } else {
+    const feePayerAccount = await createAccount(feePayerSecret);
+    const accountOwnerAccount = await createAccount(accountOwnerSecret);
+    const mintPubkey = await getMintPubkeyFromTokenAccountPubkey(
+      tokenAccountPubkey
+    );
+    const token = new Token(
+      connection,
+      mintPubkey,
+      TOKEN_PROGRAM_ID,
+      feePayerAccount
+    );
+
+    await token.revoke(tokenAccountPubkey, accountOwnerAccount, []);
+  }
+
+  return tokenAccountPubkey.toBase58();
+};

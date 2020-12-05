@@ -1,9 +1,5 @@
 <template>
   <div class="field">
-    <label class="label">Account address*</label>
-    <public-key-form-field v-model:address="accountAddress" />
-  </div>
-  <div class="field">
     <label class="label">Owner*</label>
     <div class="control">
       <secret-form-field
@@ -13,46 +9,29 @@
     </div>
   </div>
   <div class="field">
-    <label class="label">Delegate*</label>
-    <public-key-form-field derivePublicKey v-model:address="delegateAddress" />
-  </div>
-  <div class="field">
-    <label class="label">Amount*</label>
-    <div class="control">
-      <input
-        v-model="tokenAmount"
-        class="input is-black"
-        type="text"
-        placeholder="Amount of tokens to approve e.g. 20000"
-      />
-    </div>
-    <p class="help">
-      Please be aware that a token is approved using its smallest denomination
-      e.g. if you have a token with 2 decimals and you type in 200 you will
-      approve 2 tokens.
-    </p>
+    <label class="label">Account address*</label>
+    <public-key-form-field v-model:address="accountAddress" />
   </div>
   <div style="display: flex" class="control is-justify-content-center mt-5">
     <button
-      :class="{ 'is-loading': approvingDelegate }"
+      :class="{ 'is-loading': revoking }"
       class="button is-black"
-      @click="onApproveDelegate"
+      @click="onRevoke"
     >
-      Approve
+      Revoke
     </button>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, toRefs } from "vue";
-import { u64 } from "@solana/spl-token";
 import accountComponents from "../accountComponents";
-import { approveDelegate } from "@/solana/token";
+import { revoke } from "@/solana/token";
 import SecretFormField from "@/components/util/SecretFormField.vue";
 import PublicKeyFormField from "@/components/util/PublicKeyFormField.vue";
 
 export default defineComponent({
-  name: accountComponents.Approve,
+  name: accountComponents.Revoke,
   components: {
     SecretFormField,
     PublicKeyFormField
@@ -70,42 +49,36 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const { payerSecret, payerSignsExternally } = toRefs(props);
-    const approvingDelegate = ref(false);
+    const revoking = ref(false);
     const accountAddress = ref("");
     const ownerSecret = ref("");
     const ownerSignsExternally = ref(true);
-    const delegateAddress = ref("");
-    const tokenAmount = ref("");
 
-    const onApproveDelegate = async () => {
-      approvingDelegate.value = true;
+    const onRevoke = async () => {
+      revoking.value = true;
       emit("update:accountAddress", "");
       try {
-        await approveDelegate(
+        await revoke(
           payerSecret.value,
           payerSignsExternally.value,
           ownerSecret.value,
           ownerSignsExternally.value,
-          accountAddress.value,
-          delegateAddress.value,
-          new u64(tokenAmount.value, 10)
+          accountAddress.value
         );
         emit("update:accountAddress", accountAddress.value);
       } catch (err) {
-        approvingDelegate.value = false;
+        revoking.value = false;
         throw err;
       }
-      approvingDelegate.value = false;
+      revoking.value = false;
     };
 
     return {
-      approvingDelegate,
+      revoking,
       accountAddress,
-      onApproveDelegate,
+      onRevoke,
       ownerSecret,
-      delegateAddress,
-      ownerSignsExternally,
-      tokenAmount
+      ownerSignsExternally
     };
   }
 });

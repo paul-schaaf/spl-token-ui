@@ -63,7 +63,7 @@ import TokenBurner from "./TokenBurner.vue";
 import AccountCloser from "./AccountCloser.vue";
 import CloserSetter from "./CloserSetter.vue";
 import Approver from "./Approver.vue";
-
+import Revoker from "./Revoker.vue";
 import Heading from "@/components/util/Heading.vue";
 
 import { splitAtUppercase } from "@/util/stringFormatting";
@@ -84,6 +84,7 @@ export default defineComponent({
     SecretFormField,
     CopyIcon,
     Approver,
+    Revoker,
     Heading
   },
   setup() {
