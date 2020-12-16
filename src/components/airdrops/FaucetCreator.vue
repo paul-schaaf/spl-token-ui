@@ -22,11 +22,11 @@
     <public-key-form-field
       derivePublicKey
       v-model:address="adminAddress"
-      hint=". You don't have to specify an admin address. If you do, the admin will be able to airdrop themselves any amount of tokens, ignoring the limit you set below."
+      hint=". You don't have to specify an admin address. An admin may airdrop themselves any amount of tokens, ignoring the limit you set below."
     />
   </div>
   <div class="field">
-    <label class="label">Amount*</label>
+    <label class="label">Amount</label>
     <div class="control">
       <input
         v-model="tokenAmount"
@@ -43,15 +43,10 @@
       />
     </div>
     <p class="help">
-      <span
-        ><strong @click="setNoLimitAmount" class="is-clickable"
-          >Set no limit.</strong
-        ></span
-      >
-      Max tokens that may be airdropped to non-admins per ix. Please be aware
-      that you need to use a token's smallest denomination e.g. if you have a
-      token with 2 decimals and you type in 200 you will allow users to get 2
-      tokens per ix.
+      You can leave this field empty to set no limit. Max tokens that may be
+      airdropped to non-admins per ix. Please be aware that you need to use a
+      token's smallest denomination e.g. if you have a token with 2 decimals and
+      you type in 200 you will allow users to get 2 tokens per ix.
     </p>
   </div>
   <div style="display: flex" class="control is-justify-content-center mt-5">
@@ -72,6 +67,7 @@ import SecretFormField from "@/components/util/SecretFormField.vue";
 import PublicKeyFormField from "@/components/util/PublicKeyFormField.vue";
 import { u64 } from "@solana/spl-token";
 import tokenFaucetComponents from "./tokenFaucetComponents";
+import { MAX_U64 } from "@/util/u64";
 
 export default defineComponent({
   name: tokenFaucetComponents.CreateFaucet,
@@ -100,19 +96,6 @@ export default defineComponent({
 
     const creatingFaucet = ref(false);
 
-    const setNoLimitAmount = () => {
-      tokenAmount.value = new u64([
-        255,
-        255,
-        255,
-        255,
-        255,
-        255,
-        255,
-        255
-      ]).toString(10);
-    };
-
     const onCreateFaucet = async () => {
       creatingFaucet.value = true;
       emit("update:accountAddress", "");
@@ -124,7 +107,7 @@ export default defineComponent({
           mintAuthoritySignsExternally.value,
           tokenMintAddress.value,
           adminAddress.value,
-          new u64(tokenAmount.value, 10)
+          tokenAmount.value ? new u64(tokenAmount.value, 10) : MAX_U64()
         );
         emit("update:accountAddress", address);
       } catch (err) {
@@ -139,7 +122,6 @@ export default defineComponent({
       creatingFaucet,
       mintAuthoritySignsExternally,
       tokenAmount,
-      setNoLimitAmount,
       tokenMintAddress,
       adminAddress,
       onCreateFaucet
