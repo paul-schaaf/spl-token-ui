@@ -10,7 +10,7 @@
   </div>
   <div class="help">
     <span v-if="derivePublicKey"
-      ><span class="is-clickable" @click="onDerivePublicKey"
+      ><span class="is-clickable has-text-underline" @click="onDerivePublicKey"
         ><strong>Derive public key from external wallet</strong></span
       >{{ hint }}</span
     >
