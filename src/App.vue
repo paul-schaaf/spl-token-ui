@@ -267,4 +267,8 @@ $navbar-breakpoint: 0px;
   color: white;
   text-decoration: none;
 }
+
+.has-text-underline {
+  text-decoration: underline;
+}
 </style>

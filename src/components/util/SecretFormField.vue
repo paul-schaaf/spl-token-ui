@@ -14,13 +14,18 @@
   </div>
   <p class="help">
     <span v-if="signExternally"
-      ><span class="is-clickable" @click="onToggleSignExternally"
+      ><span
+        class="is-clickable has-text-underline"
+        @click="onToggleSignExternally"
         >Switch to manual input</span
       >{{ externalHint }}</span
     >
     <span v-else
       >{{ manualHint
-      }}<span class="is-clickable" @click="onToggleSignExternally">
+      }}<span
+        class="is-clickable has-text-underline"
+        @click="onToggleSignExternally"
+      >
         <strong> Sign Externally</strong></span
       ></span
     >
