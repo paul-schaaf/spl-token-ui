@@ -6,10 +6,10 @@ import {
 } from "@solana/web3.js";
 //@ts-expect-error
 import Wallet from "@project-serum/sol-wallet-adapter";
-import { COMMITMENT } from "./connection";
+import { chosenCluster, COMMITMENT } from "./connection";
 
 const PROVIDER_URL = "https://www.sollet.io";
-let wallet = new Wallet(PROVIDER_URL, "mainnet-beta");
+let wallet = new Wallet(PROVIDER_URL, chosenCluster.value);
 
 export const sendTxUsingExternalSignature = async (
   instructions: TransactionInstruction[],
