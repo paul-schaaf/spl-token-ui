@@ -52,6 +52,20 @@
       <button
         :class="{ 'is-loading': creatingToken }"
         class="button is-black"
+        :style="{
+          display: inline - block,
+          outline: 0,
+          border: 0,
+          cursor: pointer,
+          backgroundColor: '#31393f',
+          borderRadius: '4px',
+          padding: '8px 16px',
+          fontSize: '16px',
+          borderBottom: '4px solid #000000',
+          fontWeight: 700,
+          color: white,
+          lineHeight: '26px'
+        }"
         @click="createToken"
       >
         Create new token
