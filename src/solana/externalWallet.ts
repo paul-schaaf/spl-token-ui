@@ -8,7 +8,7 @@ import {
 import Wallet from "@project-serum/sol-wallet-adapter";
 import { chosenCluster, COMMITMENT } from "./connection";
 
-const PROVIDER_URL = "https://www.sollet.io";
+const PROVIDER_URL = "https://www.solflare.com";
 let wallet = new Wallet(PROVIDER_URL, chosenCluster.value);
 
 export const sendTxUsingExternalSignature = async (
